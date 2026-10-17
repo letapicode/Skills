@@ -115,7 +115,7 @@ flowchart TD
 
 ---
 
-## PART IV: THE 16-MODULE TECHNICAL PATTERN PLAYBOOK (EXTRACTED FROM ALL 16 SESSIONS)
+## PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01-25)
 
 ## Module 01: Real-Time Presence, Connection Pooling, B+ Tree Storage Internals & Cache Stampede Coalescing
 
@@ -175,7 +175,7 @@ flowchart TD
   - *Alternative Considered*: Buffer all incoming requests in a 50ms queue and deduplicate identical query keys.
   - *Fatal Flaw*: When traffic drops, non-stampeding requests are penalized with an artificial 50ms latency penalty waiting for a buffer that never fills. The Single-Flight Semaphore pattern guarantees the first request proceeds instantly with zero artificial latency.
 
-### 1.5 Module 01 Critical Hidden Edge Cases & Failure Modes (Session 01)
+### 1.5 Module 01 Critical Hidden Edge Cases & Failure Modes
 - **1. In-Flight Connection Eviction Race**: If a database connection in the pool exceeds its `max_lifetime` while actively executing a 2-second query, closing it asynchronously will abort the query with `Error: connection lost during query` and return a 5xx to the user. **Rule**: Check expiration timestamps *strictly* inside `pool.Put(conn)` after execution finishes.
 - **2. Silent TCP Drop & Non-Idempotent Write Retry Trap**: When an idle database connection is silently terminated by an intermediate NAT firewall or MySQL `wait_timeout`, the next query fails with `broken pipe` or `connection reset by peer`. **Rule**: Automatically retry once *only* if the statement is a pure idempotent `SELECT`; never automatically retry non-idempotent `INSERT` or `UPDATE` statements without an explicit idempotency token, as the write may have already committed on the primary.
 - **3. Soft Delete Unbounded Purge Disaster**: Executing `DELETE FROM users WHERE is_deleted = true` in a background DB event without limits locks large swathes of B+ tree leaf pages, exhausts the InnoDB undo log (`history list length`), and starves active user transactions. Purges must run as an application-controlled job: `DELETE FROM users WHERE is_deleted = true ORDER BY id ASC LIMIT 100`.
@@ -249,7 +249,7 @@ flowchart TD
   - Browser connects via `new EventSource("/logs/" + uuid)`.
   - Server streams via a generator calling `fp.readline()` in a loop, yielding `f"data: {line}\n\n"` and sleeping `0.1s` on EOF (`if not line`).
 
-### 2.6 Module 02 Critical Hidden Edge Cases & Failure Modes (Session 02)
+### 2.6 Module 02 Critical Hidden Edge Cases & Failure Modes
 - **1. Read-After-Write Trap on ProxySQL & Replication Lag**: If an app executes `INSERT INTO orders` (Hostgroup 10) and immediately `SELECT * FROM orders WHERE id = ...` (routed by `^SELECT` to Read Hostgroup 20), replication lag causes a `404`! Fix: (a) Annotate read-after-write queries with `/* write */` or set `transaction_persistent = 1` in ProxySQL; (b) Pin user session reads to Primary for $T = 5\text{–}10\text{s}$ following writes; or (c) Compare client GTID cookie against `replica.applied_gtid`.
 - **2. Poison Pill Messages in Kafka / SQS**: A corrupted payload causes the consumer worker to crash repeatedly upon processing. The uncommitted message is redelivered in an infinite crash loop, freezing the entire partition. **Fix**: Implement a `receive_count` threshold ($\le 3$). After 3 consecutive crashes, route the poison pill message to a **Dead Letter Queue (DLQ)** along with the stack trace, emit a P2 pager alert, and commit the offset to resume stream processing.
 - **3. Kafka Consumer Group Rebalance Storm**: If a consumer thread stalls on a slow downstream microservice and exceeds `max.poll.interval.ms` (default 300,000ms / 5 min), Kafka's Group Coordinator evicts the consumer as dead and triggers an **Eager Rebalance**, pausing message consumption across ALL partitions in the group. **Fix**: Decouple ingestion from processing by reading from Kafka into an internal bounded worker pool, and configure `partition.assignment.strategy = CooperativeStickyAssignor` so unaffected partitions continue streaming without disruption.
@@ -302,7 +302,7 @@ flowchart TD
 | **Specific row mutation where callers must wait in line** (Wallet balance transfer) | `FOR UPDATE` (Wait) | `SELECT balance FROM accounts WHERE id = ? FOR UPDATE` | Serializes mutations on the exact target row without aborting callers. |
 | **Multi-step user flow with think-time / external payment** (Select seat $\rightarrow$ 5-min payment) | **TTL Reservation + Optimistic Concurrency Control (OCC)** | `UPDATE seats SET user_id = ?, version = version + 1 WHERE id = ? AND version = ?` | Never hold a DB transaction across user think-time or HTTP calls; OCC avoids long-lived DB locks. |
 
-### 3.5 Module 03 Critical Hidden Edge Cases & Failure Modes (Session 03)
+### 3.5 Module 03 Critical Hidden Edge Cases & Failure Modes
 - **1. Unindexed `FOR UPDATE` Lock Escalation Disaster**: If a query executes `SELECT ... FOR UPDATE` where the `WHERE` clause does not hit a unique index (or optimizer falls back to table scan), InnoDB locks **every single row and index gap** in the table with exclusive locks, effectively escalating to a **Full Table Lock** and halting all concurrent transactions globally!
 - **2. Deadlock Detection & Automated Victim Rollback**: When Transaction 1 (holds Row A, wants Row B) and Transaction 2 (holds Row B, wants Row A) deadlock, the engine's background cycle-detection thread scans the **Wait-For Graph (WFG)**. MySQL automatically terminates and rolls back the transaction with the fewest modified rows, throwing **`Error 1213: Deadlock found when trying to get lock; try restarting transaction`**. Application database clients must explicitly catch `Error 1213` and retry with randomized exponential backoff.
 - **3. `NOWAIT` vs. `SKIP LOCKED` Failure Semantics**: `SELECT ... FOR UPDATE NOWAIT` aborts immediately with **`Error 3572: Statement aborted because lock(s) could not be acquired immediately`**—essential when a user clicked a specific seat (Seat 14B) to provide instant feedback. In contrast, `SKIP LOCKED` bypasses locked rows without waiting—essential for pool allocations (worker queues, flash sale units).
@@ -365,7 +365,7 @@ flowchart TD
   - Partitioned across a consistent hashing ring by **Partition Key (Hash Key)** and sorted on disk within each partition by **Clustering Key (Sort/Range Key)**.
   - **LSI vs. GSI / Dual-Write Rule**: Querying by an attribute without the Partition Key using a Local Secondary Index (LSI) triggers a **50-node scatter-gather across the entire cluster**. Always maintain a separate Global Secondary Index (GSI) or dual-write to a second query table keyed by the target attribute.
 
-### 4.3 Module 04 Critical Hidden Edge Cases & Non-Relational Traps (Session 04)
+### 4.3 Module 04 Critical Hidden Edge Cases & Non-Relational Traps
 - **1. Graph DB Celebrity Supernode Explosion**: In graph databases (Neo4j, Neptune), a celebrity node with 10M edges stores 10M physical memory pointers inside its record. Traversing or modifying this node triggers multi-second JVM Garbage Collection pauses and pointer-chasing memory thrashing. Graph DBs must NEVER be used for 1-to-N social follower lists; they are strictly for dense, bounded multi-hop subgraphs (e.g. fraud rings, corporate ownership).
 - **2. Cassandra Tombstone Overload (`TombstoneOverwhelmingException`)**: In wide-column stores (Cassandra/ScyllaDB), deleting a row appends a **Tombstone** marker. When a query scans a partition containing thousands of deleted items, reading tombstones consumes massive CPU. If tombstone count exceeds `tombstone_failure_threshold` (default 100,000), Cassandra crashes the query with `TombstoneOverwhelmingException`! Use time-partitioned tables (e.g., daily tables) and execute `DROP TABLE` to instantly reclaim disk without generating tombstones.
 - **3. Linux OS Kernel Tuning for 100k+ Naked WebSocket Nodes**: To support 100,000 persistent sockets per server without kernel panics:
@@ -478,7 +478,7 @@ flowchart TD
   - **3 Redis Nodes ($Q=2$)**: `33 ms`.
   - **5 Redis Nodes ($Q=3$)**: `64 ms` (`~3.5x` slower even without WAN RTT).
 
-### 5.4 Module 05 Critical Hidden Edge Cases & Distributed Lock Traps (Session 05)
+### 5.4 Module 05 Critical Hidden Edge Cases & Distributed Lock Traps
 - **1. Redlock Stop-The-World (STW) GC Pause & Fencing Tokens (Martin Kleppmann Debate)**:
   - *Failure Scenario*: Client 1 acquires a 10s Redlock. Client 1 experiences a 15-second STW JVM Garbage Collection pause or VM descheduling. The lock expires in Redis. Client 2 acquires the lock and begins writing. Client 1 wakes up from the GC pause, believes it still owns the lock, and executes a write to shared storage, silently corrupting state!
   - *The Absolute Fix (Fencing Tokens)*: The lock service must issue a **Monotonically Increasing Integer Token** (e.g., 101, 102, 103) upon lock acquisition. The underlying storage layer (MySQL, S3, or ZooKeeper) records the highest token processed and **strictly rejects any write whose token $\le$ the highest token seen so far**.
@@ -544,7 +544,7 @@ flowchart TD
 - **The CockroachDB Exception (When Monotonic IDs Are an Anti-Pattern)**:
   - Range-partitioned distributed SQL databases (CockroachDB, TiDB) split tables into contiguous key `Ranges` across physical nodes. A monotonic PK (`AUTO_INCREMENT` or Snowflake) routes **100% of writes to the single physical node owning the highest range**! Use random **UUIDs** (or hash-sharded keys) in CockroachDB so writes distribute across all nodes.
 
-### 6.5 Module 06 Critical Hidden Edge Cases & Snowflake Traps (Session 06)
+### 6.5 Module 06 Critical Hidden Edge Cases & Snowflake Traps
 - **1. NTP Clock Drift & Backward Clock Jump**: Network Time Protocol (NTP) periodically synchronizes system clocks. If NTP pulls the server clock backwards by $5\text{ms}$, generating IDs using the system clock will create duplicate IDs! **Handling Rule**: If `current_ms < last_ms`, inspect the delta: if delta $\le 5\text{ms}$, spin-wait (sleep) until `current_ms >= last_ms`; if delta $> 5\text{ms}$, fail-fast with a 500 error and trigger a P0 ops alert, or maintain a backward-drift offset counter.
 - **2. Sequence Number Overflow within a Millisecond**: If traffic bursts beyond $4,096$ requests within the exact same millisecond on a single worker node, the 12-bit sequence field wraps around to 0. **Handling Rule**: The generator must detect `seq == 0` within `current_ms == last_ms` and block (spin-wait) until the system clock advances to `last_ms + 1`.
 - **3. Secondary Index Bloat from Pure Random UUIDv4**: Inserting random UUIDv4 strings into a secondary B+ Tree index shatters page locality, causing massive page splits, low page fill factors (50%), and 10x-50x disk write amplification. Always use monotonic 64-bit Snowflake IDs or UUIDv7.
@@ -579,7 +579,7 @@ flowchart TD
   - CDN edge servers have **zero access** to the `Follows` social graph DB! If an approved follower copies a private photo's CDN URL into an unauthenticated Incognito window, **it loads publicly**.
   - Protection is purely via **Stateless Signed URL Query Parameters** (`oe` = hex Unix expiration timestamp, `oh` = HMAC signature over path + `oe`) verified locally at the CDN edge.
 
-### 7.4 Module 07 Critical Hidden Edge Cases & Content-Addressed Traps (Session 07)
+### 7.4 Module 07 Critical Hidden Edge Cases & Content-Addressed Traps
 - **1. Content-Addressed Blind Proof-of-Ownership Attack**: If User B computes the SHA-256 of a confidential document uploaded by User A and sends `POST /attachment { hash: 'xyz' }`, a naive server would link the document to User B's email without uploading, allowing User B to steal User A's private file! **Fix**: Issue a **Blind Proof of Ownership Challenge**: Server challenges the client to compute `HMAC(salt, byte_range)` over a random internal byte range (e.g., bytes 4096–8192), proving the client physically possesses the entire file before linking.
 - **2. Orphan Garbage Collection Race Condition**: When User A deletes their draft, the attachment's `ref_count` drops to 0. If User B is concurrently uploading the exact same file, a naive GC script checking `ref_count == 0` might delete the S3 blob right before User B links it. **Fix**: Implement a **7-day grace period**: Blobs with `ref_count = 0` are marked with `deleted_at = NOW()`. The GC worker only issues S3 `DeleteObject` if `ref_count = 0 AND deleted_at < NOW() - INTERVAL 7 DAY`.
 
@@ -622,7 +622,7 @@ flowchart TD
   ```
   - **Result**: **Nanosecond Stop-The-World lock** and **zero extra memory allocation**, with automatic backpressure (`passive_map.is_empty()`) if the database slows down.
 
-### 8.4 Module 08 Critical Hidden Edge Cases & Batching Traps (Session 08)
+### 8.4 Module 08 Critical Hidden Edge Cases & Batching Traps
 - **1. Multi-Threaded Hash Map Rehashing Deadlock**: When scaling a striped-lock concurrent hash map, expanding the bucket array requires locking all $N$ bucket mutexes. If Thread 1 locks buckets $0 \to N-1$ while Thread 2 locks $N-1 \to 0$, a hard deadlock occurs. **Rule**: All multi-bucket lock acquisitions must strictly enforce a **Global Ascending Order** (`0` to `N-1`).
 - **2. Stop-The-World Flush Contention in In-Memory Counters**: Deep-copying a map or holding a global mutex during network serialization blocks ingestion worker threads. Always use **Active-Passive Double Buffering (Pointer Swap)** under double-checked locking so ingestion continues into the passive buffer with zero stop-the-world stalls.
 
@@ -672,7 +672,7 @@ flowchart TD
    - **90% Lazy**: Checked on `GET k`; if expired, `zfree()` immediately.
    - **10% Adaptive Cron (Every `100 ms` / `10 Hz`)**: Samples `20` random keys with TTL and deletes expired ones. **Loop condition**: If **`>= 25%` (`>= 5 of 20`)** were expired, it **immediately loops again** (up to a 25ms CPU cap) to purge mass expirations; as soon as **`< 25%`** are expired, it breaks immediately to save CPU.
 
-### 9.3 Module 09 Critical Hidden Edge Cases & Redis Internals (Session 09)
+### 9.3 Module 09 Critical Hidden Edge Cases & Redis Internals
 - **1. Consistent Hashing Domino Failure Cascade**: Without virtual nodes, when physical Node 3 fails, 100% of its keys fall onto the immediate clockwise successor Node 4. Node 4 receives $2\times$ traffic, crashes under load, dumps $3\times$ traffic onto Node 5, and the entire cluster collapses like dominos! **Fix**: Assign 256 virtual nodes (tokens) per physical server uniformly across the ring so a failed node's keys disperse evenly across all surviving nodes.
 - **2. Redis 24-Bit LRU Clock Rollover**: Redis tracks object idle time using a 24-bit integer (`lru` in `robj`) with 1-second resolution, which overflows and wraps around every $2^{24}\text{ seconds} \approx \mathbf{194.18\text{ days}}$. Redis handles this wrap-around via unsigned modulo bitwise arithmetic: $\Delta_{\text{idle}} = (\text{server\_lru\_clock} - \text{entry\_lru}) \ \& \ \text{0xFFFFFF}$.
 - **3. Redis Head-of-Line Blocking Disasters**: Because Redis executes on a single event loop thread, running `KEYS *` or `FLUSHALL` on a 10M-key database freezes the server for seconds/minutes, timing out all application traffic. **Rule**: Always alias/disable dangerous commands in `redis.conf` (`rename-command KEYS ""` and `rename-command FLUSHALL ""`). Use **`SCAN`** for non-blocking cursor iteration and **`UNLINK`** for asynchronous background memory reclamation.
@@ -716,7 +716,7 @@ flowchart TD
   - **Active File Discovery**: Store `meta.json` (`{"active_file": "2.dict"}`) on S3 (avoids expensive/paginated S3 `LIST` calls on crash-loops).
   - **Weekly Changelog Update ($O(N)$ Two-Pointer Merge)**: Never overwrite a file in-place (expanding `"ball"` overwrites adjacent `"cat"`). Spin up a Sunday ephemeral worker, sort `changelog.csv`, run an **$O(N)$ Two-Pointer Merge** with sorted `1.dict` to stream `2.dict`, upload to S3, update `meta.json`, and **trigger a CI/CD rolling deploy (`jenkins deploy`)** so fresh containers load `2.dict` with zero custom pub/sub or polling code!
 
-### 10.3 Module 10 Critical Hidden Edge Cases & Storage Internals (Session 10)
+### 10.3 Module 10 Critical Hidden Edge Cases & Storage Internals
 - **1. Bitcask Torn-Write Detection & Crash Recovery**: A server crash or power outage during an append-only write leaves a corrupted, partially written record at the end of the active datafile. By placing a 4-byte `CRC32` checksum at the **very start** of every binary record header, Bitcask reads sequentially on reboot. The moment a CRC check fails, it immediately truncates the file at that exact offset, safely discarding the torn write without corrupting existing records.
 - **2. Bitcask Compaction Disk Space Spike**: Merging historical datafiles requires simultaneously keeping old datafiles open for concurrent reads while streaming compacted data into new datafiles. This causes a temporary **$2\times$ disk space spike**. Disk capacity alerts must trigger at **50% utilization**; if disk reaches 90%, compaction cannot run due to lack of staging space.
 - **3. Remote Code Execution Sandbox Escapes & Fork Bombs**: Untrusted user-submitted code submitted to an online judge can spawn infinite processes (`:(){ :|:& };:`) or fill the disk. **Rules**: Apply Linux cgroups v2 `pids.max = 32`, enforce strict memory limits `memory.max = 256M`, mount an in-memory tmpfs with `size=10M`, and apply a Seccomp BPF filter blocking `clone`, `ptrace`, `unshare`, and raw networking.
@@ -766,7 +766,7 @@ flowchart TD
 - **Archival Write Pipeline**: `Orders`, `Payments`, and `Logistics` dump immutable >6-month records to an **S3 Parquet Staging Area** (never hammer live microservices with synchronous batch RPCs). A daily **Apache Spark job** joins, sorts by `order_id`, and runs an N-way merge with existing cold files to output non-overlapping **4 GB SSTable/Parquet files on S3** served by **Index Servers** holding Sparse Indexes in RAM (`~300 ms` S3 `Range` read).
 - **The Hot/Cold Routing Rule**: Never maintain a billion-row `order_id -> Hot/Cold` lookup table or Bloom filter, and never query S3 first. **Always query Hot DB first (`~5 ms`)**—85%+ of requests hit immediately; only on a `404` (`5%–15%` cold queries) fallback to `Index Server -> Cold S3 (~300 ms)`.
 
-### 11.5 Module 11 Critical Hidden Edge Cases & LSM Compaction Traps (Session 11)
+### 11.5 Module 11 Critical Hidden Edge Cases & LSM Compaction Traps
 - **1. LSM Tree Zombie Record Resurrection**: When a row is deleted, a **Tombstone** record is appended to MemTable and flushed to L0. If compaction merges L0 and L1 and purges the tombstone because L1 contained an older version, but L2 *also* contained a prehistoric version of that key, the key in L2 will suddenly **resurrect** as active data! **Rule**: A tombstone must NEVER be physically purged during compaction until it reaches the **deepest level ($L_{\max}$)** or until it is mathematically proven that no lower level contains that key.
 - **2. Deletable Bloom Filter Collision Regions**: Standard Bloom Filters cannot delete keys without clearing bits shared with other keys. Deletable Bloom Filters partition the bit vector into $r$ collision zones and maintain collision counters, enabling safe bit reset only when a bit is uniquely owned by the deleted item.
 
@@ -805,7 +805,7 @@ flowchart TD
     3. The Stitcher **appends the ad's `.ts` segments (`ad_nike_001.ts`, `ad_nike_002.ts`) directly into `playlist.m3u8`** in place of the stadium feed!
 - **Anti-Piracy Protection**: Client polls the Tier-1 Auth Service every **1–5 minutes** for a short-lived cryptographically signed token validated locally at the CDN edge, killing pirated `.m3u8` links pasted into VLC within 5 minutes.
 
-### 12.4 Module 12 Critical Hidden Edge Cases & S3 Internals (Session 12)
+### 12.4 Module 12 Critical Hidden Edge Cases & S3 Internals
 - **1. HLS Live Streaming Manifest Request Collapsing**: During 20M-viewer live sports streaming, millions of clients poll `playlist.m3u8` every 2 seconds. If CDN cache TTL expires simultaneously, millions of requests storm the origin transcoder. **Fix**: Configure an **Origin Shield** tier with **Request Collapsing (Coalescing)** so only 1 request per CDN PoP forwards to the origin, combined with `Cache-Control: public, max-age=2, stale-while-revalidate=1`.
 - **2. S3 Storage Stamp Rack Recovery Network Storm**: When a physical rack dies in an S3 storage stamp (holding 30–50PB), the stream layer triggers automated block re-replication to surviving racks. If re-replication runs unthrottled, it saturates internal Top-of-Rack (ToR) switches and causes customer reads and writes to time out! **Rule**: Recovery replication bandwidth must be hard-capped at $\le 20\%$ of backplane network capacity.
 
@@ -862,7 +862,7 @@ flowchart TD
    - Write to all $K=4$ suffixed keys (`blog:123:1..4`), which hash to **4 different shards**; reads pick `blog:123:{rand(1,4)}`, dividing hot-shard read load by **4x**!
    - *Rule*: If the cluster is compute-bound with idle RAM (e.g., 200 MB data on 1 GB Redis nodes), salt *all* keys to avoid hot-key metadata. If **50% of all keys are hot simultaneously**, salting fails because all shards are at 100% CPU—you must add physical shards.
 
-### 13.5 Module 13 Critical Hidden Edge Cases & Search Internals (Session 13)
+### 13.5 Module 13 Critical Hidden Edge Cases & Search Internals
 - **1. Multi-Tenant Hot Sharding & Noisy Neighbor OOM**: In multi-tenant Jira search, placing a 10M-issue enterprise tenant on the same Lucene shard as 1,000 small tenants causes the enterprise tenant's heavy queries to monopolize memory and trigger cluster-wide GC pauses. **Fix (Size-Aware Split Routing)**: Use routing key `\{tenant_id\}_\{doc_id % M\}` where small tenants use $M=1$ (1 shard) and enterprise tenants use $M=16$ (dispersing load across 16 shards).
 - **2. BK-Tree Metric Pruning for Fuzzy Search**: Searching 500,000 dictionary words within Levenshtein edit distance $K \le 2$ without pruning evaluates every word. BK-Trees exploit the **Triangle Inequality** ($|d(p, w) - K| \le d(p, c) \le d(p, w) + K$) to prune $> 95\%$ of subtrees during traversal.
 
@@ -914,7 +914,7 @@ flowchart TD
   - Normalize into `tasks(id, tenant_id, cron_expr, webhook_url)` and `jobs(id, task_id, scheduled_at, status, UNIQUE(task_id, scheduled_at))`.
   - When a recurring job executes (or via a lookahead worker), pre-calculate and insert the **next $K = 5$ future execution timestamps** using **`INSERT IGNORE` / `ON CONFLICT DO NOTHING`**, reducing recurring cron to the exact same one-time execution table!
 
-### 14.3 Module 14 Critical Hidden Edge Cases & Scheduler Traps (Session 14)
+### 14.3 Module 14 Critical Hidden Edge Cases & Scheduler Traps
 - **1. Distributed Task Scheduler Worker Crash & Lease Recovery**: If a worker node crashes while executing a task, the task remains in `RUNNING` status indefinitely. **Fix**: Tasks include `lease_expires_at = NOW() + INTERVAL 60 SECOND`. The worker heartbeats every 20 seconds. If the worker crashes, the lease expires, and pullers automatically reclaim the orphaned task via `SELECT ... FOR UPDATE SKIP LOCKED`. Task execution handlers must be strictly **idempotent** (keyed on unique `idempotency_token`).
 - **2. Flash Sale 12th-Minute Payment Webhook Race**: A buyer initiates checkout at minute 9:59. Payment gateway takes 2 minutes to settle and delivers a webhook at minute 12:01. The **Bouncer Cron** ran at minute 12:00 and reclaimed the unit. **Fix**: Webhook handler uses optimistic locking (`UPDATE units SET purchased_at = NOW() WHERE id = ? AND picked_by = ?`). If 0 rows are updated, handler automatically calls `RefundPayment()` and notifies the user with a friendly error.
 
@@ -964,7 +964,7 @@ flowchart TD
     - An hourly Rollup Scheduler range-queries 60 minute blobs from DynamoDB, loads them via **`RESTORE`** into an isolated **Stateless Temp Redis Cluster**, runs **`PFMERGE`**, **`DUMP`s** the merged hourly blob back to DynamoDB (`hour_hll`, `day_hll`, `month_hll`), and never touches Primary Redis!
     - **Multi-Granularity Query Decomposition + Key-Diff Caching**: A query for `Jan 1 – Nov 29 10:15` decomposes into `10 month_hll` + `28 day_hll` + `10 hour_hll` + `15 minute_hll` = **63 keys**, checks which keys are already cached in `Temp Redis`, fetches **only the missing set difference (`required - cached`)** from DynamoDB via `RESTORE`, and runs `PFMERGE` + `PFCOUNT`.
 
-### 15.3 Module 15 Critical Hidden Edge Cases & Sync Conflict Traps (Session 15)
+### 15.3 Module 15 Critical Hidden Edge Cases & Sync Conflict Traps
 - **1. HyperLogLog Sparse-to-Dense Automatic Upgrade**: When a HyperLogLog register is initialized, storing 12KB for a key with only 10 items wastes memory. Redis stores HLL as a **Run-Length Encoded (RLE) Sparse List** (consuming $< 300\text{ bytes}$) and automatically converts it to a 12KB Dense Array once memory exceeds `hll_sparse_max_bytes` (3,000 bytes).
 - **2. Dropbox Concurrent Offline Edit Branching**: If two laptops edit `/project.docx` while offline and reconnect simultaneously, the server applies **Last-Write-Wins (LWW)** on file state: the second client detects a version mismatch (`expected_base_version != current_version`), pulls the latest version into `/project.docx`, and saves its local edits as `/project (conflicted copy).docx`.
 
@@ -1008,7 +1008,7 @@ flowchart TD
     2. Split the matching search into **lean, fast Lua subqueries** (each checking a narrow radius/rating slice) and fire them **in parallel across 3 of the 7 Read Replicas**.
     3. **Stream Results Immediately**: As soon as *any* replica returns candidates, dispatch a batch of **10 parallel WebSocket ride offers** (`10s` accept countdown timer; first driver to accept wins atomic `RideService.create_ride()`), ignoring slow/straggling replicas.
 
-### 16.4 Module 16 Critical Hidden Edge Cases & Geo Proximity Traps (Session 16)
+### 16.4 Module 16 Critical Hidden Edge Cases & Geo Proximity Traps
 - **1. GeoHash Equator/Meridian Boundary Discontinuity**: Two geographical coordinates 5 meters apart on opposite sides of the equator have completely different GeoHash prefix strings. A naive prefix match misses adjacent neighbors. **Rule**: Always query the target GeoHash cell **plus its 8 surrounding neighbor cells** (North, South, East, West, NW, NE, SW, SE) and filter the unified set using exact Haversine distance calculations.
 - **2. FlockDB Rapid Follow/Unfollow Race Condition**: If a user taps Follow $\to$ Unfollow $\to$ Follow in rapid succession and network packets arrive out of order, the database could leave the relationship as unfollowed. **Fix**: Every mutation includes a monotonic timestamp in the `position` column. Incoming mutations where `incoming.position < current.position` are silently ignored.
 
