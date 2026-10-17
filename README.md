@@ -77,9 +77,9 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 *What the installer does automatically:*
 1. Installs the global skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
-2. Installs the global skill & `AGENTS.md` for **OpenAI Codex CLI** (`~/.codex/skills/system-design-master-brain/` and `~/.codex/AGENTS.md`).
+2. Installs the global skill, UI metadata (`agents/openai.yaml`), & `AGENTS.md` for **OpenAI ChatGPT Desktop App (Codex Mode), Codex Desktop App, & Codex CLI** (`~/.codex/skills/system-design-master-brain/`, `~/.agents/skills/system-design-master-brain/`, and `~/.codex/AGENTS.md`).
 3. Installs the global skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
-4. If run inside a project repository, installs **OpenAI Codex / OpenCode / Aider / Devin** (`AGENTS.md`), **GitHub Copilot** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **DeepSeek / Llama / Cline / Roo Code** (`.clinerules`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 28-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
+4. If run inside a project repository, installs **OpenAI ChatGPT Desktop Codex / Codex CLI / OpenCode / Aider / Devin** (`AGENTS.md` + `agents/openai.yaml`), **GitHub Copilot** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **DeepSeek / Llama / Cline / Roo Code** (`.clinerules`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 28-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
 
 ---
 
@@ -87,9 +87,10 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 | Platform | Setup Instructions |
 |---|---|
-| **OpenAI Codex (CLI & Cloud Agent)** | Copy `AGENTS.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to your project root (or `~/.codex/AGENTS.md` globally) |
+| **OpenAI ChatGPT Desktop App (Codex Mode) & Codex Desktop App** | Run the 1-line installer (which installs `SKILL.md`, `agents/openai.yaml`, and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.agents/skills/system-design-master-brain/` and `~/.codex/skills/system-design-master-brain/` so it appears directly in your **Skills Sidebar** and via `$system-design-master-brain`), and places `AGENTS.md` in your project root / `~/.codex/AGENTS.md` |
+| **OpenAI Codex CLI & Cloud Agent** | Copy `AGENTS.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to your project root (or `~/.codex/AGENTS.md` globally) |
 | **GitHub Copilot (VS Code / JetBrains)** | Copy `.github/copilot-instructions.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into your repository root |
-| **Claude Code (CLI)** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/`, or place `CLAUDE.md` in your project root |
+| **Claude Code (CLI & Desktop)** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/`, or place `CLAUDE.md` in your project root |
 | **DeepSeek / Llama / Qwen (via Cline / Roo / OpenCode)** | Copy `.clinerules` and `AGENTS.md` into your project root, or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` in chat |
 | **Codeium (VS Code / JetBrains)** | Copy `.codeiumrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Codeium Windsurf IDE** | Copy `.windsurfrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |

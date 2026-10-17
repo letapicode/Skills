@@ -47,16 +47,23 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $ClaudeDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Claude Code: $ClaudeDir" -ForegroundColor Green
 
-# 2. OpenAI Codex CLI Skill (~/.codex/skills/system-design-master-brain & ~/.codex/AGENTS.md)
+# 2. OpenAI ChatGPT Desktop App (Codex) & Codex CLI (~/.codex/skills & ~/.agents/skills)
 $CodexDir = Join-Path $HOME ".codex\skills\system-design-master-brain"
 Copy-Or-DownloadFile "SKILL.md" (Join-Path $CodexDir "SKILL.md")
 Copy-Or-DownloadFile "AGENTS.md" (Join-Path $CodexDir "AGENTS.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $CodexDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $CodexDir "agents\openai.yaml")
 $CodexGlobalAgents = Join-Path $HOME ".codex\AGENTS.md"
 if (-not (Test-Path $CodexGlobalAgents)) {
     Copy-Or-DownloadFile "AGENTS.md" $CodexGlobalAgents
 }
-Write-Host "✔ Installed for OpenAI Codex CLI: $CodexDir" -ForegroundColor Green
+
+$AgentsStdDir = Join-Path $HOME ".agents\skills\system-design-master-brain"
+Copy-Or-DownloadFile "SKILL.md" (Join-Path $AgentsStdDir "SKILL.md")
+Copy-Or-DownloadFile "AGENTS.md" (Join-Path $AgentsStdDir "AGENTS.md")
+Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $AgentsStdDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $AgentsStdDir "agents\openai.yaml")
+Write-Host "✔ Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI: $CodexDir & $AgentsStdDir" -ForegroundColor Green
 
 # 3. Antigravity / Gemini Skill (~/.gemini/antigravity/skills/system-design-master-brain)
 $GeminiDir = Join-Path $HOME ".gemini\antigravity\skills\system-design-master-brain"
@@ -64,25 +71,26 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
-# 4. Current Workspace (AGENTS.md, CLAUDE.md, SKILL.md, .cursorrules, .windsurfrules, .codeiumrules, .clinerules, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
+# 4. Current Workspace (AGENTS.md, CLAUDE.md, SKILL.md, agents/openai.yaml, .cursorrules, .windsurfrules, .codeiumrules, .clinerules, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
 $currentDir = Get-Location
 $isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml") -or (Test-Path "pom.xml") -or (Test-Path "build.gradle")
 if ($isProjectDir) {
     Copy-Or-DownloadFile "AGENTS.md" (Join-Path $currentDir "AGENTS.md")
     Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
     Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
+    Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $currentDir "agents\openai.yaml")
     Copy-Or-DownloadFile ".cursorrules" (Join-Path $currentDir ".cursorrules")
     Copy-Or-DownloadFile ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
     Copy-Or-DownloadFile ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
     Copy-Or-DownloadFile ".clinerules" (Join-Path $currentDir ".clinerules")
     Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
     Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "✔ Installed workspace rules & 28-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
+    Write-Host "✔ Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
 Write-Host "Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)" -ForegroundColor Green
-Write-Host "You can now ask your AI coding assistant (Codex, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
+Write-Host "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 Write-Host '  "Design a distributed rate limiter or LLM inference engine with P99 < 50ms."' -ForegroundColor Yellow
 Write-Host '  "Audit this codebase / PR using the 55-Point Red-Team Checklist."' -ForegroundColor Yellow
 Write-Host ""

@@ -30,6 +30,8 @@ fetch_file() {
     local filename="$1"
     local dest="$2"
 
+    mkdir -p "$(dirname "$dest")"
+
     if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/$filename" ]; then
         if [ "$(cd "$(dirname "$dest")" && pwd)/$(basename "$dest")" != "$SCRIPT_DIR/$filename" ]; then
             cp "$SCRIPT_DIR/$filename" "$dest"
@@ -46,16 +48,24 @@ fetch_file "SKILL.md" "$CLAUDE_SKILL_DIR/SKILL.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CLAUDE_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
 echo -e "${GREEN}✔ Installed for Claude Code:${NC} $CLAUDE_SKILL_DIR"
 
-# 2. Install for OpenAI Codex CLI (~/.codex/skills/system-design-master-brain & ~/.codex/AGENTS.md)
+# 2. Install for OpenAI ChatGPT Desktop App (Codex) & Codex CLI (~/.codex/skills & ~/.agents/skills)
 CODEX_DIR="$HOME/.codex/skills/system-design-master-brain"
-mkdir -p "$CODEX_DIR"
+mkdir -p "$CODEX_DIR/agents"
 fetch_file "SKILL.md" "$CODEX_DIR/SKILL.md"
 fetch_file "AGENTS.md" "$CODEX_DIR/AGENTS.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CODEX_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+fetch_file "agents/openai.yaml" "$CODEX_DIR/agents/openai.yaml"
 if [ ! -f "$HOME/.codex/AGENTS.md" ]; then
     fetch_file "AGENTS.md" "$HOME/.codex/AGENTS.md"
 fi
-echo -e "${GREEN}✔ Installed for OpenAI Codex CLI:${NC} $CODEX_DIR"
+
+AGENTS_STD_DIR="$HOME/.agents/skills/system-design-master-brain"
+mkdir -p "$AGENTS_STD_DIR/agents"
+fetch_file "SKILL.md" "$AGENTS_STD_DIR/SKILL.md"
+fetch_file "AGENTS.md" "$AGENTS_STD_DIR/AGENTS.md"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$AGENTS_STD_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+fetch_file "agents/openai.yaml" "$AGENTS_STD_DIR/agents/openai.yaml"
+echo -e "${GREEN}✔ Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI:${NC} $CODEX_DIR & $AGENTS_STD_DIR"
 
 # 3. Install for Antigravity / Gemini (~/.gemini/antigravity/skills/system-design-master-brain)
 GEMINI_SKILL_DIR="$HOME/.gemini/antigravity/skills/system-design-master-brain"
@@ -64,11 +74,12 @@ fetch_file "SKILL.md" "$GEMINI_SKILL_DIR/SKILL.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
 echo -e "${GREEN}✔ Installed for Antigravity / Gemini:${NC} $GEMINI_SKILL_DIR"
 
-# 4. Install for Current Workspace (Codex AGENTS.md, Claude, Cursor, Windsurf, Codeium, Cline/DeepSeek, Copilot + Full Playbook)
+# 4. Install for Current Workspace (Codex AGENTS.md + openai.yaml, Claude, Cursor, Windsurf, Codeium, Cline/DeepSeek, Copilot + Full Playbook)
 if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ] || [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
     fetch_file "AGENTS.md" "./AGENTS.md"
     fetch_file "CLAUDE.md" "./CLAUDE.md"
     fetch_file "SKILL.md" "./SKILL.md"
+    fetch_file "agents/openai.yaml" "./agents/openai.yaml"
     fetch_file ".cursorrules" "./.cursorrules"
     fetch_file ".windsurfrules" "./.windsurfrules"
     fetch_file ".codeiumrules" "./.codeiumrules"
@@ -76,12 +87,12 @@ if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml
     fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "./SYSTEM_DESIGN_MASTER_BRAIN.md"
     mkdir -p "./.github"
     fetch_file ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
-    echo -e "${GREEN}✔ Installed workspace rules & 28-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
+    echo -e "${GREEN}✔ Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
 fi
 
 echo ""
 echo -e "${GREEN}${BOLD}Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)${NC}"
-echo -e "You can now ask your AI coding assistant (Codex, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
+echo -e "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 echo -e "  ${YELLOW}\"Design a distributed rate limiter or LLM inference engine with P99 < 50ms.\"${NC}"
 echo -e "  ${YELLOW}\"Audit this codebase / PR using the 55-Point Red-Team Checklist.\"${NC}"
 echo ""
