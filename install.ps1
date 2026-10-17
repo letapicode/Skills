@@ -77,12 +77,12 @@ if ($isProjectDir) {
     Copy-Or-DownloadFile ".clinerules" (Join-Path $currentDir ".clinerules")
     Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
     Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "✔ Installed workspace rules & 27-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
+    Write-Host "✔ Installed workspace rules & 28-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Installation Complete! (27 Modules + 50-Point Red-Team Audit Active)" -ForegroundColor Green
+Write-Host "Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)" -ForegroundColor Green
 Write-Host "You can now ask your AI coding assistant (Codex, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 Write-Host '  "Design a distributed rate limiter or LLM inference engine with P99 < 50ms."' -ForegroundColor Yellow
-Write-Host '  "Audit this codebase / PR using the 50-Point Red-Team Checklist."' -ForegroundColor Yellow
+Write-Host '  "Audit this codebase / PR using the 55-Point Red-Team Checklist."' -ForegroundColor Yellow
 Write-Host ""

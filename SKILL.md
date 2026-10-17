@@ -1,18 +1,19 @@
 ---
 name: system-design-master-brain
-description: "Principal Systems & AI Architect brain for designing distributed systems, frontier AI/ML infrastructure, AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode: (1) Socratic Architecture & Capacity Math Mode for system and AI design, and (2) Direct Production Codebase & PR Red-Team Mode for SQL migrations, concurrency locks, idempotency, resiliency, LLM/agent serving, and Kubernetes runtime safety across 27 core modules and a 50-point audit."
+description: "Principal Systems & AI Architect brain for designing distributed systems, frontier AI/ML/JAX/Multi-Agent infrastructure, AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode (Architecture RFC Mode + Direct Production Codebase Mode) with an Uncharted-Domain Deep-Research Fallback and Future-Model Self-Evolution Engine across 28 core modules and a 55-point audit."
 ---
 
 # System Design Master Brain
 
-A production-grade, battle-tested agent skill that transforms any AI coding assistant into a **Staff/Principal Systems & AI Architect**.
+A production-grade, self-evolving agent skill that transforms any AI coding assistant into a **Staff/Principal Systems & AI Architect**.
 
 Unlike conventional high-level architecture advice that relies on hand-wavy box-and-arrow diagrams, this skill enforces strict adherence to:
 1. **Dual-Mode Execution** (Socratic System Design Mode for architecture RFCs vs. Direct Codebase Enforcement Mode for live repositories and PR reviews).
-2. **First-Principles Capacity Math** (calculating bytes, GPU HBM / KV-Cache bytes, IOPS, connection pools, B+ tree fill-factors, and network bandwidth).
-3. **Sketch-to-Scale Evolution** (Day-0 Monolith $\to$ Bottleneck Identification $\to$ Targeted Production Scaling).
-4. **Implementation-Grade Depth** (exact SQL schemas, composite covering indexes, locking modes, Lua scripts, zero-downtime migrations, DeepSeek MLA/MoE & Disaggregated Serving, Meta Muse parallel masked decoding, 4-stage ML RecSys, and wire protocols).
-5. **The 50-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, Prefill/Decode interference, Feature Store time-travel leakage, and silent data loss).
+2. **First-Principles Capacity & Hardware Math** (calculating bytes, GPU HBM / KV-Cache bytes, SRAM vs. HBM roofline arithmetic intensity, IOPS, connection pools, B+ tree fill-factors, and network bandwidth).
+3. **Sketch-to-Scale Evolution** (`Attempt 1 (Day-0 Monolith / Blunt Code) -> Exact Bottleneck -> Attempt 2 -> Production Scaling`).
+4. **Implementation-Grade Depth** (exact SQL schemas, composite covering indexes, locking modes, Lua scripts, zero-downtime migrations, DeepSeek MLA/MoE & Disaggregated Serving, Meta Muse parallel masked decoding, Multi-Agent Worktree DAGs, JAX/XLA static shape bucketing, and wire protocols).
+5. **The Uncharted-Domain Deep-Research Bridge & Future-Model Self-Evolution** (automatically formulating surgical primary-literature research queries when a problem falls outside Modules 01–28, and upgrading the playbook when new frontier models release).
+6. **The 55-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, Prefill/Decode interference, JAX/XLA recompilation stalls, and silent data loss).
 
 ---
 
@@ -24,7 +25,7 @@ Automatically select the appropriate mode based on the user's request:
 *Activate when the user asks to design a distributed or AI/ML system, plan an architecture, or evaluate scaling trade-offs.*
 Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
 1. **Stage 1 — Socratic Interrogation First**: Never start by drawing boxes or proposing Kafka, Redis, or microservices. Interrogate the requirements (Read:Write ratio, Peak Concurrency vs. Total Volume, P99/TTFT/ITL SLA, Consistency model, Blast radius) and force every qualitative word (*"fast"*, *"huge"*, *"real-time"*) into concrete numbers (`ms`, `RPS`, `GB/day`).
-2. **Stage 2 — Back-of-the-Envelope Capacity Math**:
+2. **Stage 2 — Back-of-the-Envelope Capacity & Hardware Math**:
    - **Throughput**: $\text{Peak RPS} = \frac{\text{DAU} \times \text{Actions/User}}{86,400} \times \text{Peak Multiplier (3–5x)}$
    - **Storage**: $\text{Bytes/Year} = \text{Events/Day} \times \text{Row Bytes} \times 365 \times \text{Replication Factor (3)}$
    - **GPU / KV-Cache Math**: $\text{KV\_Bytes/Token} = 2 \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times \text{bytes\_per\_param}$ (or compressed $d_c$ under DeepSeek MLA).
@@ -34,12 +35,12 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
 3. **Stage 3 — The Day-0 Monolith Baseline**: Formulate the simplest working implementation on a single vertically scaled instance ($64\text{ vCPU}, 256\text{ GB RAM}, \text{NVMe SSD}$ + PostgreSQL/MySQL) with blunt pseudocode and SQL. Prove numerically where the single node saturates before adding distributed components.
 4. **Stage 4 — Sketch-to-Scale Iterative Evolution**: Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (*Push vs. Pull, Dense vs. Sparse, Overwrite vs. Append-Only, Hard vs. Soft Delete, Global vs. Local Lock, Pessimistic vs. Optimistic, Inline vs. Async, B+ Tree vs. LSM/Bitcask, Offset vs. Cursor Pagination*).
 5. **Stage 5 — Implementation-Grade Specifications**: Write copy-pasteable `CREATE TABLE` schemas with composite covering indexes, explicit SQL locking clauses, Redis Lua scripts, AI serving pipelines, and binary record layouts.
-6. **Stage 6 — The 50-Point Master Red-Team Audit**: Run the 50-Point Audit against the design to surface and fix subtle failure modes.
+6. **Stage 6 — The 55-Point Master Red-Team Audit**: Run the 55-Point Audit against the design to surface and fix subtle failure modes.
 
 ---
 
 ### Mode B: Real-Codebase Implementation, PR Review & Production Debugging
-*Activate when the user is writing backend/AI code, SQL migrations, API handlers, reviewing a PR, or debugging production bottlenecks inside an existing repository.*
+*Activate when the user is writing backend/AI/JAX code, SQL migrations, API handlers, reviewing a PR, or debugging production bottlenecks inside an existing repository.*
 **Do NOT stall with abstract whiteboard questions when the code is in front of you.** Inspect the code, SQL queries, migrations, and configs directly and enforce these **10 Non-Negotiable Production Codebase Laws**:
 
 1. **Zero Network I/O Inside Database Transactions**:
@@ -74,10 +75,11 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
      ORDER BY created_at DESC, id DESC LIMIT 50
      ```
    - Design composite indexes with **Equality columns first, Range/Sort columns second, and Covered `SELECT` columns included** so queries execute as **Index-Only Scans** (`0` heap fetches).
-8. **Multi-Tenant Security, BOLA Prevention, AI Sandboxes & Semantic Cache Isolation**:
-   - Include `tenant_id` in composite primary keys (`PRIMARY KEY (tenant_id, id)`) and Row-Level Security (RLS) policies to prevent Cross-Tenant IDOR/BOLA leaks.
-   - In AI/Vector RAG systems, namespace Semantic Cache keys by `(tenant_id, user_id, permission_scope_hash, model_version)` and use single-stage payload-aware HNSW pre-filtering so post-filtering never returns 0 results.
-   - Execute untrusted LLM-generated code strictly inside **Firecracker MicroVMs** (never shared Docker containers) and block egress to RFC1918 private IPs and `169.254.169.254` cloud metadata endpoints.
+8. **AI Prefix-Cache Layout, Multi-Agent Isolation, JAX Static Shapes & Firecracker Sandboxes**:
+   - Structure LLM prompts strictly from **Frozen Static Prefix $\to$ Canonically Sorted Tool Schemas (`sort_keys=True`) $\to$ Dynamic Suffix** (never place `now()` at the top of the system prompt, which destroys KV prefix caching).
+   - Isolate multi-agent sub-tasks in separate context windows returning $\le 500$-token structured summaries + artifact paths, and isolate concurrent coding subagents in separate **Git Worktrees (`git worktree add`)**.
+   - In JAX/XLA (`@jax.jit`) and `torch.compile`, pad variable-length inputs to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` to prevent 30s per-request recompilation stalls, and never call `float(loss)` synchronously inside the step loop.
+   - Execute untrusted LLM-generated code strictly inside **Firecracker MicroVMs** blocking egress to RFC1918 and `169.254.169.254`.
 9. **Observability Cardinality Cap & Non-Blocking Logging**:
    - Never place unbounded high-cardinality IDs (`user_id`, `order_id`, `email`, raw un-templated URL paths) in Prometheus/Datadog metric labels (cap metric label combinations at $< 1,000$; put high-cardinality attributes in structured logs, trace spans, or exemplars).
 10. **Container Runtime Memory Bounds, gRPC L7 Routing & K8s `SIGTERM` Drain**:
@@ -87,13 +89,23 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
 
 ---
 
-## The 50-Point Master Red-Team Audit
+## Uncharted-Domain Deep-Research Fallback Protocol (When Modules 01–28 Are Not Enough)
 
-Every proposed architecture or production code review MUST be audited against these 50 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
+If the user asks to design or debug a specialized domain not explicitly covered in Modules 01–28 (e.g., *FPGA/DPDK kernel-bypass trading, LEO satellite routing, ROS2 robotics control loops, quantum HSM custody, or a brand-new post-cutoff AI architecture*), **NEVER bluff or fall back to generic textbook fluff**:
+1. **Anchor to the 5 Hardware & Physics Invariants**: Bound the problem using Compute/Memory Hierarchy (SRAM $\to$ HBM/DRAM $\to$ NVMe $\to$ NIC), Bandwidth/Latency Floor, Contention Profile, Crash Recovery/WAL, and Failure Blast Radius.
+2. **Formulate & Execute Surgical Deep-Research Queries**: Generate 3–5 targeted queries for primary engineering literature (OSDI/SOSP/MLSys papers, RFCs, Linux kernel docs, or architecture postmortems) and execute web/codebase research immediately (or present the exact research queries if offline).
+3. **Synthesize in Sketch-to-Scale Format**: Build `Attempt 1 (Blunt Baseline + Code/Math) -> Exact Bottleneck -> Attempt 2 -> Final Production Design` plus at least **3 Critical Hidden Edge Cases**.
+4. **Offer to Persist**: Offer to append the newly synthesized architecture as **Module 29** in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md).
+
+---
+
+## The 55-Point Master Red-Team Audit
+
+Every proposed architecture or production code review MUST be audited against these 55 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
 
 1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle the load?
 2. **Unquantified Words**: Did any *"fast"*, *"huge"*, or *"scalable"* slip through without concrete `ms`/`RPS`/`GB` numbers?
-3. **Network-Call-Inside-Transaction**: Does any DB transaction hold locks across an HTTP/gRPC/SQS/Kafka/Redis network call?
+3. **Network-Call-Inside-Transaction**: Does any DB transaction hold locks across an HTTP/gRPC/LLM/SQS/Kafka/Redis network call?
 4. **Single-Statement Transaction**: Are standalone `INSERT`/`UPDATE` statements wrapped in unnecessary explicit `BEGIN...COMMIT` blocks?
 5. **Unbounded DELETE Trap**: Are hard deletes executed inline, or soft-deletes scanned without composite indexes and `ORDER BY id ASC LIMIT 100` reapers?
 6. **Upsert & Index**: Is `INSERT ... ON DUPLICATE KEY UPDATE` used instead of `REPLACE INTO`, backed by composite/covering indexes?
@@ -141,12 +153,17 @@ Every proposed architecture or production code review MUST be audited against th
 48. **Generative Media (Meta Muse / Diffusion) Queue & S-LoRA Paging**: Are image/video jobs decoupled via priority token-bucket GPU queues, using S-LoRA dynamic adapter paging in HBM and evaluating parallel masked token decoding (Meta Muse) for sub-second generation/inpainting?
 49. **ML RecSys 4-Stage Funnel & Time-Travel Leakage**: Does ranking use a 4-stage cascade (`Two-Tower ANN -> Pre-Rank -> Multi-Task DLRM/MMoE -> DPP Diversity`) and log features at inference time (`request_impression_id`) to eliminate Training-Serving Skew?
 50. **Autonomous Agent Checkpoints & Firecracker Sandbox**: Do multi-step agents checkpoint state before every tool call with idempotency keys, and execute untrusted code inside Firecracker MicroVMs blocking RFC1918 and `169.254.169.254`?
+51. **Prompt Prefix-Cache Alignment & Deterministic Tool Keys**: Are prompts ordered strictly from Frozen Static Prefix $\to$ Sorted Tool Schemas (`sort_keys=True`) $\to$ Dynamic Suffix (never placing `now()` at the top of the system prompt)?
+52. **Constrained Decoding FSM Whitespace & Complexity Cascade**: Are grammar-masked JSON decoders (`XGrammar`/`Outlines`) bounded against infinite `\n` whitespace loops, and does a lightweight router cascade simple queries to small quantized models first?
+53. **Multi-Agent Context Isolation & Git Worktree Sandboxes**: Do subagents run in isolated context windows returning $\le 500$-token structured summaries + artifact paths (never dumping raw scratchpads), and do parallel coding agents use separate Git Worktrees?
+54. **JAX / XLA Dynamic-Shape Recompilation & Host-Sync Barriers**: Are inputs to `@jax.jit` / `torch.compile` padded to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` (preventing 30s per-request recompilations), with zero `float(loss)` host syncs in the step loop?
+55. **4D Parallelism NVLink Boundary & Two-Phase Async Checkpointing**: Is Tensor Parallelism ($TP=8$) kept strictly inside single-node NVLink ($900\text{ GB/s}$) while $PP/EP/FSDP$ run over InfiniBand, with $<1\text{s}$ HBM-to-Pinned-Host-RAM async checkpointing?
 
 ---
 
-## The 27 Core Knowledge Modules
+## The 28 Core Knowledge Modules
 
-Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for full mathematical proofs, schemas, and failure traces across all 27 modules:
+Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for full mathematical proofs, schemas, and failure traces across all 28 modules:
 
 | Module | Architectural Domain | Key Production Patterns & Internals |
 |:---:|---|---|
@@ -176,4 +193,5 @@ Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for 
 | **24** | **Vector DBs, Hybrid RAG & LLM Engines** | HNSW & Binary Quantization, Hybrid RRF + Cross-Encoder, KV-Cache math, PagedAttention & RadixAttention |
 | **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
 | **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
-| **27** | **Frontier AI, DeepSeek, Meta Muse & RecSys** | DeepSeek MLA ($93\%$ KV reduction), Auxiliary-Loss-Free MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel generation, 4-stage RecSys & Firecracker Agent VMs |
+| **27** | **Frontier AI Part 1: Decision APIs, DeepSeek, Meta Muse & RecSys** | Prefix-cache prompt layout, FSM JSON decoding, DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse parallel tokens, 4-stage RecSys |
+| **28** | **Frontier AI Part 2: Multi-Agent DAGs, JAX/XLA & GPU Clusters** | Context-isolated subagents, Git worktree sandboxes, JAX/XLA HLO fusion & static shape buckets, 4D Parallelism & two-phase async checkpoints |

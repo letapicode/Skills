@@ -10,8 +10,8 @@
 [![Compatible with Antigravity / Gemini](https://img.shields.io/badge/Antigravity%20%2F%20Gemini-Compatible-ea4335.svg)]()
 [![Live Documentation](https://img.shields.io/badge/Live%20Docs-GitHub%20Pages-success.svg)](https://OWNER.github.io/SystemDesignSkill/)
 
-> **Transform any AI coding assistant into a Staff/Principal Systems & AI Architect—for Distributed Systems, Frontier AI Infrastructure, and Real Production Codebases at Million-User Scale.**  
-> Grounded in **27 production-grade distributed & AI systems modules**, first-principles capacity math, Day-0 monolith baselines, and an exhaustive **50-point red-team audit**.
+> **Transform any AI coding assistant into a self-evolving Staff/Principal Systems & AI Architect—for Distributed Systems, Frontier AI/Multi-Agent/JAX Infrastructure, and Real Production Codebases at Million-User Scale.**  
+> Grounded in **28 production-grade distributed & AI systems modules**, first-principles capacity math, Day-0 monolith baselines, an **Uncharted-Domain Deep-Research Fallback**, a **Future-Model Self-Upgrade Engine**, and an exhaustive **55-point red-team audit**.
 >
 > 📖 **Read the live web documentation**: [System Design Master Brain on GitHub Pages](https://OWNER.github.io/SystemDesignSkill/)
 
@@ -19,22 +19,23 @@
 
 ## Why System Design Master Brain?
 
-Standard AI models fail at real-world systems and AI engineering in two predictable ways:
-1. **In Architecture & AI Design Mode**: They draw hand-wavy microservice and Kafka box diagrams on Day 0 without calculating bytes, GPU HBM / KV-Cache footprints, IOPS, connection pool limits, or proving why a single vertical RDBMS node saturates.
-2. **In Real Codebases**: They write naive SQL migrations that trigger metadata-lock outages, place external HTTP/LLM calls inside DB transactions, stack $3^4 = 81\times$ retry storms, leak high-cardinality labels into Prometheus, and drop in-flight requests during Kubernetes rolling restarts.
+Standard AI models fail at real-world systems and AI engineering in three predictable ways:
+1. **In Architecture & AI Design Mode**: They draw hand-wavy microservice and multi-agent box diagrams on Day 0 without calculating bytes, GPU HBM / KV-Cache footprints, SRAM vs. HBM roofline limits, IOPS, or proving why a single vertical RDBMS node saturates.
+2. **In Real Codebases**: They write naive SQL migrations that trigger metadata-lock outages, place external HTTP/LLM calls inside DB transactions, pass dynamic shapes to `@jax.jit` (triggering 30s XLA recompilation freezes), stack $3^4 = 81\times$ retry storms, and drop in-flight requests during Kubernetes rolling restarts.
+3. **In Uncharted or Post-Cutoff Domains**: When asked about a specialized domain outside their static templates, they hallucinate vague textbook summaries instead of formulating targeted primary-literature research queries and deriving the design from hardware physics invariants.
 
-**System Design Master Brain** fixes both by embedding a **Dual-Mode Principal Systems & AI Architect Engine** into your AI tools:
+**System Design Master Brain** fixes all three by embedding a **Self-Evolving Dual-Mode Principal Systems & AI Architect Engine** into your AI tools:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
 │ MODE A: Architecture, Distributed Systems & Frontier AI RFCs               │
 ├────────────────────────────────────────────────────────────────────────────┤
 │ [1. Socratic Interrogation] ──▶ Force qualitative words into P99 ms & RPS  │
-│ [2. Capacity & GPU Math]    ──▶ Compute RAM, KV-Cache, IOPS & Ports        │
+│ [2. Capacity & GPU Math]    ──▶ Compute RAM, KV-Cache, SRAM/HBM & Ports    │
 │ [3. Day-0 Monolith]         ──▶ Prove single-node limits before sharding   │
 │ [4. Sketch-to-Scale]        ──▶ Attempt 1 ──▶ Bottleneck ──▶ Production    │
-│ [5. Implementation Depth]   ──▶ SQL, Lua, DeepSeek MLA/MoE, Meta Muse, RAG │
-│ [6. 50-Point Red-Team Audit]──▶ Audit for split-brain, stampedes & races   │
+│ [5. Implementation Depth]   ──▶ SQL, Lua, DeepSeek, Meta Muse, Multi-Agent │
+│ [6. 55-Point Red-Team Audit]──▶ Audit for split-brain, stampedes & races   │
 └────────────────────────────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -44,8 +45,17 @@ Standard AI models fail at real-world systems and AI engineering in two predicta
 │ • Canonical lock ordering (ORDER BY id ASC FOR UPDATE) & SKIP LOCKED       │
 │ • Lease-backed idempotency keys (locked_until + SHA-256 parameter check)   │
 │ • Zero-downtime DDL migrations (SET lock_timeout='2s', Expand-Contract)    │
-│ • Single-layer Full-Jitter retries + 10% retry budget + LIFO/CoDel queues  │
+│ • Prefix-cache prompt alignment, Git worktree agent isolation & JAX buckets│
 │ • Postgres MVCC HOT updates (fillfactor=80), PgBouncer & K8s SIGTERM drain │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ LIVING BACKBONE: Deep-Research Fallback & Future-Model Self-Evolution      │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Uncharted Domain? Formulates 3-5 surgical SOSP/OSDI/MLSys research       │
+│   queries & synthesizes a Sketch-to-Scale architecture from physics laws   │
+│ • New Frontier Model Released? Built-in Self-Upgrade Prompt audits and     │
+│   evolves the entire playbook & re-syncs all IDE rules with zero fluff     │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -69,7 +79,7 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 1. Installs the global skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
 2. Installs the global skill & `AGENTS.md` for **OpenAI Codex CLI** (`~/.codex/skills/system-design-master-brain/` and `~/.codex/AGENTS.md`).
 3. Installs the global skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
-4. If run inside a project repository, installs **OpenAI Codex / OpenCode / Aider / Devin** (`AGENTS.md`), **GitHub Copilot** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **DeepSeek / Llama / Cline / Roo Code** (`.clinerules`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 27-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
+4. If run inside a project repository, installs **OpenAI Codex / OpenCode / Aider / Devin** (`AGENTS.md`), **GitHub Copilot** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **DeepSeek / Llama / Cline / Roo Code** (`.clinerules`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 28-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
 
 ---
 
@@ -85,13 +95,13 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 | **Codeium Windsurf IDE** | Copy `.windsurfrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Cursor** | Copy `.cursorrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Antigravity / Gemini** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.gemini/antigravity/skills/system-design-master-brain/` |
-| **ChatGPT / Claude.ai / DeepSeek Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
+| **ChatGPT / Claude.ai / DeepSeek Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste one of the [3 Ready-to-Use Prompts](#-3-ready-to-use-prompts-daily-use-deep-research--future-model-self-upgrade) |
 
 ---
 
-## 📚 The 27 Core Architecture, AI & Production Modules
+## 📚 The 28 Core Architecture, AI & Production Modules
 
-The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and hidden failure modes across **27 architectural pillars**:
+The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and hidden failure modes across **28 architectural pillars**:
 
 | Module | Architectural Domain | Core Topics, Schemas & Hidden Edge Cases |
 |:---:|---|---|
@@ -121,16 +131,17 @@ The master brain contains complete end-to-end specifications, schemas, mathemati
 | **24** | **Vector DBs, Hybrid RAG & LLM Engines** | HNSW & Binary Quantization, Hybrid RRF + Cross-Encoder, KV-Cache math, vLLM PagedAttention & RadixAttention |
 | **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
 | **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
-| **27** | **Frontier AI, DeepSeek, Meta Muse & RecSys** | DeepSeek MLA ($93\%$ KV compression), Auxiliary-Loss-Free MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel generation, 4-stage RecSys & Firecracker Agent VMs |
+| **27** | **Frontier AI Part 1: Decision APIs, DeepSeek, Meta Muse & RecSys** | Prefix-cache prompt layout, FSM JSON decoding, DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse parallel tokens, 4-stage RecSys |
+| **28** | **Frontier AI Part 2: Multi-Agent DAGs, JAX/XLA & GPU Clusters** | Context-isolated subagents, Git worktree sandboxes, JAX/XLA HLO fusion & static shape buckets, 4D Parallelism & two-phase async checkpoints |
 
 ---
 
-## 🛡 The 50-Point Master Red-Team Audit
+## 🛡 The 55-Point Master Red-Team Audit
 
-Before any system design or production pull request is approved, the AI audits it against 50 real-world failure modes:
+Before any system design or production pull request is approved, the AI audits it against 55 real-world failure modes:
 
 <details>
-<summary><b>Click to expand all 50 Red-Team Audit Checks</b></summary>
+<summary><b>Click to expand all 55 Red-Team Audit Checks</b></summary>
 
 ### Core Architecture, SQL & Storage Checks (1–30)
 1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle it?
@@ -181,44 +192,93 @@ Before any system design or production pull request is approved, the AI audits i
 44. **Container OOMKill & K8s CPU Throttling**: Is runtime memory capped at $80\text{–}85\%$ (`GOMEMLIMIT` / `MaxRAMPercentage`) and K8s CPU `limits` throttling avoided?
 45. **Kubernetes `SIGTERM` 502 Drain Race**: On `SIGTERM`, does the app fail `/readyz`, sleep $5\text{–}10\text{s}$ while continuing to serve traffic, and then drain connections?
 
-### Frontier AI, DeepSeek MoE/MLA, Generative Media & ML RecSys Checks (46–50)
+### Frontier AI, DeepSeek MoE/MLA, Generative Media, Multi-Agent & JAX/XLA Checks (46–55)
 46. **Disaggregated Prefill-vs-Decode & KV-Cache Math**: Are compute-bound Prefill nodes separated from bandwidth-bound Decode nodes (with RDMA KV transfer + MLA/GQA + PagedAttention/RadixAttention) so long prompts never stall active streaming users?
 47. **MoE Expert Load-Balancing & Long-CoT Offloading**: Does MoE serving/training use Auxiliary-Loss-Free dynamic bias routing to prevent GPU expert hotspots, and does long Chain-of-Thought reasoning (`R1`/`o1`) offload KV cache to Host DRAM?
 48. **Generative Media (Meta Muse / Diffusion) Queue & S-LoRA Paging**: Are image/video jobs decoupled via priority token-bucket GPU queues, using S-LoRA dynamic adapter paging in HBM and evaluating parallel masked token decoding (Meta Muse) for sub-second generation/inpainting?
 49. **ML RecSys 4-Stage Funnel & Time-Travel Leakage**: Does ranking use a 4-stage cascade (`Two-Tower ANN -> Pre-Rank -> Multi-Task DLRM/MMoE -> DPP Diversity`) and log features at inference time (`request_impression_id`) to eliminate Training-Serving Skew?
 50. **Autonomous Agent Checkpoints & Firecracker Sandbox**: Do multi-step agents checkpoint state before every tool call with idempotency keys, and execute untrusted code inside Firecracker MicroVMs blocking RFC1918 and `169.254.169.254`?
+51. **Prompt Prefix-Cache Alignment & Deterministic Tool Keys**: Are prompts ordered strictly from Frozen Static Prefix $\to$ Sorted Tool Schemas (`sort_keys=True`) $\to$ Dynamic Suffix (never placing `now()` at the top of the system prompt)?
+52. **Constrained Decoding FSM Whitespace & Complexity Cascade**: Are grammar-masked JSON decoders (`XGrammar`/`Outlines`) bounded against infinite `\n` whitespace loops, and does a lightweight router cascade simple queries to small quantized models first?
+53. **Multi-Agent Context Isolation & Git Worktree Sandboxes**: Do subagents run in isolated context windows returning $\le 500$-token structured summaries + artifact paths (never dumping raw scratchpads), and do parallel coding agents use separate Git Worktrees?
+54. **JAX / XLA Dynamic-Shape Recompilation & Host-Sync Barriers**: Are inputs to `@jax.jit` / `torch.compile` padded to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` (preventing 30s per-request recompilations), with zero `float(loss)` host syncs in the step loop?
+55. **4D Parallelism NVLink Boundary & Two-Phase Async Checkpointing**: Is Tensor Parallelism ($TP=8$) kept strictly inside single-node NVLink ($900\text{ GB/s}$) while $PP/EP/FSDP$ run over InfiniBand, with $<1\text{s}$ HBM-to-Pinned-Host-RAM async checkpointing?
 
 </details>
 
 ---
 
-## 📋 Copy-Paste System Prompt (For Raw Chat Interfaces)
+## 📋 3 Ready-to-Use Prompts: Daily Use, Deep Research & Future-Model Self-Upgrade
 
-If you are using ChatGPT, Claude.ai, DeepSeek, or another web LLM interface, attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:
+### Prompt 1: Daily Principal Systems & AI Architect Session Prompt
+*Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:*
 
 ```markdown
-You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (27 Modules & 50-Point Red-Team Audit).
+You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (28 Modules & 55-Point Red-Team Audit).
 Operate in Dual Mode depending on my request:
 
 MODE A — SYSTEM DESIGN, AI INFRASTRUCTURE & ARCHITECTURE RFCs:
 1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions (Workload Ratio, Peak Concurrency vs. Total Volume, P99/TTFT/ITL SLA, Consistency model, Blast radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
-2. CAPACITY & GPU MATH: Compute exact RAM, GPU HBM / KV-Cache Bytes, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database, serving cluster, or sharding strategy.
+2. CAPACITY & HARDWARE MATH: Compute exact RAM, GPU HBM / KV-Cache Bytes, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database, serving cluster, or sharding strategy.
 3. DAY-0 MONOLITH BASELINE: Formulate the simplest working implementation on a single vertical RDBMS instance with blunt SQL and pseudocode. Calculate the exact numerical threshold where it breaks.
 4. SKETCH-TO-SCALE EVOLUTION: Walk through Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Architecture using the Framework of Opposites.
-5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite covering indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis Lua scripts, AI serving architectures (DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel decoding, 4-stage RecSys funnel, Firecracker agent sandboxes), and idempotency guarantees.
+5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite covering indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis Lua scripts, AI/compiler architectures (DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel decoding, Multi-Agent worktree DAGs, JAX/XLA static shape bucketing), and idempotency guarantees.
+6. UNCHARTED-DOMAIN DEEP-RESEARCH FALLBACK: If my problem involves a domain not covered in Modules 01–28, execute the Part VI Deep-Research Protocol—formulate surgical research queries for primary systems papers/specs, anchor to hardware physics invariants, and synthesize a zero-fluff Sketch-to-Scale architecture.
 
 MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
 - Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
-- Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
+- Enforce: zero network/LLM calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), JAX/XLA static shape padding, and graceful K8s SIGTERM drain.
 
-6. 50-POINT RED-TEAM AUDIT: Conclude every design or code review by auditing it against the 50-Point Red-Team Checklist from the playbook.
+7. 55-POINT RED-TEAM AUDIT: Conclude every design or code review by auditing it against the 55-Point Red-Team Checklist from the playbook.
+```
+
+---
+
+### Prompt 2: The "Uncharted Domain" Deep-Research & First-Principles Synthesis Prompt
+*Use this when your project involves a specialized domain not covered in Modules 01–28 (e.g., FPGA/DPDK kernel-bypass trading, satellite mesh networking, ROS2 robotics, or a brand-new hardware/AI paradigm):*
+
+```markdown
+I need to design or debug a system in a specialized domain: [DESCRIBE YOUR SYSTEM / PROBLEM HERE].
+
+Do NOT give me a generic textbook overview or buzzword summary. Execute the Part VI Uncharted-Domain Deep-Research Protocol from `SYSTEM_DESIGN_MASTER_BRAIN.md`:
+1. Map my problem onto the 5 Hardware & Physics Invariants (Compute/Memory Hierarchy, Bandwidth/Latency Floor, Contention Profile, Crash Recovery/Durability, and Blast Radius).
+2. Identify what specific internal mechanics, protocols, or hardware constraints are not covered in Modules 01–28, formulate 3–5 surgical deep-research queries targeting primary systems literature (OSDI/SOSP/MLSys papers, RFCs, kernel specs, engineering postmortems), and run deep research (or tell me what to fetch if offline).
+3. Build the complete design from first principles using the Sketch-to-Scale progression:
+   - Attempt 1 (Blunt Day-0 Baseline + exact pseudocode/math) -> Exact numerical bottleneck -> Attempt 2 -> Final Production Architecture.
+4. Surface at least 5 extreme, non-obvious production edge cases (race conditions, crash-in-the-middle, hardware/kernel traps) and their exact fixes.
+5. Format the output so it can be appended directly as a new Module in `SYSTEM_DESIGN_MASTER_BRAIN.md`.
+```
+
+---
+
+### Prompt 3: The "New Frontier Model" Self-Upgrade & Playbook Evolution Prompt
+*Whenever a newer, smarter AI model is released in the future, run this prompt inside the `SystemDesignSkill` repo so the new model upgrades the entire playbook automatically:*
+
+```markdown
+You are running as a new frontier AI model tasked with upgrading the `SystemDesignSkill` repository so it remains the gold-standard Principal Systems & AI Architect brain.
+
+Follow these strict rules:
+1. READ & AUDIT THE ENTIRE REPOSITORY:
+   - Read `SYSTEM_DESIGN_MASTER_BRAIN.md` and `SKILL.md` completely.
+2. IDENTIFY HIGH-VALUE UPGRADES (ZERO FLUFF / ZERO BULLSHIT RULE):
+   - Compare the 28 modules and 55 red-team checks against your latest engineering knowledge, new hardware generations (GPUs/TPUs/NICs/NVMe), new database/storage internals, new compiler/runtime mechanics, and new AI/agent architectures.
+   - NEVER add vague buzzwords, marketing summaries, or high-level filler. Every addition MUST include:
+     a) Concrete capacity/latency math and hardware numbers.
+     b) Sketch-to-Scale evolution (`Attempt 1 -> Exact Bottleneck -> Attempt 2 -> Production Fix`).
+     c) Copy-pasteable SQL, Lua, kernel/compiler config, or pseudocode.
+     d) Non-obvious "Critical Hidden Edge Cases & Failure Modes" (race conditions, OOMs, split-brain, silent corruption) and their exact production fixes.
+   - Strictly preserve 100% anonymity: never include personal names, company-internal proprietary secrets, or local filesystem paths.
+3. SYNCHRONIZE ALL AGENT FILES & STATIC WEB READER:
+   - Update `SYSTEM_DESIGN_MASTER_BRAIN.md` with the new modules/edge cases and increment the Red-Team Audit checklist.
+   - Propagate the updated rules and audit checklist to `SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`, `README.md`, `install.sh`, and `install.ps1`.
+   - Re-render the static `index.html` from `SYSTEM_DESIGN_MASTER_BRAIN.md` so GitHub Pages loads in 0ms with all new modules and TOC links intact.
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from systems and AI engineers worldwide! Please see our [Contributing Guide](CONTRIBUTING.md) for details on proposing new modules (Module 28+), production benchmarks, and failure modes.
+We welcome contributions from systems and AI engineers worldwide! Please see our [Contributing Guide](CONTRIBUTING.md) for details on proposing new modules (Module 29+), production benchmarks, and failure modes.
 
 ---
 

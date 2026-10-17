@@ -76,12 +76,12 @@ if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml
     fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "./SYSTEM_DESIGN_MASTER_BRAIN.md"
     mkdir -p "./.github"
     fetch_file ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
-    echo -e "${GREEN}✔ Installed workspace rules & 27-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
+    echo -e "${GREEN}✔ Installed workspace rules & 28-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
 fi
 
 echo ""
-echo -e "${GREEN}${BOLD}Installation Complete! (27 Modules + 50-Point Red-Team Audit Active)${NC}"
+echo -e "${GREEN}${BOLD}Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)${NC}"
 echo -e "You can now ask your AI coding assistant (Codex, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 echo -e "  ${YELLOW}\"Design a distributed rate limiter or LLM inference engine with P99 < 50ms.\"${NC}"
-echo -e "  ${YELLOW}\"Audit this codebase / PR using the 50-Point Red-Team Checklist.\"${NC}"
+echo -e "  ${YELLOW}\"Audit this codebase / PR using the 55-Point Red-Team Checklist.\"${NC}"
 echo ""
