@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Design Master Brain — The Definitive Distributed Systems Playbook</title>
-    <meta name="description" content="A battle-tested distributed systems playbook for Principal Systems Architects and AI Agents. 25 Production Modules, First-Principles Capacity Math, and a 30-Point Red-Team Audit.">
+    <meta name="description" content="A battle-tested distributed systems playbook for Principal Systems Architects and AI Agents. 26 Production Modules, Dual-Mode Codebase Enforcement, First-Principles Capacity Math, and a 45-Point Red-Team Audit.">
     <meta name="keywords" content="System Design, Distributed Systems, Software Architecture, High Concurrency, Microservices, Database Internals, Red-Team Audit">
     <meta property="og:title" content="System Design Master Brain">
-    <meta property="og:description" content="The definitive distributed systems playbook for Principal Architects & AI Agents.">
+    <meta property="og:description" content="The definitive distributed systems playbook for Principal Architects & AI Agents (26 Modules & 45-Point Red-Team Audit).">
     <meta property="og:type" content="website">
 
     <!-- Google Fonts: Inter & JetBrains Mono -->
@@ -63,7 +63,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
 
     <style>
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -79,7 +78,6 @@
             background: rgba(100, 116, 139, 1);
         }
 
-        /* Typography & Prose Styling */
         .markdown-body {
             color: #cbd5e1;
             font-size: 1.03rem;
@@ -217,7 +215,6 @@
             color: #93c5fd;
         }
 
-        /* Light Mode Overrides */
         html:not(.dark) {
             background: #f8fafc;
         }
@@ -279,7 +276,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="font-extrabold text-slate-100 tracking-tight text-lg group-hover:text-brand-400 transition-colors">System Design Master Brain</span>
-                            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20">v2.5</span>
+                            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20">v3.0 Dual-Mode</span>
                         </div>
                     </div>
                 </a>
@@ -333,7 +330,7 @@
                             Core Architecture Protocol
                         </h4>
                         <ul class="space-y-1 text-slate-400">
-                            <li><a href="#part-i-core-operating-protocol-the-socratic-interrogator" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors">Socratic Interrogator</a></li>
+                            <li><a href="#part-i-core-operating-protocol-the-socratic-interrogator" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors">Socratic Interrogator & Dual Mode</a></li>
                             <li><a href="#part-ii-the-framework-of-opposites-generator-matrix" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors">Framework of Opposites</a></li>
                             <li><a href="#part-iii-master-decision-flow-routing-engine" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors">Decision-Flow Routing Engine</a></li>
                         </ul>
@@ -343,9 +340,9 @@
                         <div class="flex items-center justify-between mb-2.5">
                             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan"></span>
-                                The 25 Modules
+                                The 26 Modules
                             </h4>
-                            <span class="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">25</span>
+                            <span class="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">26</span>
                         </div>
                         <ul class="space-y-1 text-slate-400" id="module-links-list">
                             
@@ -464,8 +461,8 @@
             </a>
           </li>
           <li>
-            <a href="#module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
-              <span class="truncate group-hover:text-brand-400 font-medium">M20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading & Jitter)</span>
+            <a href="#module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter-load-shedding" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
+              <span class="truncate group-hover:text-brand-400 font-medium">M20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading, Jitter & Load Shedding)</span>
               <span class="text-[10px] text-slate-500 font-mono">#20</span>
             </a>
           </li>
@@ -488,8 +485,8 @@
             </a>
           </li>
           <li>
-            <a href="#module-24-vector-databases-ai-infrastructure-hnsw-semantic-caches" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
-              <span class="truncate group-hover:text-brand-400 font-medium">M24: Vector Databases & AI Infrastructure (HNSW & Semantic Caches)</span>
+            <a href="#module-24-vector-databases-ai-infrastructure-hnsw-rag-semantic-caches" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
+              <span class="truncate group-hover:text-brand-400 font-medium">M24: Vector Databases & AI Infrastructure (HNSW, RAG & Semantic Caches)</span>
               <span class="text-[10px] text-slate-500 font-mono">#24</span>
             </a>
           </li>
@@ -497,6 +494,12 @@
             <a href="#module-25-service-mesh-modern-rpc-grpc-vs-graphql-vs-rest" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
               <span class="truncate group-hover:text-brand-400 font-medium">M25: Service Mesh & Modern RPC (gRPC vs. GraphQL vs. REST)</span>
               <span class="text-[10px] text-slate-500 font-mono">#25</span>
+            </a>
+          </li>
+          <li>
+            <a href="#module-26-production-codebase-engineering-zero-downtime-migrations-db-engine-physics-runtime-mechanics" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between text-xs group">
+              <span class="truncate group-hover:text-brand-400 font-medium">M26: Production Codebase Engineering — Zero-Downtime Migrations, DB Engine Physics & Runtime Mechanics</span>
+              <span class="text-[10px] text-slate-500 font-mono">#26</span>
             </a>
           </li>
                         </ul>
@@ -508,8 +511,8 @@
                             Auditing & Installation
                         </h4>
                         <ul class="space-y-1 text-slate-400">
-                            <li><a href="#part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-30-point-audit" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between">
-                                <span>30-Point Red-Team Audit</span>
+                            <li><a href="#part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-45-point-audit" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors flex items-center justify-between">
+                                <span>45-Point Red-Team Audit</span>
                                 <span class="text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 px-1 rounded">Critical</span>
                             </a></li>
                             <li><a href="#part-vi-copy-paste-system-prompt-for-any-ai-session" class="nav-item block px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800/60 transition-colors">Copy-Paste AI Prompt</a></li>
@@ -526,28 +529,28 @@
             <!-- Hero Header -->
             <div class="pb-8 mb-8 border-b border-darkborder">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 border border-brand-500/20 text-brand-400 mb-4">
-                    <span>⚡ Staff & Principal Systems Architect Playbook</span>
+                    <span>⚡ Staff & Principal Systems Architect Playbook (Dual-Mode: RFCs + Real Codebases)</span>
                 </div>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
                     System Design Master Brain
                 </h1>
                 <p class="text-lg text-slate-400 max-w-4xl leading-relaxed">
                     The definitive, battle-tested distributed systems encyclopedia for Principal Architects and AI Agents.
-                    No hand-wavy box diagrams. Grounded in first-principles capacity math, Day-0 monolith baselines, exact relational schemas, and an exhaustive 30-point red-team audit.
+                    No hand-wavy box diagrams. Grounded in first-principles capacity math, Day-0 monolith baselines, zero-downtime migrations, exact relational schemas, and an exhaustive 45-point red-team audit.
                 </p>
 
                 <!-- 4 Quick Stats -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
                     <div class="bg-darkcard border border-darkborder rounded-xl p-4">
-                        <div class="text-2xl font-extrabold text-brand-400">25</div>
+                        <div class="text-2xl font-extrabold text-brand-400">26</div>
                         <div class="text-xs text-slate-400 mt-1">Distributed Pillars</div>
                     </div>
                     <div class="bg-darkcard border border-darkborder rounded-xl p-4">
-                        <div class="text-2xl font-extrabold text-emerald-400">30</div>
+                        <div class="text-2xl font-extrabold text-emerald-400">45</div>
                         <div class="text-xs text-slate-400 mt-1">Red-Team Audit Points</div>
                     </div>
                     <div class="bg-darkcard border border-darkborder rounded-xl p-4">
-                        <div class="text-2xl font-extrabold text-accent-cyan">100+</div>
+                        <div class="text-2xl font-extrabold text-accent-cyan">150+</div>
                         <div class="text-xs text-slate-400 mt-1">Concrete Edge Cases</div>
                     </div>
                     <div class="bg-darkcard border border-darkborder rounded-xl p-4">
@@ -583,11 +586,11 @@
 
             <!-- PRE-RENDERED Markdown Body (Instant 0ms Load!) -->
             <article id="article-content" class="markdown-body">
-                <h1 id="system-design-master-brain-principal-architect-reasoning-engine-socratic-interrogator-16-module-pattern-playbook" class="scroll-mt-20 group relative">
-        <a href="#system-design-master-brain-principal-architect-reasoning-engine-socratic-interrogator-16-module-pattern-playbook" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 16-Module Pattern Playbook
+                <h1 id="system-design-master-brain-principal-architect-reasoning-engine-socratic-interrogator-26-module-pattern-playbook" class="scroll-mt-20 group relative">
+        <a href="#system-design-master-brain-principal-architect-reasoning-engine-socratic-interrogator-26-module-pattern-playbook" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 26-Module Pattern Playbook
       </h1><blockquote>
-<p><strong>How to Use This Document</strong>:<br>Feed or attach this file (<code>SYSTEM_DESIGN_MASTER_BRAIN.md</code>) to any AI coding or architecture assistant (or load it as an agent skill). When given any system design problem, RFC, or production bottleneck, the AI must adopt the <strong>Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, and 16-Module Lego-Block Playbook</strong> defined below.</p>
+<p><strong>How to Use This Document</strong>:<br>Load this playbook as an AI agent skill (<code>SKILL.md</code>, <code>CLAUDE.md</code>, <code>.cursorrules</code>, <code>.windsurfrules</code>, <code>.codeiumrules</code>, <code>.github/copilot-instructions.md</code>) or attach <code>SYSTEM_DESIGN_MASTER_BRAIN.md</code> directly in context. Whether designing a distributed system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the <strong>Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 26-Module Lego-Block Playbook, and 45-Point Red-Team Audit</strong> defined below.</p>
 </blockquote>
 <hr>
 <h2 id="part-i-core-operating-protocol-the-socratic-interrogator" class="scroll-mt-20 group relative">
@@ -681,6 +684,35 @@
 </ul>
 </li>
 </ol>
+<hr>
+<h3 id="1-3-dual-mode-execution-architecture-rfc-mode-vs-real-codebase-implementation-mode" class="scroll-mt-20 group relative">
+        <a href="#1-3-dual-mode-execution-architecture-rfc-mode-vs-real-codebase-implementation-mode" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        1.3 Dual-Mode Execution: Architecture RFC Mode vs. Real-Codebase Implementation Mode
+      </h3><p>To be maximally effective both on architectural whiteboards and inside live production repositories, operate in one of two explicit modes based on the user&#39;s task:</p>
+<ul>
+<li><p><strong>Mode A — Architecture, RFC &amp; System Design Mode</strong> <em>(Triggered when asked to design a system, plan an architecture, or evaluate scaling trade-offs)</em>:</p>
+<ol>
+<li>Execute <strong>Socratic Interrogation First</strong> (Section 1.2) to lock down RPS, P99 latency, consistency, and failure blast radius.</li>
+<li>Compute <strong>First-Principles Capacity &amp; Storage Math</strong> (RAM, Disk, IOPS, Bandwidth, Ephemeral Ports).</li>
+<li>Start with the <strong>Day-0 3-Tier Monolith Baseline</strong> and prove numerically where it breaks before adding distributed components.</li>
+<li>Evolve step-by-step (<code>Attempt 1 -&gt; Bottleneck -&gt; Attempt 2 -&gt; Bottleneck -&gt; Production Design</code>) using the <strong>Framework of Opposites</strong> (Part II).</li>
+<li>Conclude with the <strong>45-Point Master Red-Team Audit</strong> (Part V).</li>
+</ol>
+</li>
+<li><p><strong>Mode B — Real-Codebase Implementation, PR Review &amp; Production Debugging Mode</strong> <em>(Triggered when writing backend code, SQL migrations, API handlers, reviewing PRs, or debugging live latency/outages in a repo)</em>:</p>
+<ul>
+<li><strong>Do NOT stall with abstract whiteboard questions</strong> when the code is right in front of you. Inspect the actual handlers, queries, schemas, and configs directly and enforce these <strong>Non-Negotiable Codebase Laws</strong>:<ol>
+<li><strong>Zero Network I/O Inside DB Transactions</strong>: Never make an HTTP, gRPC, Redis, SQS, or Kafka call between <code>BEGIN</code> and <code>COMMIT</code>. Move external calls outside the transaction or write to a local <code>outbox</code> table in the same transaction.</li>
+<li><strong>Every Outbound Call Must Have an Explicit Timeout &amp; Bounded Retry</strong>: Never use default infinite HTTP/gRPC/DB clients. Propagate <code>context.WithTimeout</code> / <code>AbortSignal.timeout()</code>, use <strong>AWS Full Jitter</strong> on retries, and cap retries via a process-wide retry budget ($\le 10%$).</li>
+<li><strong>Every Mutating Endpoint Must Be Idempotent</strong>: Require an <code>Idempotency-Key</code> or deterministic natural unique constraint (<code>ON CONFLICT DO NOTHING</code> / <code>ON DUPLICATE KEY UPDATE</code>), verifying <code>SHA256(request_body)</code> on replay.</li>
+<li><strong>Lock Ordering &amp; Contention Safety</strong>: Sort multi-row lock acquisitions canonically (<code>ORDER BY id ASC FOR UPDATE</code>) to make AB-BA deadlocks mathematically impossible. Use <code>FOR UPDATE SKIP LOCKED</code> for worker queues/inventory pools and <code>FOR UPDATE NOWAIT</code> for specific item claims.</li>
+<li><strong>Zero-Downtime Schema Migrations</strong>: Every DDL migration must set <code>SET lock_timeout = &#39;2s&#39;</code>, build indexes concurrently (<code>CREATE INDEX CONCURRENTLY</code> / <code>ALGORITHM=INPLACE, LOCK=NONE</code>), and follow the <strong>Expand-and-Contract</strong> pattern so rolling deployments never break old running pods.</li>
+<li><strong>Bounded Queries &amp; Cursor Pagination</strong>: Forbid unindexed queries, <code>SELECT *</code> on wide tables, unbounded <code>IN (...)</code> lists, and deep <code>OFFSET</code> pagination (<code>OFFSET &gt; 1000</code>). Enforce composite covering indexes and keyset cursor pagination (<code>WHERE (created_at, id) &lt; (:cursor_ts, :cursor_id) ORDER BY created_at DESC, id DESC LIMIT 50</code>).</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
 <hr>
 <h2 id="part-ii-the-framework-of-opposites-generator-matrix" class="scroll-mt-20 group relative">
         <a href="#part-ii-the-framework-of-opposites-generator-matrix" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
@@ -825,9 +857,9 @@
     ScaleDB -- &quot;Write / Storage Ceiling&quot; --&gt; Shard[&quot;Horizontal Sharding (Hash / Range)&lt;br/&gt;+ Snowflake K-Ordered 64-Bit IDs&quot;]
 </code></pre>
 <hr>
-<h2 id="part-iv-the-distributed-systems-pattern-playbook-modules-01-25" class="scroll-mt-20 group relative">
-        <a href="#part-iv-the-distributed-systems-pattern-playbook-modules-01-25" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01-25)
+<h2 id="part-iv-the-distributed-systems-pattern-playbook-modules-01-26" class="scroll-mt-20 group relative">
+        <a href="#part-iv-the-distributed-systems-pattern-playbook-modules-01-26" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01–26)
       </h2><h2 id="module-01-real-time-presence-connection-pooling-b-tree-storage-internals-cache-stampede-coalescing" class="scroll-mt-20 group relative">
         <a href="#module-01-real-time-presence-connection-pooling-b-tree-storage-internals-cache-stampede-coalescing" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         Module 01: Real-Time Presence, Connection Pooling, B+ Tree Storage Internals & Cache Stampede Coalescing
@@ -2300,8 +2332,8 @@ ORDER BY position ASC LIMIT 1000;
 <li><strong>Quorum Mathematics</strong>:<ul>
 <li>In a cluster of $N$ nodes, the majority quorum size is:
 $$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1$$</li>
-<li><strong>Odd Cluster Rule</strong>: Always deploy odd node counts ($N = 3, 5, 7$). An $N=3$ cluster tolerates $F=1$ failure ($Q=2$); an $N=4$ cluster also only tolerates $F=1$ failure ($Q=3$) while adding an extra failure surface and network latency. An $N=5$ cluster tolerates $F=2$ failures ($Q=3$).</li>
-<li><strong>Quorum Intersection Property</strong>: Any two majorities must overlap by at least one node ($Q_1 \cap Q_2 \ne \emptyset$), ensuring at least one node possesses the latest committed state.</li>
+<li><strong>Odd Cluster Rule</strong>: Always deploy odd node counts ($N = 3, 5, 7$). An $N=3$ cluster tolerates $F=1$ failure ($Q=2$); an $N=4$ cluster also only tolerates $F=1$ failure ($Q=3$) while adding an extra failure surface and higher write quorum latency. An $N=5$ cluster tolerates $F=2$ failures ($Q=3$).</li>
+<li><strong>Quorum Intersection Property</strong>: Any two majorities must overlap by at least one node ($Q_1 \cap Q_2 \ne \emptyset$), guaranteeing that any newly elected leader&#39;s quorum contains at least one node possessing the highest committed log entry.</li>
 </ul>
 </li>
 </ul>
@@ -2313,20 +2345,22 @@ $$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1$$</li>
 <li><strong>1. Randomized Election Timers</strong>:<ul>
 <li>Followers reset their election timer whenever receiving a valid heartbeat (<code>AppendEntries</code> RPC) from the Leader.</li>
 <li>If a follower hears nothing within a randomized window ($150\text{ms}–300\text{ms}$), it transitions to Candidate, increments <code>currentTerm</code>, votes for itself, and broadcasts <code>RequestVote</code> RPCs.</li>
-<li>Randomizing timeouts prevents <strong>Split-Vote Deadlocks</strong> where multiple nodes become candidates simultaneously.</li>
+<li>Randomizing timeouts prevents <strong>Split-Vote Livelocks</strong> where multiple nodes become candidates simultaneously and split the vote indefinitely.</li>
 </ul>
 </li>
 <li><strong>2. Election Safety &amp; Up-to-Date Log Rule</strong>:<ul>
-<li>A node votes for a candidate <em>only</em> if the candidate&#39;s log is at least as up-to-date as its own (<code>lastLogTerm &gt; myLastLogTerm</code>, or <code>lastLogTerm == myLastLogTerm &amp;&amp; lastLogIndex &gt;= myLastLogIndex</code>). This prevents out-of-date nodes from ever being elected leader.</li>
+<li>A node votes for a candidate <em>only</em> if the candidate&#39;s log is at least as up-to-date as its own:
+$$\text{candidate.lastLogTerm} &gt; \text{my.lastLogTerm} \quad \lor \quad (\text{candidate.lastLogTerm} == \text{my.lastLogTerm} \land \text{candidate.lastLogIndex} \ge \text{my.lastLogIndex})$$
+This prevents a lagging node from ever winning an election and overwriting committed entries.</li>
 </ul>
 </li>
 <li><strong>3. Log Replication &amp; Commit Index</strong>:<ul>
 <li>Client sends command to Leader $\implies$ Leader appends entry to its local WAL $\implies$ Leader broadcasts <code>AppendEntries</code> to followers.</li>
-<li>Once entry is replicated across a majority ($Q$), Leader advances <code>commitIndex</code>, applies entry to its finite state machine, and returns success to client.</li>
+<li>Once the entry is persisted on a majority ($Q$), the Leader advances <code>commitIndex</code>, applies the entry to its local state machine, returns success to the client, and notifies followers of the new <code>commitIndex</code> on the next heartbeat.</li>
 </ul>
 </li>
 <li><strong>4. Network Partitions &amp; Split-Brain Prevention</strong>:<ul>
-<li>If a 5-node cluster splits into ${N_1, N_2}$ and ${N_3, N_4, N_5}$, the minority partition ${N_1, N_2}$ can never reach quorum ($2 &lt; 3$) and rejects all writes. The majority partition ${N_3, N_4, N_5}$ elects a leader and proceeds safely. Upon partition healing, $N_1$ and $N_2$ truncate uncommitted entries and sync from the majority leader.</li>
+<li>If a 5-node cluster splits into ${N_1, N_2}$ (containing old Leader $N_1$) and ${N_3, N_4, N_5}$, the minority partition ${N_1, N_2}$ can never reach quorum ($2 &lt; 3$) and blocks all writes. The majority partition ${N_3, N_4, N_5}$ elects a new leader for <code>term + 1</code> and proceeds safely. Upon partition healing, $N_1$ sees the higher term, steps down to Follower, truncates its uncommitted log tail, and syncs from the majority leader.</li>
 </ul>
 </li>
 </ul>
@@ -2335,17 +2369,47 @@ $$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1$$</li>
         17.3 Leaderless Quorum Systems (Dynamo / Cassandra Model)
       </h3><ul>
 <li><strong>Configurable Consistency ($N, W, R$)</strong>:<ul>
-<li>$N$: Replication factor (number of nodes storing each partition).</li>
-<li>$W$: Write quorum (number of nodes that must acknowledge a write).</li>
-<li>$R$: Read quorum (number of nodes that must respond to a read).</li>
+<li>$N$: Replication factor (nodes storing each key range).</li>
+<li>$W$: Write quorum (nodes that must acknowledge a write before returning <code>200 OK</code>).</li>
+<li>$R$: Read quorum (nodes queried on a read before returning the newest version).</li>
 </ul>
 </li>
-<li><strong>Strong Consistency Condition</strong>:
+<li><strong>Strong Overlap Condition</strong>:
 $$W + R &gt; N$$
-<em>(If $N=3, W=2, R=2$, every read is guaranteed to intersect with at least one node containing the latest write).</em></li>
-<li><strong>Conflict Resolution Primitives</strong>:<ul>
-<li><strong>Read Repair</strong>: Client reads from $R$ nodes; if timestamps differ, client returns latest version and sends background writes to stale nodes.</li>
-<li><strong>Hinted Handoff</strong>: If target replica is down during write, another node holds an ephemeral &quot;hint&quot; and delivers it once target recovers.</li>
+<em>(Example: $N=3, W=2, R=2 \implies 2+2 &gt; 3$. Every read quorum intersects with at least one node from the latest write quorum).</em></li>
+<li><strong>Anti-Entropy &amp; Repair Primitives</strong>:<ul>
+<li><strong>Read Repair</strong>: Coordinator reads from $R$ nodes; if versions differ, returns the newest value to the client and asynchronously writes the newest value back to stale replicas.</li>
+<li><strong>Hinted Handoff</strong>: If a target replica is unreachable during a write, the coordinator writes a local &quot;hint&quot; file and replays it once the replica recovers.</li>
+<li><strong>Merkle Tree Anti-Entropy</strong>: Background exchanges of hierarchical cryptographic hashes of key ranges ($O(\log K)$ network transfer) to locate and repair silent replica divergence.</li>
+</ul>
+</li>
+</ul>
+<h3 id="17-4-module-17-critical-hidden-edge-cases-consensus-traps" class="scroll-mt-20 group relative">
+        <a href="#17-4-module-17-critical-hidden-edge-cases-consensus-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        17.4 Module 17 Critical Hidden Edge Cases & Consensus Traps
+      </h3><ul>
+<li><strong>1. The &quot;Zombie Leader&quot; Stale Read Trap &amp; <code>ReadIndex</code> / Leader Leases</strong>:<ul>
+<li><em>Failure Mode</em>: Suppose Leader $N_1$ is partitioned into a minority ${N_1, N_2}$ while ${N_3, N_4, N_5}$ elects $N_3$ as the new leader and commits new writes. If a client sends a <code>GET</code> request to $N_1$ and $N_1$ serves the read directly from its local in-memory state machine without checking quorum, $N_1$ returns <strong>stale, split-brain data</strong>—violating linearizability!</li>
+<li><em>Production Fix</em>: Never serve linearizable reads from local leader memory unchecked. Implement either:<ol>
+<li><strong>Raft <code>ReadIndex</code> Protocol</strong>: Leader records its current <code>commitIndex</code> as <code>readIndex</code>, sends a lightweight round of heartbeat RPCs to confirm a majority still recognizes it as leader, waits until <code>appliedIndex &gt;= readIndex</code>, and then serves the read.</li>
+<li><strong>Bounded Leader Leases</strong>: Leader acquires a time-bounded lease ($T_{\text{lease}} &lt; T_{\text{election_min}} / \text{clock_drift_factor}$) during which followers promise not to vote for any other candidate.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>2. The Disruptive Rejoining Node (<code>PreVote</code> Storm)</strong>:<ul>
+<li><em>Failure Mode</em>: Node $N_5$ suffers a flaky asymmetric firewall drop where it cannot receive heartbeats from the Leader, so its election timer fires 500 times—incrementing its <code>currentTerm</code> from <code>4</code> to <code>504</code>. When the network heals, $N_5$ broadcasts <code>RequestVote(term=504)</code>. Even though $N_5$&#39;s log is stale (so it cannot win the election), the healthy Leader sees <code>term 504 &gt; 4</code> and is forced by Raft rules to <strong>immediately step down to Follower</strong>, halting all cluster writes during a pointless cluster-wide re-election!</li>
+<li><em>Production Fix</em>: Enable the <strong>Raft <code>PreVote</code> Extension</strong> (<code>etcd --pre-vote=true</code>). Before incrementing <code>currentTerm</code>, a candidate first broadcasts a <code>PreVote</code> RPC asking: <em>&quot;Would you vote for me if I incremented my term?&quot;</em> Followers reject <code>PreVote</code> if they have received a valid leader heartbeat within the minimum election timeout. Thus, isolated nodes never inflate their term.</li>
+</ul>
+</li>
+<li><strong>3. Shared Disk <code>wal_fsync</code> Starvation &amp; Endless Leader Flapping</strong>:<ul>
+<li><em>Failure Mode</em>: Consensus engines (etcd, ZooKeeper, Raft) must call <code>fsync()</code> on every <code>AppendEntries</code> write before acknowledging. If etcd shares an EBS volume or NVMe drive with noisy application container logs or Prometheus compaction, disk I/O latency spikes to $250\text{ms}$—exceeding the $150\text{ms}$ Raft election timeout. Followers assume the leader died, trigger elections, and the new leader immediately stalls on the same disk, causing <strong>endless Leader Flapping</strong>.</li>
+<li><em>Production Fix</em>: Isolate consensus WAL directories onto a dedicated physical NVMe/SSD spindle (<code>&gt; 3,000 IOPS</code>), set I/O scheduling priority to real-time (<code>ionice -c 1 -n 0</code>), and monitor <code>wal_fsync_duration_seconds</code> P99 $&lt; 10\text{ms}$.</li>
+</ul>
+</li>
+<li><strong>4. Leaderless <code>W + R &gt; N</code> Sloppy Quorum &amp; Last-Write-Wins (LWW) Data Loss</strong>:<ul>
+<li><em>Failure Mode</em>: In Cassandra/Dynamo, <code>W + R &gt; N</code> only provides strong consistency under <strong>Strict Quorum</strong> with synchronized clocks. If <strong>Sloppy Quorum / Hinted Handoff</strong> is enabled during a partition, writes succeed on non-replica stand-in nodes that do not intersect with $R$ read nodes! Furthermore, if two clients concurrently update the same key with <code>LWW</code> timestamps and one server&#39;s NTP clock is $15\text{ms}$ ahead, the earlier write silently overwrites the later write.</li>
+<li><em>Production Fix</em>: Never use Leaderless LWW tables for financial balances, inventory, or uniqueness constraints; use Raft/Paxos (<code>LOCAL_SERIAL</code> / <code>SERIAL</code> Lightweight Transactions) or RDBMS row locks.</li>
 </ul>
 </li>
 </ul>
@@ -2353,14 +2417,14 @@ $$W + R &gt; N$$
 <h2 id="module-18-distributed-transactions-cross-service-consistency-sagas-transactional-outbox" class="scroll-mt-20 group relative">
         <a href="#module-18-distributed-transactions-cross-service-consistency-sagas-transactional-outbox" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         Module 18: Distributed Transactions & Cross-Service Consistency (Sagas & Transactional Outbox)
-      </h2><h3 id="18-1-why-two-phase-commit-2pc-fails-in-microservices" class="scroll-mt-20 group relative">
-        <a href="#18-1-why-two-phase-commit-2pc-fails-in-microservices" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        18.1 Why Two-Phase Commit (2PC) Fails in Microservices
+      </h2><h3 id="18-1-why-two-phase-commit-2pc-xa-fails-in-microservices" class="scroll-mt-20 group relative">
+        <a href="#18-1-why-two-phase-commit-2pc-xa-fails-in-microservices" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        18.1 Why Two-Phase Commit (2PC / XA) Fails in Microservices
       </h3><ul>
 <li><strong>The In-Doubt Blocking Disaster</strong>:<ul>
-<li>2PC uses a Coordinator and Participants across two phases: (1) <code>PREPARE</code> (participants vote YES/NO and lock resources), (2) <code>COMMIT</code> (coordinator instructs commit).</li>
-<li><em>Catastrophic Flaw</em>: If coordinator crashes after participants vote YES, all participant databases remain in the <strong>In-Doubt State</strong>, holding exclusive row latches indefinitely across network boundaries!</li>
-<li>Cross-service 2PC shatters service autonomy, reduces availability to the product of all service availabilities ($A_{\text{total}} = \prod A_i$), and is an enterprise anti-pattern.</li>
+<li>2PC coordinates a transaction across two phases: (1) <code>PREPARE</code> (participants acquire exclusive row locks and vote YES/NO), and (2) <code>COMMIT</code> (coordinator instructs commit).</li>
+<li><em>Catastrophic Flaw</em>: 2PC is a <strong>blocking protocol</strong>. If the Coordinator crashes after participants vote YES in Phase 1, all participant databases are trapped in the <strong>In-Doubt State</strong>—holding exclusive row and page latches across the network indefinitely until the coordinator recovers!</li>
+<li>Cross-service 2PC destroys microservice autonomy, multiplies tail latency, and reduces overall availability to the product of all participants ($A_{\text{total}} = \prod_{i=1}^k A_i$).</li>
 </ul>
 </li>
 </ul>
@@ -2368,25 +2432,15 @@ $$W + R &gt; N$$
         <a href="#18-2-the-saga-pattern-orchestration-vs-choreography" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         18.2 The Saga Pattern: Orchestration vs. Choreography
       </h3><ul>
-<li><strong>Definition</strong>: A Saga is a sequence of local database transactions where each step updates state in one service and emits an event or message to trigger the next step.</li>
-<li><strong>Compensating Transactions (Semantic Rollback)</strong>:<ul>
-<li>If Step 3 (Payment) succeeds but Step 4 (Inventory Allocation) fails, the system executes <strong>Compensating Transactions</strong> in reverse order: <code>RefundPayment</code> $\to$ <code>CancelOrder</code>.</li>
-<li>Compensating transactions must be <strong>strictly idempotent</strong> and cannot assume state is unchanged (other concurrent transactions may have read the intermediate state).</li>
+<li><strong>Definition</strong>: A Saga decomposes a distributed transaction into a sequence of local ACID transactions $(T_1, T_2, \dots, T_n)$, paired with <strong>Compensating Transactions</strong> $(C_n, \dots, C_2, C_1)$ that semantically undo committed steps on failure.</li>
+<li><strong>Compensating Transaction Laws</strong>:<ul>
+<li>Because each local step $T_i$ commits immediately, isolation is relaxed from <code>SERIALIZABLE</code> to <strong>ACD (Atomicity, Consistency, Durability — no global Isolation)</strong>. Intermediate state is visible to other transactions (&quot;Dirty Reads&quot; at the Saga level).</li>
+<li>Compensations ($C_i$) must be <strong>strictly idempotent</strong>, <strong>retryable forever</strong> (they cannot fail permanently without escalating to human ops), and <strong>commutative</strong> with concurrent state.</li>
 </ul>
 </li>
-<li><strong>Orchestration vs. Choreography</strong>:<ul>
-<li><strong>Choreography (Event-Driven)</strong>: Services subscribe to Kafka domain events (<code>OrderCreated</code> $\to$ <code>PaymentCompleted</code> $\to$ <code>InventoryReserved</code>).<ul>
-<li><em>Pros</em>: Loose coupling; no central coordinator.</li>
-<li><em>Cons</em>: Cyclic dependencies; hard to debug or visualize transaction state across 10 services.</li>
-</ul>
-</li>
-<li><strong>Orchestration (State Machine Driven - Temporal / Step Functions)</strong>:<ul>
-<li>A dedicated Orchestrator service executes an explicit state machine:<pre><code>CreateOrderPending -&gt; AuthorizePayment -&gt; ReserveInventory -&gt; OrderApproved
-</code></pre>
-</li>
-<li><em>Pros</em>: Centralized visibility, explicit timeouts, and deterministic retry/compensation logic.</li>
-</ul>
-</li>
+<li><strong>Choreography vs. Orchestration</strong>:<ul>
+<li><strong>Choreography (Broker Event-Driven)</strong>: Services react to domain events (<code>OrderCreated</code> $\to$ <code>PaymentCharged</code> $\to$ <code>InventoryReserved</code>). Simple for $2\text{–}3$ steps; devolves into cyclic event spaghetti and unobservable state for $\ge 4$ steps.</li>
+<li><strong>Orchestration (Temporal / AWS Step Functions / State Machine DB)</strong>: A central state machine explicitly invokes participants, tracks current step in a durable log, enforces per-step timeouts, and runs backward compensation deterministically.</li>
 </ul>
 </li>
 </ul>
@@ -2394,33 +2448,78 @@ $$W + R &gt; N$$
         <a href="#18-3-the-transactional-outbox-pattern-cdc" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         18.3 The Transactional Outbox Pattern & CDC
       </h3><ul>
-<li><strong>The Dual-Write Problem</strong>: Writing to MySQL (<code>INSERT INTO orders</code>) and publishing to Kafka (<code>producer.send(event)</code>) in the same application code path is non-atomic. If the server dies between the DB commit and Kafka send, the event is permanently lost.</li>
+<li><strong>The Dual-Write Anti-Pattern</strong>:<ul>
+<li>Executing <code>db.Commit()</code> followed by <code>kafkaProducer.Send()</code> in application code is <strong>never atomic</strong>. If the process crashes after <code>db.Commit()</code> before <code>kafkaProducer.Send()</code>, the database is updated but downstream services never receive the event. Conversely, if <code>kafkaProducer.Send()</code> runs before <code>db.Commit()</code> and the DB commit rolls back, downstream services act on a phantom transaction!</li>
+</ul>
+</li>
 <li><strong>Transactional Outbox Architecture</strong>:<ol>
-<li>Business entity and outbox event are saved in the <strong>exact same local database transaction</strong>:<pre><code class="language-sql">START TRANSACTION;
-INSERT INTO orders (id, user_id, amount, status) VALUES (101, 42, 99.00, &#39;CREATED&#39;);
-INSERT INTO outbox (id, aggregate_type, aggregate_id, payload, created_at)
-VALUES (UUID(), &#39;Order&#39;, 101, &#39;{&quot;user_id&quot;: 42, &quot;amount&quot;: 99.00}&#39;, NOW());
+<li>Write the business mutation and the outbox event row inside the <strong>exact same local ACID transaction</strong>:<pre><code class="language-sql">START TRANSACTION;
+INSERT INTO orders (id, user_id, amount_cents, status) VALUES (9001, 42, 9900, &#39;PENDING&#39;);
+INSERT INTO outbox_events (id, aggregate_type, aggregate_id, event_type, payload, created_at)
+VALUES (170982341, &#39;Order&#39;, &#39;9001&#39;, &#39;OrderCreated&#39;, &#39;{&quot;order_id&quot;:9001,&quot;amount_cents&quot;:9900}&#39;, NOW());
 COMMIT;
 </code></pre>
 </li>
-<li>A <strong>Change Data Capture (CDC)</strong> agent (Debezium / Maxwell) tails the database binlog/WAL and streams outbox rows to Kafka with <strong>at-least-once delivery</strong>.</li>
-<li>A background reaper purges processed outbox rows with <code>ORDER BY id LIMIT 1000</code>.</li>
+<li>A <strong>Change Data Capture (CDC)</strong> connector (Debezium reading MySQL binlog or Postgres logical replication WAL) streams <code>outbox_events</code> inserts to Kafka ordered by primary key / LSN.</li>
 </ol>
 </li>
 </ul>
-<h3 id="18-4-distributed-idempotency-keys-stripe-pattern" class="scroll-mt-20 group relative">
-        <a href="#18-4-distributed-idempotency-keys-stripe-pattern" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        18.4 Distributed Idempotency Keys (Stripe Pattern)
+<h3 id="18-4-distributed-idempotency-keys-the-stripe-protocol" class="scroll-mt-20 group relative">
+        <a href="#18-4-distributed-idempotency-keys-the-stripe-protocol" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        18.4 Distributed Idempotency Keys (The Stripe Protocol)
       </h3><ul>
-<li>Every mutating request includes an <code>Idempotency-Key: &lt;UUID&gt;</code> header.</li>
-<li><strong>Atomic Claim Protocol</strong>:<pre><code class="language-sql">INSERT INTO idempotency_keys (key, request_hash, status, response_body, created_at)
-VALUES (&#39;key_abc123&#39;, SHA256(:body), &#39;PROCESSING&#39;, NULL, NOW())
-ON DUPLICATE KEY UPDATE status = status; -- Checks if key exists
+<li>Every mutating API (<code>POST /v1/charges</code>, <code>POST /v1/transfers</code>) requires an <code>Idempotency-Key: &lt;UUIDv4&gt;</code> header.</li>
+<li><strong>Complete 4-Phase Atomic Idempotency State Machine</strong>:<pre><code class="language-sql">CREATE TABLE idempotency_keys (
+    idempotency_key VARCHAR(64) NOT NULL,
+    user_id BIGINT NOT NULL,
+    request_hash CHAR(64) NOT NULL,          -- SHA-256 of canonical request method + path + body
+    status ENUM(&#39;PROCESSING&#39;, &#39;COMPLETED&#39;, &#39;FAILED_RETRYABLE&#39;) NOT NULL,
+    locked_until TIMESTAMP NOT NULL,         -- Lease expiration in case worker pod OOMKills!
+    response_code INT NULL,
+    response_body JSON NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, idempotency_key),
+    INDEX idx_cleanup (created_at)
+);
 </code></pre>
 </li>
-<li>If row already exists:<ul>
-<li><code>status == &#39;PROCESSING&#39;</code>: Return <code>409 Conflict</code> (request currently in flight).</li>
-<li><code>status == &#39;COMPLETED&#39;</code>: Short-circuit immediately and return cached <code>response_body</code> (0 compute/writes executed!).</li>
+</ul>
+<h3 id="18-5-module-18-critical-hidden-edge-cases-saga-outbox-traps" class="scroll-mt-20 group relative">
+        <a href="#18-5-module-18-critical-hidden-edge-cases-saga-outbox-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        18.5 Module 18 Critical Hidden Edge Cases & Saga/Outbox Traps
+      </h3><ul>
+<li><strong>1. Idempotency Key Stuck in <code>&#39;PROCESSING&#39;</code> Forever After Worker Crash (<code>OOMKill</code>)</strong>:<ul>
+<li><em>Failure Mode</em>: Worker A inserts <code>status = &#39;PROCESSING&#39;</code> into <code>idempotency_keys</code>, begins calling the payment processor, and gets killed by Kubernetes (<code>SIGKILL</code> / <code>Exit 137</code>) before updating the row. When the client retries 5 seconds later, the server sees <code>status == &#39;PROCESSING&#39;</code> and returns <code>409 Conflict</code> forever!</li>
+<li><em>Production Fix</em>: Always include a <strong><code>locked_until</code> lease column</strong> (<code>NOW() + INTERVAL 60 SECOND</code>). When a retry arrives and sees <code>status == &#39;PROCESSING&#39;</code>:<ul>
+<li>If <code>NOW() &lt; locked_until</code>: Return <code>409 Conflict</code> (<code>Retry-After: 5</code>) because the original request is genuinely in flight.</li>
+<li>If <code>NOW() &gt;= locked_until</code>: The original worker died! Atomically claim the expired lease via:<pre><code class="language-sql">UPDATE idempotency_keys
+SET locked_until = NOW() + INTERVAL 60 SECOND
+WHERE user_id = :uid AND idempotency_key = :key
+  AND status = &#39;PROCESSING&#39; AND locked_until &lt;= NOW();
+</code></pre>
+Then query the downstream provider using the deterministic <code>idempotency_key</code> to reconcile whether the charge succeeded before re-executing.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>2. Idempotency Parameter Tampering (<code>422 Unprocessable Entity</code> Check)</strong>:<ul>
+<li><em>Failure Mode</em>: A buggy client (or attacker) reuses <code>Idempotency-Key: abc-123</code> from a <code>$10.00</code> charge on a new <code>$1,000.00</code> charge request. If the server blindly returns the cached <code>200 OK</code> without verifying the request parameters, the caller believes the <code>$1,000.00</code> charge succeeded!</li>
+<li><em>Production Fix</em>: Always compute <code>request_hash = SHA256(method + path + canonical_json_body)</code>. On key hit, if <code>stored.request_hash != incoming.request_hash</code>, immediately reject with <strong><code>422 Unprocessable Entity</code></strong> (<code>&quot;Idempotency key cannot be reused with different request parameters&quot;</code>).</li>
+</ul>
+</li>
+<li><strong>3. The &quot;Cancel Arrives Before Create&quot; Out-of-Order Saga Race (Semantic Lock / Tombstone Latch)</strong>:<ul>
+<li><em>Failure Mode</em>: A user submits an order (<code>AuthorizePayment</code> RPC sent to Payment Service, delayed in network queue for $3\text{s}$). At $t = 1.5\text{s}$, the user clicks &quot;Cancel&quot; (<code>VoidPayment</code> arrives at Payment Service first). <code>VoidPayment</code> looks for <code>order_id = 9001</code>, finds nothing, and returns <code>200 OK (No-Op)</code>. At $t = 3.0\text{s}$, the delayed <code>AuthorizePayment</code> finally lands on Payment Service and <strong>charges the customer&#39;s card for a cancelled order</strong>!</li>
+<li><em>Production Fix</em>: Compensating transactions (<code>VoidPayment</code> / <code>CancelReservation</code>) must never be a silent no-op when the forward record doesn&#39;t exist yet! They must <strong>insert a <code>CANCELLED</code> tombstone row</strong> (<code>INSERT INTO payment_intents (order_id, status) VALUES (9001, &#39;CANCELLED&#39;)</code>). When the delayed <code>AuthorizePayment</code> finally arrives, its <code>INSERT</code> hits the <code>PRIMARY KEY (order_id)</code> conflict, sees <code>status == &#39;CANCELLED&#39;</code>, and aborts!</li>
+</ul>
+</li>
+<li><strong>4. CDC At-Least-Once Duplicate Delivery &amp; The Consumer Inbox Pattern</strong>:<ul>
+<li><em>Failure Mode</em>: Debezium / Kafka Connect guarantees <strong>at-least-once</strong> delivery, NOT <strong>exactly-once</strong>. If the Debezium worker crashes after publishing 500 events to Kafka but before flushing its binlog offset to Kafka&#39;s <code>connect-offsets</code> topic, it restarts and <strong>publishes those 500 events a second time</strong>!</li>
+<li><em>Production Fix</em>: Every downstream consumer must implement a <strong>Transactional Inbox Table</strong> (<code>processed_events(event_id VARCHAR(64) PRIMARY KEY, processed_at TIMESTAMP)</code>). Inside the consumer&#39;s local DB transaction, first execute <code>INSERT INTO processed_events (event_id) VALUES (:event_id)</code>. If it throws a duplicate key error, roll back and <code>ACK</code> the Kafka offset immediately!</li>
+</ul>
+</li>
+<li><strong>5. Outbox Table B+ Tree Bloat &amp; Vacuum Starvation</strong>:<ul>
+<li><em>Failure Mode</em>: Inserting and deleting 50M rows/day in <code>outbox_events</code> fragments the B+ tree and starves PostgreSQL Autovacuum.</li>
+<li><em>Production Fix</em>: Either partition <code>outbox_events</code> by hour/day and drop old partitions (<code>DROP TABLE outbox_events_2026_10_15</code> — $O(1)$ filesystem unlink with zero B+ tree overhead), or on PostgreSQL use <code>pg_logical_emit_message(true, &#39;outbox&#39;, payload)</code> which writes the event <strong>directly into the transactional WAL stream</strong> (read by Debezium) without ever touching a heap table or index!</li>
 </ul>
 </li>
 </ul>
@@ -2428,15 +2527,15 @@ ON DUPLICATE KEY UPDATE status = status; -- Checks if key exists
 <h2 id="module-19-financial-ledgers-payment-systems-double-entry-bookkeeping" class="scroll-mt-20 group relative">
         <a href="#module-19-financial-ledgers-payment-systems-double-entry-bookkeeping" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         Module 19: Financial Ledgers & Payment Systems (Double-Entry Bookkeeping)
-      </h2><h3 id="19-1-the-balance-update-anti-pattern" class="scroll-mt-20 group relative">
-        <a href="#19-1-the-balance-update-anti-pattern" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        19.1 The Balance Update Anti-Pattern
+      </h2><h3 id="19-1-the-mutable-balance-column-anti-pattern" class="scroll-mt-20 group relative">
+        <a href="#19-1-the-mutable-balance-column-anti-pattern" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        19.1 The Mutable Balance Column Anti-Pattern
       </h3><ul>
-<li><strong>Anti-Pattern</strong>: Storing <code>accounts(id, balance)</code> and running <code>UPDATE accounts SET balance = balance - 50 WHERE id = 1</code>.</li>
-<li><strong>Why It Fails</strong>:<ol>
-<li>Concurrency deadlocks on high-velocity accounts (merchant accounts).</li>
-<li>Floating-point precision truncation issues.</li>
-<li>Fails financial audits: You know the current balance, but cannot prove <em>how</em> the balance reached that number or reconstruct historical balance at timestamp $T$.</li>
+<li><strong>Anti-Pattern</strong>: Storing <code>users(id, balance)</code> and executing <code>UPDATE users SET balance = balance - 5000 WHERE id = 1</code>.</li>
+<li><strong>Why It Fails Production Audits</strong>:<ol>
+<li><strong>Zero Auditability</strong>: If a balance is wrong, you have no immutable trail proving which transaction mutated it.</li>
+<li><strong>Floating-Point Corruption</strong>: Using <code>FLOAT</code> or <code>DOUBLE</code> (<code>0.1 + 0.2 = 0.30000000000000004</code>) creates phantom money across millions of operations.</li>
+<li><strong>Lost Updates &amp; Deadlocks</strong>: High-velocity merchant accounts lock up under concurrent <code>UPDATE</code> statements.</li>
 </ol>
 </li>
 </ul>
@@ -2444,110 +2543,169 @@ ON DUPLICATE KEY UPDATE status = status; -- Checks if key exists
         <a href="#19-2-immutable-double-entry-bookkeeping-architecture" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         19.2 Immutable Double-Entry Bookkeeping Architecture
       </h3><ul>
-<li><strong>Fundamental Law of Double-Entry</strong>:
-$$\sum \text{Debits} - \sum \text{Credits} = 0$$
-<em>Money is never created or destroyed; it is transferred between accounts.</em></li>
-<li><strong>Core Relational Schema</strong>:<pre><code class="language-sql">CREATE TABLE accounts (
+<li><strong>The Fundamental Accounting Equation</strong>:
+$$\sum_{i} \text{Debits}<em>i - \sum</em>{j} \text{Credits}_j = 0$$
+Every journal entry must contain $\ge 2$ postings (lines) in the same currency whose signed sum equals <strong>strictly zero</strong>. Money is never created or destroyed; it only moves from a source account (e.g., <code>Liability:User_Alice_Wallet</code>) to a destination account (e.g., <code>Liability:Merchant_Amazon_Payable</code> + <code>Revenue:Platform_Fee</code>).</li>
+<li><strong>Production Relational Schema</strong>:<pre><code class="language-sql">CREATE TABLE ledger_accounts (
     id BIGINT PRIMARY KEY,
-    currency VARCHAR(3) NOT NULL, -- USD, EUR, BTC
-    type ENUM(&#39;ASSET&#39;, &#39;LIABILITY&#39;, &#39;EQUITY&#39;, &#39;REVENUE&#39;, &#39;EXPENSE&#39;) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    owner_id BIGINT NOT NULL,
+    currency CHAR(3) NOT NULL,               -- ISO-4217 (&#39;USD&#39;, &#39;EUR&#39;, &#39;JPY&#39;)
+    scale TINYINT NOT NULL DEFAULT 6,        -- Micro-units: 10^6 = $1.000000
+    account_type ENUM(&#39;ASSET&#39;, &#39;LIABILITY&#39;, &#39;EQUITY&#39;, &#39;REVENUE&#39;, &#39;EXPENSE&#39;) NOT NULL,
+    allow_negative BOOLEAN NOT NULL DEFAULT FALSE,
+    current_balance_micros BIGINT NOT NULL DEFAULT 0,
+    version BIGINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE journals (
-    id BIGINT PRIMARY KEY, -- Snowflake ID
-    description VARCHAR(255) NOT NULL,
-    idempotency_key VARCHAR(64) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE ledger_journals (
+    id BIGINT PRIMARY KEY,                   -- K-ordered Snowflake ID
+    idempotency_key VARCHAR(64) NOT NULL UNIQUE,
+    reference_type VARCHAR(32) NOT NULL,     -- &#39;ORDER_PAYMENT&#39;, &#39;PAYOUT&#39;, &#39;REFUND&#39;
+    reference_id VARCHAR(64) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE postings (
+CREATE TABLE ledger_postings (
     id BIGINT PRIMARY KEY,
-    journal_id BIGINT NOT NULL REFERENCES journals(id),
-    account_id BIGINT NOT NULL REFERENCES accounts(id),
-    amount BIGINT NOT NULL, -- Stored in smallest integer unit (cents / satoshis)
-    direction ENUM(&#39;DEBIT&#39;, &#39;CREDIT&#39;) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    journal_id BIGINT NOT NULL REFERENCES ledger_journals(id),
+    account_id BIGINT NOT NULL REFERENCES ledger_accounts(id),
+    amount_micros BIGINT NOT NULL,           -- Positive for Credit, Negative for Debit (or explicit direction)
+    running_balance_micros BIGINT NOT NULL,  -- Account balance immediately after this posting!
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_account_history (account_id, id DESC)
 );
 </code></pre>
-</li>
-<li><strong>Transaction Invariant Verification</strong>: Inside the database transaction, verify that $\sum \text{Debits} == \sum \text{Credits}$; otherwise, <code>ROLLBACK</code>.</li>
-<li><strong>Materialized Balance Snapshots</strong>: Range queries over 10M historical postings are slow. Maintain periodic balance snapshots:<pre><code class="language-sql">CREATE TABLE balance_snapshots (
-    account_id BIGINT NOT NULL,
-    snapshot_date DATE NOT NULL,
-    closing_balance BIGINT NOT NULL,
-    PRIMARY KEY (account_id, snapshot_date)
-);
-</code></pre>
-Current balance query: Read latest snapshot + $\sum \text{postings}$ strictly after <code>snapshot_date</code>.</li>
+<em>Note: Append-only <code>ledger_journals</code> and <code>ledger_postings</code> tables have <code>REVOKE UPDATE, DELETE</code> enforced at the database role level. Mistakes are only corrected via a new <strong>Reversing Journal Entry</strong>.</em></li>
 </ul>
-<h3 id="19-3-payment-gateway-state-machine" class="scroll-mt-20 group relative">
-        <a href="#19-3-payment-gateway-state-machine" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        19.3 Payment Gateway State Machine
+<h3 id="19-3-payment-gateway-state-machine-webhook-reconciliation" class="scroll-mt-20 group relative">
+        <a href="#19-3-payment-gateway-state-machine-webhook-reconciliation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        19.3 Payment Gateway State Machine & Webhook Reconciliation
       </h3><ul>
-<li><strong>Strict State Lifecycle</strong>:<pre><code>INITIATED -&gt; AUTHORIZED -&gt; CAPTURED -&gt; SETTLED
-                   |            |
-                VOIDED       REFUNDED / CHARGEBACK
+<li><strong>Strict Authorization-Capture-Settlement Lifecycle</strong>:<pre><code>CREATED -&gt; AUTHORIZED (Hold Funds) -&gt; CAPTURED (Claim Funds) -&gt; SETTLED (Bank Payout)
+               |                          |
+            VOIDED                    REFUNDED / CHARGEBACK_DISPUTED
 </code></pre>
 </li>
-<li><strong>Asynchronous Webhook Reconciliation</strong>:<ul>
-<li>Payment providers (Stripe, Adyen) notify via webhooks.</li>
-<li>Webhook handlers must: (1) Verify HMAC-SHA256 signature, (2) Persist raw payload to disk/DB before processing, (3) Apply state transition idempotently via <code>WHERE status = &#39;AUTHORIZED&#39;</code>.</li>
+<li><strong>Defense-in-Depth Webhook Ingestion</strong>:<ol>
+<li>Verify cryptographic signature (<code>Stripe-Signature</code> HMAC-SHA256 with timestamp tolerance $\le 300\text{s}$ to prevent replay attacks).</li>
+<li>Insert <code>webhook_event_id</code> into <code>processed_webhooks</code> (idempotency guard).</li>
+<li>Enforce monotonic state transitions in SQL (<code>UPDATE payments SET status = &#39;CAPTURED&#39; WHERE id = :id AND status IN (&#39;CREATED&#39;, &#39;AUTHORIZED&#39;)</code>) so an out-of-order <code>AUTHORIZED</code> webhook arriving <em>after</em> <code>CAPTURED</code> never regresses state!</li>
+</ol>
+</li>
+</ul>
+<h3 id="19-4-module-19-critical-hidden-edge-cases-financial-ledger-traps" class="scroll-mt-20 group relative">
+        <a href="#19-4-module-19-critical-hidden-edge-cases-financial-ledger-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        19.4 Module 19 Critical Hidden Edge Cases & Financial Ledger Traps
+      </h3><ul>
+<li><strong>1. The AB-BA Multi-Account Transfer Deadlock</strong>:<ul>
+<li><em>Failure Mode</em>: Transaction 1 transfers $$10$ from Account <code>100</code> to Account <code>200</code> (locks <code>100</code>, then tries to lock <code>200</code>). Simultaneously, Transaction 2 transfers $$5$ from Account <code>200</code> to Account <code>100</code> (locks <code>200</code>, then tries to lock <code>100</code>). Both transactions wait on each other forever until the database deadlock detector kills one!</li>
+<li><em>Production Fix (Canonical Lock Ordering)</em>: Before acquiring row locks on multiple accounts, <strong>always sort the <code>account_id</code>s in ascending numerical order</strong> (<code>min(a, b)</code> first, <code>max(a, b)</code> second):<pre><code class="language-sql">SELECT id, current_balance_micros, allow_negative
+FROM ledger_accounts
+WHERE id IN (100, 200)
+ORDER BY id ASC
+FOR UPDATE;
+</code></pre>
+Because every transaction in the entire codebase locks <code>100</code> before <code>200</code>, cycles in the wait-for graph are <strong>mathematically impossible</strong> ($0$ deadlocks!).</li>
+</ul>
+</li>
+<li><strong>2. The &quot;Hot Merchant Account&quot; Lock Contention Collapse</strong>:<ul>
+<li><em>Failure Mode</em>: During a prime shopping event, $5,000\text{ users/sec}$ pay <code>Platform_Revenue</code> (<code>account_id = 1</code>). Every transfer debits a distinct user account (<code>allow_negative = FALSE</code>) and credits <code>account_id = 1</code>. Because locking <code>account_id = 1</code> serializes all 5,000 transactions on a single row latch (each holding the lock for $2\text{ms}$), maximum throughput caps at $\frac{1000\text{ms}}{2\text{ms}} = \mathbf{500\text{ TPS}}$, crashing checkout!</li>
+<li><em>Production Fix (Sharded Sub-Accounts / Asymmetric Locking)</em>:<ol>
+<li><strong>Sub-Account Sharding</strong>: Split hot system/merchant accounts into $K = 64$ sub-accounts (<code>account_id = 1_00</code> through <code>1_63</code>). Incoming credits pick <code>sub_account = hash(journal_id) % 64</code>, multiplying lock throughput by $64\times$ ($32,000\text{ TPS}$). Total balance is $\sum_{k=0}^{63} \text{balance}(1_k)$.</li>
+<li><strong>Append-Only Credit Deferral</strong>: Only accounts that enforce <code>allow_negative = FALSE</code> (the debited user wallet) require synchronous <code>SELECT ... FOR UPDATE</code> balance verification on the hot path; credit-only revenue/collection accounts can batch-roll-up <code>ledger_postings</code> asynchronously every $1\text{ second}$.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>3. Multi-Currency FX Conversion &amp; &quot;Penny Slicing&quot; Rounding Drift</strong>:<ul>
+<li><em>Failure Mode</em>: Converting $$10.00\text{ USD}$ split across 3 items (<code>$3.33 + $3.33 + $3.33 = $9.99</code>) loses $$0.01$! Or converting <code>USD -&gt; EUR</code> inside a single journal violates the single-currency zero-sum invariant.</li>
+<li><em>Production Fix</em>:<ol>
+<li>Store all monetary amounts as <code>BIGINT</code> micro-units ($10^{-6}$) or minor units (cents), <strong>never <code>FLOAT</code></strong>.</li>
+<li>Use <strong>Banker&#39;s Rounding (<code>ROUND_HALF_EVEN</code>)</strong> for rate conversions, and allocate any remainder cent ($\Delta = \text{Total} - \sum \text{Parts}$) deterministically to the first line item.</li>
+<li>Cross-currency transfers must use <strong>two balanced single-currency legs</strong> bridged via explicit <code>FX_Clearing_USD</code> and <code>FX_Clearing_EUR</code> accounts within the same atomic journal.</li>
+</ol>
+</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h2 id="module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter" class="scroll-mt-20 group relative">
-        <a href="#module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        Module 20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading & Jitter)
+<h2 id="module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter-load-shedding" class="scroll-mt-20 group relative">
+        <a href="#module-20-sre-resiliency-patterns-circuit-breakers-bulkheading-jitter-load-shedding" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        Module 20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading, Jitter & Load Shedding)
       </h2><h3 id="20-1-circuit-breakers-resilience4j-envoy-pattern" class="scroll-mt-20 group relative">
         <a href="#20-1-circuit-breakers-resilience4j-envoy-pattern" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         20.1 Circuit Breakers (Resilience4j / Envoy Pattern)
       </h3><ul>
-<li><strong>The Cascading Breakdown</strong>: If downstream Service B begins taking 10s per request, upstream Service A&#39;s thread pool fills with blocked callers, cascading out-of-memory crashes up to the API Gateway.</li>
-<li><strong>Circuit Breaker State Machine</strong>:<pre><code>[CLOSED] --(Failure Rate &gt; 50%)--&gt; [OPEN]
-   ^                                  |
-   |---(Probe 5% Traffic Success)--- [HALF-OPEN] &lt;--(Sleep 30s Window)
+<li><strong>The Cascading Breakdown</strong>: If downstream Service B slows down to $10\text{s}$ per call, upstream Service A&#39;s worker threads block waiting for B, exhausting A&#39;s memory and connection pools and cascading the outage across the entire company.</li>
+<li><strong>Circuit Breaker State Machine</strong>:<pre><code>[CLOSED] --(Failure/Slow-Call Rate &gt; 50% over N=100 calls)--&gt; [OPEN (Fail Fast in 0ms)]
+   ^                                                                   |
+   |--------(10 Probe Calls Succeed)-------- [HALF-OPEN] &lt;--(Wait 30s)-+
 </code></pre>
-<ul>
-<li><strong>Closed</strong>: All calls pass through; sliding window tracks success/failure ratio.</li>
-<li><strong>Open</strong>: Short-circuits all calls immediately in <strong><code>0 ms</code></strong>, returning fallback response or cached data without placing load on downstream.</li>
-<li><strong>Half-Open</strong>: Allows limited test requests through to verify downstream health.</li>
-</ul>
 </li>
 </ul>
-<h3 id="20-2-bulkheading-failure-pool-isolation" class="scroll-mt-20 group relative">
-        <a href="#20-2-bulkheading-failure-pool-isolation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        20.2 Bulkheading (Failure Pool Isolation)
+<h3 id="20-2-bulkheading-fault-domain-resource-isolation" class="scroll-mt-20 group relative">
+        <a href="#20-2-bulkheading-fault-domain-resource-isolation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        20.2 Bulkheading (Fault-Domain Resource Isolation)
       </h3><ul>
-<li><strong>Principle</strong>: Ship hulls are divided into watertight compartments (bulkheads) so a single hull puncture does not sink the vessel.</li>
-<li><strong>Software Implementation</strong>:<ul>
-<li>Separate thread pools and connection pools per downstream dependency:<ul>
-<li>ThreadPool A: Payment Service (size: 20 threads)</li>
-<li>ThreadPool B: Recommendation Service (size: 10 threads)</li>
+<li>Partition thread pools, connection pools, and rate limits <strong>per downstream dependency</strong> and <strong>per caller tier</strong>. If the <code>Recommendations</code> service hangs, it can only exhaust the 10 threads in <code>RecommendationPool</code>, leaving <code>CheckoutPool</code> (50 threads) 100% healthy.</li>
+</ul>
+<h3 id="20-3-retry-storms-aws-full-jitter-formula" class="scroll-mt-20 group relative">
+        <a href="#20-3-retry-storms-aws-full-jitter-formula" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        20.3 Retry Storms & AWS Full Jitter Formula
+      </h3><ul>
+<li><strong>The Synchronized Retry Herd</strong>: If 10,000 clients fail during a $1\text{s}$ network blip and retry with deterministic exponential backoff ($t = 2^k\text{s}$), all 10,000 clients hammer the recovering server in synchronized waves at $t = 1\text{s}, 2\text{s}, 4\text{s}, 8\text{s}$.</li>
+<li><strong>AWS Full Jitter Formula</strong>:
+$$t_{\text{sleep}} = \text{random}\left(0, \min\left(T_{\max}, T_{\text{base}} \times 2^{\text{attempt}}\right)\right)$$
+Full Jitter spreads retry load uniformly across $[0, T_{\text{window}}]$, cutting peak recovery load by $&gt;70%$.</li>
+</ul>
+<h3 id="20-4-deadline-context-propagation" class="scroll-mt-20 group relative">
+        <a href="#20-4-deadline-context-propagation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        20.4 Deadline / Context Propagation
+      </h3><ul>
+<li>Propagate remaining timeout budget (<code>grpc-timeout: 180m</code> or <code>X-Request-Deadline-Epoch-Ms</code>) across every RPC hop. Before executing a database query or downstream call, check <code>if remaining_budget_ms &lt; 10ms: abort_immediately()</code>—never burn CPU and DB locks for a client that has already disconnected!</li>
+</ul>
+<h3 id="20-5-module-20-critical-hidden-edge-cases-sre-resiliency-traps" class="scroll-mt-20 group relative">
+        <a href="#20-5-module-20-critical-hidden-edge-cases-sre-resiliency-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        20.5 Module 20 Critical Hidden Edge Cases & SRE Resiliency Traps
+      </h3><ul>
+<li><strong>1. The $3^4 = 81\times$ Multiplicative Retry Amplification Storm</strong>:<ul>
+<li><em>Failure Mode</em>: Mobile App retries $3\times$ $\to$ API Gateway retries $3\times$ $\to$ Order Service retries $3\times$ $\to$ Payment Service retries $3\times$ $\to$ Database Driver retries $3\times$. When the database experiences a minor $30%$ CPU spike causing a few timeouts, each failed user request generates <strong>$3^4 = 81$ database queries</strong>! Load skyrockets $81\times$ in 2 seconds, causing a total meltdown.</li>
+<li><em>Production Fix</em>:<ol>
+<li><strong>Single-Layer Retry Rule</strong>: Only retry at <strong>one layer</strong> (either the immediate caller for transient network errors, or the edge client with an <code>Idempotency-Key</code>), never at stacked middle layers.</li>
+<li><strong>Process-Wide Retry Budget (Envoy / Finagle Pattern)</strong>: Maintain a sliding window ratio $r = \frac{\text{retries}}{\text{original_requests}}$. Cap $r \le 0.10$ (max $10%$ extra retry traffic). Once the retry budget is exhausted, fail fast on first error without retrying!</li>
+</ol>
+</li>
 </ul>
 </li>
-<li>If Recommendation Service hangs, ThreadPool B exhausts its 10 threads, but Payment Service continues running with 0 disruption.</li>
-</ul>
+<li><strong>2. The FIFO Queue Timeout Death Spiral (Why LIFO + CoDel Saves Overloaded Servers)</strong>:<ul>
+<li><em>Failure Mode</em>: A service has a $2.0\text{s}$ client timeout and an internal FIFO worker queue of 1,000 requests. Under a traffic spike, queue wait time hits $2.1\text{s}$. With a <strong>FIFO queue</strong>, workers spend <strong>100% of their CPU processing requests that have been waiting $2.1\text{s}$</strong>—whose callers already timed out $100\text{ms}$ ago! Useful throughput drops to <strong>zero</strong> while CPU stays pinned at $100%$.</li>
+<li><em>Production Fix</em>:<ol>
+<li><strong>Bounded Queue + CoDel (Controlled Delay) Load Shedding</strong>: Stamp every queued request with <code>enqueued_at</code>. When a worker dequeues a request, if <code>now() - enqueued_at &gt; max_queue_wait_ms</code> (e.g., $250\text{ms}$), immediately drop it (<code>HTTP 503 Overload</code>) and check the next item.</li>
+<li><strong>Adaptive LIFO Under Overload</strong>: During queue saturation, switch dequeue order from FIFO to <strong>LIFO</strong> so the freshest requests (most likely to complete within the client&#39;s timeout) are served first!</li>
+</ol>
 </li>
 </ul>
-<h3 id="20-3-retry-storms-full-jitter-formula" class="scroll-mt-20 group relative">
-        <a href="#20-3-retry-storms-full-jitter-formula" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        20.3 Retry Storms & Full Jitter Formula
-      </h3><ul>
-<li><strong>The Retry Stampede</strong>: If 10,000 requests fail simultaneously and retry with standard exponential backoff ($t = 2^k$), all 10,000 clients retry at the <em>exact same second</em>, destroying the recovering service with synchronized load spikes.</li>
-<li><strong>AWS Full Jitter Algorithm</strong>:
-$$t_{\text{sleep}} = \text{random}\left(0, \min(T_{\max}, T_{\text{base}} \times 2^{\text{attempt}})\right)$$
-<em>Full Jitter smooths request distribution uniformly across time, eliminating synchronization thundering herds.</em></li>
+</li>
+<li><strong>3. The JVM / Node.js / Go DNS Caching Trap During Database Failover</strong>:<ul>
+<li><em>Failure Mode</em>: AWS RDS Multi-AZ or ElastiCache fails over to the standby node and updates its DNS CNAME (<code>db.prod.internal</code>) to the new IP with a $5\text{s}$ DNS TTL. However:<ul>
+<li>Older JVM configs cache successful DNS lookups <strong>forever</strong> (<code>networkaddress.cache.ttl = -1</code>).</li>
+<li>Node.js <code>dns.lookup()</code> uses OS <code>getaddrinfo</code> without caching, or long-lived HTTP/DB pools keep writing to existing sockets connected to the old primary (which is now rebooted as a <strong>Read-Only Replica</strong>!).</li>
+<li>Result: A &quot;30-second RDS failover&quot; causes a <strong>45-minute production outage</strong> until all app pods are manually restarted!</li>
 </ul>
-<h3 id="20-4-grpc-deadline-context-propagation" class="scroll-mt-20 group relative">
-        <a href="#20-4-grpc-deadline-context-propagation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        20.4 gRPC Deadline / Context Propagation
-      </h3><ul>
-<li><strong>Wasted Compute Problem</strong>: Client sets a 500ms timeout on API Gateway. Gateway calls Auth Service (100ms) $\to$ Inventory Service (200ms) $\to$ Database. If 520ms elapse, the client disconnected, but the database and backend continue executing the expensive query for 3 seconds.</li>
-<li><strong>Solution</strong>: Propagate remaining deadline budget in RPC headers:<pre><code>grpc-timeout: 200m
-</code></pre>
-Every downstream node checks <code>context.deadline()</code> before initiating work; if deadline has passed, aborts immediately.</li>
+</li>
+<li><em>Production Fix</em>:<ol>
+<li>Set JVM <code>networkaddress.cache.ttl=5</code> and <code>networkaddress.cache.negative.ttl=1</code>.</li>
+<li>Configure database connection pools (<code>HikariCP</code>, <code>pgxpool</code>, <code>mysql2</code>) to immediately <strong>evict and close all connections</strong> in the pool upon catching <code>MySQL Error 1290 (ER_OPTION_PREVENTS_STATEMENT --read-only)</code> or <code>Postgres SQLSTATE 25006 (read_only_sql_transaction)</code>.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>4. Metastable Failures (The &quot;Work Amplification After Recovery&quot; Trap)</strong>:<ul>
+<li><em>Failure Mode</em>: Even after a traffic spike subsides back to normal (e.g., $5,000\text{ RPS}$), the system remains at $100%$ CPU and $0\text{ RPS}$ goodput indefinitely because of a self-sustaining feedback loop: empty caches causing $100%$ DB misses, GC thrashing from queued request buffers, or lock contention reducing throughput below baseline.</li>
+<li><em>Production Fix</em>: Implement <strong>Emergency Load Shedding &amp; Cache Warmup Gates</strong>—to break a metastable loop, you must shed incoming traffic <em>below</em> the degraded capacity (e.g., reject $80%$ of traffic at the L7 edge for 60 seconds) until caches warm up and in-flight queues drain to zero.</li>
+</ul>
+</li>
 </ul>
 <hr>
 <h2 id="module-21-enterprise-security-fine-grained-authorization-at-scale-google-zanzibar-rebac" class="scroll-mt-20 group relative">
@@ -2557,11 +2715,11 @@ Every downstream node checks <code>context.deadline()</code> before initiating w
         <a href="#21-1-stateless-token-invalidation-jwt-revocation-at-scale" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         21.1 Stateless Token Invalidation (JWT Revocation at Scale)
       </h3><ul>
-<li><strong>The JWT Trade-Off</strong>: JWTs are self-contained and cryptographically signed, but cannot be invalidated before expiration without introducing shared state.</li>
+<li><strong>The JWT Dilemma</strong>: Stateless JWTs avoid a database lookup on every request, but cannot be revoked individually before expiration if a device is stolen or a user is banned.</li>
 <li><strong>Production Hybrid Token Architecture</strong>:<ol>
-<li><strong>Short-Lived Access Tokens</strong>: Lifetime of $5\text{–}15\text{ minutes}$ stored in memory.</li>
-<li><strong>Rotating Refresh Tokens</strong>: Stored in primary database with <code>token_family</code> and <code>is_revoked</code> flag.</li>
-<li><strong>Immediate Revocation (Blacklist)</strong>: When a user changes password or logs out, publish <code>revoked_user_id</code> to an in-memory Redis cluster. API gateways check <code>redis.exists(user_id:token_version)</code> or a local <strong>Bloom Filter of Revoked IDs</strong> before honoring the token.</li>
+<li><strong>Short-Lived Access JWTs ($T_{\text{ttl}} = 5\text{–}10\text{ min}$)</strong>: Verified in $0.05\text{ms}$ via local Ed25519 / RS256 public key in API Gateway memory.</li>
+<li><strong>Stateful Rotating Refresh Tokens ($T_{\text{ttl}} = 30\text{ days}$)</strong>: Stored as <code>SHA256(token)</code> in the Auth DB.</li>
+<li><strong>Instant Emergency Revocation (<code>Epoch</code> / Redis Push)</strong>: Embed <code>token_version</code> (or <code>session_id</code>) in the JWT claims. When an account is banned or logs out everywhere, push <code>revoked:user_id -&gt; timestamp</code> to Redis Pub/Sub / Gateway local RAM cache (bounded to the 10-minute Access Token TTL window!).</li>
 </ol>
 </li>
 </ul>
@@ -2569,25 +2727,51 @@ Every downstream node checks <code>context.deadline()</code> before initiating w
         <a href="#21-2-google-zanzibar-relationship-based-access-control-rebac" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         21.2 Google Zanzibar (Relationship-Based Access Control - ReBAC)
       </h3><ul>
-<li><strong>Why RBAC Fails in Modern SaaS</strong>: Simple roles (<code>role = EDITOR</code>) cannot model <em>&quot;User A can view Document X because User A is a member of Team Y which belongs to Organization Z&quot;</em>.</li>
-<li><strong>The Zanzibar Tuple Data Model</strong>:<ul>
-<li>Permissions are represented as directed relationship tuples:
-$$\langle \text{object} \rangle # \langle \text{relation} \rangle @ \langle \text{user} \rangle$$</li>
-<li><em>Examples</em>:<ul>
-<li><code>doc:readme#owner@user:alice</code></li>
-<li><code>doc:readme#viewer@group:engineers#member</code></li>
-<li><code>group:engineers#member@user:bob</code></li>
+<li><strong>Why RBAC &amp; ABAC Fail at Scale</strong>: Role-Based Access Control cannot cleanly answer: <em>&quot;Can User Bob view <code>doc:budget_2026</code> because <code>doc:budget_2026</code> is inside <code>folder:finance</code> which is shared with <code>group:execs#member</code> which contains <code>group:vp_eng#member</code> which contains <code>user:bob</code>?&quot;</em></li>
+<li><strong>The Zanzibar Relation Tuple Model</strong>:
+$$\langle \text{object_namespace}:\text{object_id} \rangle # \langle \text{relation} \rangle @ \langle \text{user_or_userset} \rangle$$<ul>
+<li><code>doc:budget_2026#parent@folder:finance</code></li>
+<li><code>folder:finance#viewer@group:execs#member</code></li>
+<li><code>group:execs#member@user:bob</code></li>
+</ul>
+</li>
+<li><strong>The &quot;New Enemy&quot; Problem &amp; Zookies (Consistency Tokens)</strong>:<ul>
+<li><em>Scenario</em>: Alice removes Bob from <code>doc:secret</code> at $t_1$, and at $t_2$ writes confidential strategy into <code>doc:secret</code>. If the ACL check hits a stale replica at $t_0 &lt; t_1$ while the document read hits $t_2$, Bob reads the secret he was specifically barred from seeing!</li>
+<li><em>Fix (Zookies)</em>: Every document mutation stores a monotonic Spanner/DB commit timestamp token (<strong>Zookie</strong>) on the document metadata. When Bob requests <code>doc:secret</code>, the app passes the document&#39;s Zookie to Zanzibar (<code>Check(doc:secret#viewer@user:bob, at_least_as_fresh_as = doc.zookie)</code>), forcing the ACL replica to wait until its replication watermark $\ge \text{zookie}$ before answering!</li>
 </ul>
 </li>
 </ul>
-</li>
-<li><strong>Graph Reachability &amp; Subgraph Traversal</strong>:<ul>
-<li>Checking <code>check(user:bob, view, doc:readme)</code> traverses the relationship graph via BFS/DFS with local edge caching.</li>
+<h3 id="21-3-module-21-critical-hidden-edge-cases-auth-zanzibar-traps" class="scroll-mt-20 group relative">
+        <a href="#21-3-module-21-critical-hidden-edge-cases-auth-zanzibar-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        21.3 Module 21 Critical Hidden Edge Cases & Auth/Zanzibar Traps
+      </h3><ul>
+<li><strong>1. Refresh Token Theft &amp; Automatic Token Family Revocation</strong>:<ul>
+<li><em>Failure Mode</em>: An attacker steals a user&#39;s Refresh Token <code>RT_1</code> from device storage. Both the attacker and the legitimate user attempt to use <code>RT_1</code> to mint a new Access Token. If <code>RT_1</code> is simply deleted on first use, one of them succeeds and the other gets a generic <code>401</code>, leaving the attacker with a valid new token <code>RT_2</code> if the attacker won the race!</li>
+<li><em>Production Fix (Refresh Token Reuse Detection)</em>: Group every login session&#39;s refresh tokens under a <code>family_id</code>. When <code>RT_1</code> is exchanged, mark <code>RT_1.status = &#39;ROTATED&#39;</code> (do <strong>not</strong> delete it) and issue <code>RT_2</code> in the same <code>family_id</code>. If any request <em>ever</em> presents a token whose status is already <code>&#39;ROTATED&#39;</code>, it proves <strong>both the thief and the victim hold tokens from this family</strong> $\implies$ <strong>immediately execute <code>UPDATE refresh_tokens SET status = &#39;REVOKED&#39; WHERE family_id = :fid</code></strong> and revoke all active sessions for that family!</li>
 </ul>
 </li>
-<li><strong>The &quot;New Enemy&quot; Problem &amp; Zookies</strong>:<ul>
-<li><em>Problem</em>: Alice removes Bob&#39;s view access to Document X. Alice immediately adds sensitive text to Document X. Bob reads from a replica that hasn&#39;t received the ACL deletion yet (reading stale permissions).</li>
-<li><em>Fix (Zookies)</em>: When ACLs are modified, return an opaque timestamp consistency token (Zookie). Access checks must evaluate at a snapshot timestamp $\ge$ the Zookie, guaranteeing permission changes are visible before subsequent data reads.</li>
+<li><strong>2. Zanzibar Cyclic Group Membership Infinite Loop &amp; Leopard Indexing</strong>:<ul>
+<li><em>Failure Mode</em>: Enterprise Admin adds <code>group:eng</code> as a member of <code>group:product</code>, and later adds <code>group:product</code> as a member of <code>group:eng</code>. A naive recursive graph traversal (<code>Check</code>) enters an infinite loop and crashes the authorization service with a stack overflow or timeout!</li>
+<li><em>Production Fix</em>:<ol>
+<li>Reject cycles at write time by running a reachability check before inserting <code>group:A#member@group:B#member</code>.</li>
+<li>Maintain a per-request <strong>Visited Tuple Set</strong> during graph expansion with a hard max depth (e.g., <code>max_depth = 15</code>).</li>
+<li>For deep nested enterprise groups, use <strong>Leopard Indexing</strong>: precompute flattened transitive group membership as compressed Roaring Bitmaps (<code>User2Group</code> and <code>Group2Group</code> bitsets) so <code>Intersection(UserGroups(bob), AllowedGroups(doc))</code> evaluates in <strong>$O(1)$ bitwise AND operations</strong> without recursive network hops!</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>3. Multi-Tenant BOLA / IDOR via Missing Composite Primary Keys</strong>:<ul>
+<li><em>Failure Mode</em>: A multi-tenant SaaS query runs <code>SELECT * FROM invoices WHERE id = :invoice_id</code> after verifying the user&#39;s JWT. An authenticated user from <code>tenant_id = 10</code> passes <code>invoice_id = 9942</code> belonging to <code>tenant_id = 20</code> and downloads a competitor&#39;s invoice (<strong>Broken Object Level Authorization — OWASP API #1</strong>).</li>
+<li><em>Production Fix</em>: Make <code>tenant_id</code> the <strong>leading column of every table&#39;s Primary Key (<code>PRIMARY KEY (tenant_id, id)</code>)</strong> and enable <strong>PostgreSQL Row-Level Security (<code>CREATE POLICY tenant_isolation ON invoices USING (tenant_id = current_setting(&#39;app.current_tenant_id&#39;)::bigint)</code>)</strong> so it is structurally impossible for a query to omit tenant scoping.</li>
+</ul>
+</li>
+<li><strong>4. Server-Side Request Forgery (SSRF) via User-Configured Webhooks / URL Previews</strong>:<ul>
+<li><em>Failure Mode</em>: Your system lets users register a webhook URL or paste a link to fetch an OpenGraph preview. An attacker registers <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/</code> (AWS IMDSv1) or <code>http://10.0.1.50:6379/</code> (internal Redis) or uses <strong>DNS Rebinding</strong> (domain resolves to <code>8.8.8.8</code> during validation, then <code>127.0.0.1</code> 100ms later during <code>fetch()</code>).</li>
+<li><em>Production Fix</em>:<ol>
+<li>Enforce <strong>AWS IMDSv2</strong> (hop-limit = 1, requires <code>PUT</code> token).</li>
+<li>Resolve DNS <strong>once</strong> Inside a custom dialer (<code>net.DialContext</code>), verify the resolved IP is not in private/reserved CIDRs (<code>127.0.0.0/8</code>, <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>, <code>169.254.0.0/16</code>, <code>::1</code>, <code>fc00::/7</code>), and connect <strong>directly to that verified IP socket</strong> (preventing DNS rebinding), with HTTP redirects disabled (<code>maxRedirects = 0</code>).</li>
+</ol>
+</li>
 </ul>
 </li>
 </ul>
@@ -2595,42 +2779,61 @@ $$\langle \text{object} \rangle # \langle \text{relation} \rangle @ \langle \tex
 <h2 id="module-22-stream-processing-state-machines-apache-flink-watermarks-eos" class="scroll-mt-20 group relative">
         <a href="#module-22-stream-processing-state-machines-apache-flink-watermarks-eos" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         Module 22: Stream Processing & State Machines (Apache Flink, Watermarks & EOS)
-      </h2><h3 id="22-1-event-time-vs-processing-time-vs-ingestion-time" class="scroll-mt-20 group relative">
-        <a href="#22-1-event-time-vs-processing-time-vs-ingestion-time" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        22.1 Event Time vs. Processing Time vs. Ingestion Time
+      </h2><h3 id="22-1-event-time-vs-processing-time" class="scroll-mt-20 group relative">
+        <a href="#22-1-event-time-vs-processing-time" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        22.1 Event Time vs. Processing Time
       </h3><ul>
-<li><strong>Processing Time</strong>: Wall-clock time of the machine processing the event. Subject to network delays, queue buffering, and server clock skew.</li>
-<li><strong>Event Time</strong>: Timestamp when the event actually occurred on the client device (e.g. mobile sensor reading, user tap).</li>
-<li><strong>The Late-Arriving Data Trap</strong>: A user on a flight plays a game in airplane mode for 6 hours. Upon landing, the mobile app dumps 50,000 batched events with timestamps from 6 hours ago. Processing time assigns all 50,000 events to the current minute! Stream processing systems must strictly compute over <strong>Event Time</strong>.</li>
+<li><strong>Processing Time</strong>: Wall-clock time of the stream worker machine. Fast, zero lag, but non-deterministic under backlog replays or network delays.</li>
+<li><strong>Event Time</strong>: Timestamp embedded in the event payload when the action physically occurred on the device. Mandatory for accurate billing, fraud detection, and time-windowed analytics.</li>
 </ul>
 <h3 id="22-2-watermarks-windowing-primitives" class="scroll-mt-20 group relative">
         <a href="#22-2-watermarks-windowing-primitives" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         22.2 Watermarks & Windowing Primitives
       </h3><ul>
-<li><strong>Watermark Definition</strong>: A monotonically increasing timestamp metric $t_w$ asserting: <em>&quot;All events with event time $\le t_w$ have been observed.&quot;</em>
-$$t_w = \max(\text{event_timestamp}) - \Delta_{\text{delay}}$$</li>
-<li><strong>Window Types</strong>:<ol>
-<li><strong>Tumbling Windows</strong>: Fixed, non-overlapping windows (e.g., $10:00–10:05, 10:05–10:10$).</li>
-<li><strong>Sliding / Hopping Windows</strong>: Fixed length with overlapping hop interval (e.g., 5-minute window sliding every 1 minute).</li>
-<li><strong>Session Windows</strong>: Dynamic windows defined by periods of inactivity (e.g., user session ends after 15 minutes of silence).</li>
+<li><strong>Watermark ($W(t)$)</strong>: A monotonically increasing timestamp assertion flowing through the stream declaring: <em>&quot;No more events with <code>event_time &lt; W(t)</code> are expected.&quot;</em>
+$$W(t) = \max(\text{observed_event_time}) - \Delta_{\text{max_out_of_orderness}}$$</li>
+<li><strong>3-Tier Late Data Defence</strong>:<ol>
+<li><strong>Bounded Out-of-Orderness Watermark</strong> (e.g., $\Delta = 30\text{s}$ buffer before window fires).</li>
+<li><strong>Allowed Lateness</strong> (e.g., keep window state alive in RocksDB for $15\text{ min}$ after watermark passes; late events trigger an incremental <code>UPDATE</code> emission).</li>
+<li><strong>Side Output Stream</strong>: Events arriving $&gt; 15\text{ min}$ late are routed to a dead-letter/reconciliation side stream rather than silently dropped!</li>
 </ol>
-</li>
-<li><strong>Handling Late Data Past Watermark</strong>:<ul>
-<li>Route late events to a <strong>Side Output Stream</strong> for audit and reconciliation; do not drop silently.</li>
-</ul>
 </li>
 </ul>
 <h3 id="22-3-end-to-end-exactly-once-semantics-eos" class="scroll-mt-20 group relative">
         <a href="#22-3-end-to-end-exactly-once-semantics-eos" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         22.3 End-to-End Exactly-Once Semantics (EOS)
       </h3><ul>
-<li><strong>The Guarantee</strong>: Input event is processed and results in state update and output event <strong>exactly once</strong>, even across node failures.</li>
-<li><strong>Chandy-Lamport Distributed Checkpointing</strong>:<ul>
-<li>Stream coordinator injects checkpoint barriers into Kafka streams. When operators receive barriers, they snapshot their internal state (RocksDB state store) to S3/HDFS.</li>
+<li><strong>Chandy-Lamport Asynchronous Barrier Snapshots</strong>:<ul>
+<li>JobManager injects <code>CheckpointBarrier(n)</code> into source Kafka partitions.</li>
+<li>Operators align barriers across input channels, snapshot their local RocksDB state asynchronously to S3, and forward the barrier downstream.</li>
+<li>Sink operators use a <strong>Two-Phase Commit Sink</strong>: pre-committing Kafka transactions on barrier arrival and issuing the final <code>commitTransaction()</code> only when the JobManager confirms Checkpoint $n$ succeeded across <strong>all</strong> operators (<code>isolation.level = read_committed</code>).</li>
 </ul>
 </li>
-<li><strong>Two-Phase Commit (2PC) Sink</strong>:<ul>
-<li>Flink Kafka Producer opens a Kafka transaction on checkpoint start and commits the transaction only when all operators acknowledge checkpoint completion (<code>read_committed</code> mode).</li>
+</ul>
+<h3 id="22-4-module-22-critical-hidden-edge-cases-stream-processing-traps" class="scroll-mt-20 group relative">
+        <a href="#22-4-module-22-critical-hidden-edge-cases-stream-processing-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        22.4 Module 22 Critical Hidden Edge Cases & Stream Processing Traps
+      </h3><ul>
+<li><strong>1. The Idle Partition Watermark Freeze (Why One Quiet Kafka Partition Halts the Entire Job)</strong>:<ul>
+<li><em>Failure Mode</em>: In Flink, a downstream operator with 32 input partitions advances its watermark to the <strong>minimum watermark across all 32 input partitions</strong>:
+$$W_{\text{operator}} = \min_{i \in {1..32}} W_{\text{partition}<em>i}$$
+If Partition 7 receives <strong>zero events</strong> during off-peak hours (or is assigned a low-volume tenant), $W</em>{\text{partition}<em>7}$ never advances! As a result, $W</em>{\text{operator}}$ freezes completely—<strong>none of the windows for the other 31 busy partitions ever close or emit results</strong>, and RocksDB state buffers grow until the cluster OOMs!</li>
+<li><em>Production Fix</em>: Always configure <strong><code>WatermarkStrategy.withIdleness(Duration.ofSeconds(30))</code></strong>. If any input partition receives no events for $30\text{s}$, Flink marks it <em>Idle</em> and excludes it from the $\min()$ watermark calculation until it resumes emitting events.</li>
+</ul>
+</li>
+<li><strong>2. Unbounded RocksDB State Store Explosion (Missing <code>StateTtlConfig</code>)</strong>:<ul>
+<li><em>Failure Mode</em>: A streaming job runs <code>stream.keyBy(e -&gt; e.session_id)</code> with <code>ValueState</code> or <code>MapState</code> to deduplicate clicks or join two streams (<code>OrderCreated</code> + <code>OrderShipped</code>). For orders that are cancelled and <em>never</em> ship, their state remains in RocksDB forever! Over 6 months, RocksDB state grows to $10\text{ TB}$, incremental checkpoints take 20 minutes, and disk hits $100%$.</li>
+<li><em>Production Fix</em>: Every keyed state descriptor in a production stream job <strong>must</strong> attach a <strong><code>StateTtlConfig</code></strong> with <code>.cleanupInRocksdbCompactFilter(1000)</code> so expired keys are garbage-collected automatically during background RocksDB SSTable compaction.</li>
+</ul>
+</li>
+<li><strong>3. Kafka Consumer Group &quot;Stop-The-World&quot; Rebalance Storms</strong>:<ul>
+<li><em>Failure Mode</em>: A Kafka consumer fetches <code>max.poll.records = 500</code>. Each record calls a slow external API taking $700\text{ms}$ ($500 \times 0.7\text{s} = 350\text{s}$), exceeding <code>max.poll.interval.ms = 300000</code> ($5\text{ min}$). The Kafka Group Coordinator declares the consumer dead, revokes its partitions, and triggers a <strong>Stop-The-World Eager Rebalance</strong> across the entire consumer group! The slow consumer finishes its loop, tries to commit offsets, fails with <code>CommitFailedException</code>, and rejoins—triggering <em>another</em> rebalance in an infinite <strong>Rebalance Death Spiral</strong>!</li>
+<li><em>Production Fix</em>:<ol>
+<li>Switch partition assignment strategy from Eager (<code>RangeAssignor</code>) to <strong><code>CooperativeStickyAssignor</code></strong> (incremental rebalancing that only migrates affected partitions without pausing healthy consumers).</li>
+<li>Enable <strong>Static Group Membership</strong> (<code>group.instance.id = pod-ordinal-name</code>) so brief rolling restarts do not trigger rebalances.</li>
+<li>Lower <code>max.poll.records</code> ($50\text{–}100$) and decouple slow I/O with bounded local worker pools Using <code>kafkaConsumer.pause(partitions)</code> while processing backlogs!</li>
+</ol>
+</li>
 </ul>
 </li>
 </ul>
@@ -2638,87 +2841,122 @@ $$t_w = \max(\text{event_timestamp}) - \Delta_{\text{delay}}$$</li>
 <h2 id="module-23-observability-distributed-tracing-at-scale-opentelemetry" class="scroll-mt-20 group relative">
         <a href="#module-23-observability-distributed-tracing-at-scale-opentelemetry" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         Module 23: Observability & Distributed Tracing at Scale (OpenTelemetry)
-      </h2><h3 id="23-1-the-3-pillars-of-observability" class="scroll-mt-20 group relative">
-        <a href="#23-1-the-3-pillars-of-observability" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        23.1 The 3 Pillars of Observability
+      </h2><h3 id="23-1-the-three-pillars-their-cost-signal-trade-offs" class="scroll-mt-20 group relative">
+        <a href="#23-1-the-three-pillars-their-cost-signal-trade-offs" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        23.1 The Three Pillars & Their Cost/Signal Trade-offs
       </h3><ul>
-<li><strong>Metrics</strong>: Numerical aggregations over time (Prometheus, Datadog). High throughput, low storage cost, ideal for alerting.</li>
-<li><strong>Logs</strong>: Structured JSON event streams (Vector, Loki, OpenSearch). Rich context, high storage cost.</li>
-<li><strong>Traces</strong>: Lifecycle journey of a single request across multiple microservices.</li>
+<li><strong>Metrics (Prometheus / VictoriaMetrics / M3DB)</strong>: Float64 counters, gauges, and histograms aggregated over time intervals. $O(1)$ storage per active label combination regardless of RPS! Best for real-time alerting and SLO dashboards.</li>
+<li><strong>Logs (ClickHouse / Loki / OpenSearch)</strong>: Unstructured or structured JSON event records. Cost scales linearly $O(\text{RPS})$ with traffic volume.</li>
+<li><strong>Distributed Traces (Jaeger / Tempo / OpenTelemetry)</strong>: Causal DAG of spans (<code>TraceID</code>, <code>SpanID</code>, <code>ParentSpanID</code>) measuring exact critical-path latency across microservice boundaries.</li>
 </ul>
-<h3 id="23-2-distributed-tracing-w3c-tracecontext" class="scroll-mt-20 group relative">
-        <a href="#23-2-distributed-tracing-w3c-tracecontext" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        23.2 Distributed Tracing & W3C TraceContext
+<h3 id="23-2-w3c-tracecontext-propagation" class="scroll-mt-20 group relative">
+        <a href="#23-2-w3c-tracecontext-propagation" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        23.2 W3C TraceContext Propagation
       </h3><ul>
-<li><strong>W3C Standard Headers</strong>:<pre><code>traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+<li>Every outbound HTTP/gRPC/Kafka call must inject the W3C standard header:<pre><code>traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 </code></pre>
-<ul>
-<li><code>00</code>: Version.</li>
-<li><code>4bf...</code>: Global 16-byte <code>Trace ID</code> (identifies the entire end-to-end user request).</li>
-<li><code>00f...</code>: 8-byte <code>Parent Span ID</code> (identifies the calling microservice).</li>
-<li><code>01</code>: <code>Trace Flags</code> (<code>01</code> = Sampled).</li>
-</ul>
-</li>
-<li>Every microservice reads <code>traceparent</code> from incoming RPC headers, creates a child span, and injects the updated header into downstream outbound calls.</li>
+(<code>version</code>-<code>16B_trace_id</code>-<code>8B_parent_span_id</code>-<code>flags</code>).</li>
 </ul>
 <h3 id="23-3-head-based-vs-tail-based-trace-sampling" class="scroll-mt-20 group relative">
         <a href="#23-3-head-based-vs-tail-based-trace-sampling" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         23.3 Head-Based vs. Tail-Based Trace Sampling
       </h3><ul>
-<li><strong>Head-Based Sampling</strong>: Sampling decision made at the API Gateway when request arrives (e.g., sample 1% of traffic).<ul>
-<li><em>Flaw</em>: A rare P99 error occurring 1 in 10,000 requests has a 99% probability of being dropped!</li>
+<li><strong>Head-Based Sampling</strong>: Decision made at ingress (<code>0.1%</code> random sample). Fast and stateless, but drops $99.9%$ of rare <code>HTTP 500</code> errors and P99.9 latency spikes!</li>
+<li><strong>Tail-Based Sampling</strong>: Spans are routed by <code>hash(TraceID)</code> to a stateful <strong>OTel Collector Tail-Sampling Tier</strong>, which buffers spans in memory for $10\text{s}$ and retains <strong>100% of traces containing an error (<code>status &gt;= 500</code>) or high latency (<code>duration &gt; 1000ms</code>)</strong>, while sampling normal <code>200 OK</code> traces at $0.05%$.</li>
+</ul>
+<h3 id="23-4-module-23-critical-hidden-edge-cases-observability-traps" class="scroll-mt-20 group relative">
+        <a href="#23-4-module-23-critical-hidden-edge-cases-observability-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        23.4 Module 23 Critical Hidden Edge Cases & Observability Traps
+      </h3><ul>
+<li><strong>1. The High-Cardinality Metric Label Explosion Outage (The $$100\text{k}$ Prometheus Bomb)</strong>:<ul>
+<li><em>Failure Mode</em>: A developer adds <code>user_id</code>, <code>order_id</code>, <code>ip_address</code>, or raw un-templated URL path (<code>/v1/users/981273/orders/44192</code>) as a label on a Prometheus counter or histogram:<pre><code class="language-python">http_request_duration_seconds.labels(method=&quot;GET&quot;, path=request.url, user_id=user.id).observe(lat)
+</code></pre>
+In time-series databases (Prometheus, Datadog, Cortex), <strong>every unique combination of label key-values creates a brand-new persistent time-series in RAM</strong> (and a 20-bucket histogram multiplies that by $20\times$!). With $5\text{M}$ users, cardinality explodes to $100,000,000+$ active series—OOM-killing Prometheus within 15 minutes and generating $$100,000+$ in cloud metric overage charges!</li>
+<li><em>Production Fix (The Cardinality Law)</em>:<ol>
+<li><strong>Never put unbounded values (<code>user_id</code>, <code>tenant_id</code>, <code>email</code>, <code>request_id</code>, raw URLs) in Metric Labels</strong>. Always normalize route labels to their router template (<code>path=&quot;/v1/users/:id/orders/:orderId&quot;</code>).</li>
+<li>Total multiplicative cardinality of all labels on any single metric must stay <strong>$&lt; 1,000$ combinations</strong>.</li>
+<li>Attach high-cardinality debugging dimensions (<code>user_id</code>, <code>order_id</code>) via <strong>OpenTelemetry Exemplars</strong> on histogram buckets, or query them in <strong>ClickHouse / Loki structured logs</strong>.</li>
+</ol>
+</li>
 </ul>
 </li>
-<li><strong>Tail-Based Sampling</strong>:<ul>
-<li>Microservices collect 100% of trace spans and buffer them in local memory or an OpenTelemetry Collector cluster.</li>
-<li>The collector inspects the completed trace:<ul>
-<li>If <code>HTTP status &gt;= 500</code> or <code>duration &gt; 2000ms</code>: <strong>Retain 100% of the trace</strong>.</li>
-<li>If <code>HTTP status == 200</code> and <code>duration &lt; 50ms</code>: Retain only 0.1%.</li>
+<li><strong>2. Synchronous Logging Blocking the Application Thread (<code>stdout</code> Pipe Stall)</strong>:<ul>
+<li><em>Failure Mode</em>: Under an error storm, an application logs $50,000\text{ stack traces/sec}$ synchronously to <code>stdout</code> or a local disk file. When the Docker/containerd log driver buffer or disk I/O saturates, the kernel <code>write(1, ...)</code> syscall on <code>stdout</code> <strong>blocks the application thread</strong>! In Node.js, Python, or Go, a blocked <code>stdout</code> pipe freezes the entire HTTP server!</li>
+<li><em>Production Fix</em>: Use <strong>Non-Blocking Ring-Buffer Loggers</strong> (e.g., Java Log4j2 LMAX Disruptor, Rust <code>tracing-appender</code>, Go <code>zap</code> buffered writer) configured with a <strong>Drop-on-Full</strong> policy for <code>INFO</code>/<code>DEBUG</code> logs and rate-limited sampling for identical error stack traces (<code>100 logs/sec</code> per callsite).</li>
 </ul>
 </li>
+<li><strong>3. Averaging Percentiles Across Pods (Why <code>avg(p99)</code> Is Mathematical Nonsense)</strong>:<ul>
+<li><em>Failure Mode</em>: Computing <code>P99</code> latency inside each application pod and then graphing <code>AVG(pod_p99)</code> across 50 pods in Grafana. If 1 pod is receiving 90% of the traffic and failing with $10\text{s}$ latency while 49 idle pods have $5\text{ms}$ latency, <code>AVG(pod_p99)</code> reports a healthy $204\text{ms}$ while 90% of your users are experiencing a total outage!</li>
+<li><em>Production Fix</em>: Never average pre-computed percentiles! Export <strong>Prometheus Histograms (<code>_bucket</code> counters)</strong> or <strong>DDSketch / HDRHistogram</strong> sketches from each pod, sum the bucket counters across all pods first (<code>sum(rate(http_request_duration_seconds_bucket[5m])) by (le)</code>), and compute <code>histogram_quantile(0.99, ...)</code> over the aggregated distribution.</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h2 id="module-24-vector-databases-ai-infrastructure-hnsw-semantic-caches" class="scroll-mt-20 group relative">
-        <a href="#module-24-vector-databases-ai-infrastructure-hnsw-semantic-caches" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        Module 24: Vector Databases & AI Infrastructure (HNSW & Semantic Caches)
+<h2 id="module-24-vector-databases-ai-infrastructure-hnsw-rag-semantic-caches" class="scroll-mt-20 group relative">
+        <a href="#module-24-vector-databases-ai-infrastructure-hnsw-rag-semantic-caches" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        Module 24: Vector Databases & AI Infrastructure (HNSW, RAG & Semantic Caches)
       </h2><h3 id="24-1-high-dimensional-vector-search-primitives" class="scroll-mt-20 group relative">
         <a href="#24-1-high-dimensional-vector-search-primitives" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         24.1 High-Dimensional Vector Search Primitives
       </h3><ul>
-<li><strong>Embeddings</strong>: Deep learning models map unstructured data (text, images, code) into continuous $D$-dimensional vector spaces ($D = 768$ or $1536$ <code>float32</code> numbers).</li>
-<li><strong>Distance Metrics</strong>:<ul>
-<li><strong>Cosine Similarity</strong>: $\cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{|\mathbf{A}| |\mathbf{B}|}$ (measures angle; normalized range $[-1, +1]$).</li>
-<li><strong>Euclidean Distance ($L_2$)</strong>: $\sqrt{\sum (A_i - B_i)^2}$.</li>
-<li><strong>Dot Product</strong>: $\mathbf{A} \cdot \mathbf{B}$ (preferred when vectors are unit-normalized; fastest compute).</li>
+<li>Dense embeddings ($D = 768\text{ to }3072$ <code>float32</code> dimensions) map semantic meaning into geometric space.</li>
+<li><strong>Unit-Normalized Dot Product</strong>: Normalize all embedding vectors to unit length ($|\mathbf{v}|_2 = 1$) at ingestion time so <strong>Cosine Similarity reduces to a single hardware-accelerated SIMD Dot Product</strong> ($\cos(\theta) = \mathbf{A} \cdot \mathbf{B}$), saving 2 square-root and division operations per comparison.</li>
 </ul>
-</li>
-</ul>
-<h3 id="24-2-hnsw-hierarchical-navigable-small-world-index" class="scroll-mt-20 group relative">
-        <a href="#24-2-hnsw-hierarchical-navigable-small-world-index" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        24.2 HNSW (Hierarchical Navigable Small World) Index
+<h3 id="24-2-hnsw-hierarchical-navigable-small-world-graph-internals" class="scroll-mt-20 group relative">
+        <a href="#24-2-hnsw-hierarchical-navigable-small-world-graph-internals" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        24.2 HNSW (Hierarchical Navigable Small World) Graph Internals
       </h3><ul>
-<li><strong>Why Brute-Force $k$-NN Fails</strong>: Comparing a query vector against 10M 1536-dim vectors requires computing 15 billion float operations per search, taking seconds.</li>
-<li><strong>HNSW Architecture (Skip-List Multi-Layer Graph)</strong>:<ul>
-<li>Top layers contain sparse long-range highway edges; bottom layer contains all vectors with short-range dense edges.</li>
-<li>Query starts at top layer, greedily navigates to closest neighbor, drops down to next layer, and repeats until reaching bottom layer.</li>
-<li>Delivers <strong>$O(\log N)$ Approximate Nearest Neighbor (ANN)</strong> search latency in <strong><code>1–5 ms</code></strong> at $98%$ recall.</li>
+<li>Multi-layer proximity graph: Layer 0 contains all $N$ vectors (<code>M = 16–64</code> bidirectional links per node); higher layers act as exponentially sparser express highways ($P(\text{layer } l) = e^{-l / m_L}$).</li>
+<li>Search starts at top layer entry point, greedily hops to the neighbor closest to Query $\mathbf{Q}$, drops down to the next layer, and maintains a dynamic candidate priority queue of size <code>efSearch</code> at Layer 0 ($O(\log N)$ complexity, $2\text{–}8\text{ms}$ P99).</li>
 </ul>
-</li>
-</ul>
-<h3 id="24-3-product-quantization-ivf-pq-semantic-caching" class="scroll-mt-20 group relative">
-        <a href="#24-3-product-quantization-ivf-pq-semantic-caching" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        24.3 Product Quantization (IVF-PQ) & Semantic Caching
+<h3 id="24-3-product-quantization-ivf-pq-binary-quantization-bq" class="scroll-mt-20 group relative">
+        <a href="#24-3-product-quantization-ivf-pq-binary-quantization-bq" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        24.3 Product Quantization (IVF-PQ) & Binary Quantization (BQ)
       </h3><ul>
-<li><strong>Memory Optimization (Product Quantization)</strong>:<ul>
-<li>10M 1536-dim vectors $\times 4\text{ bytes} = \mathbf{61.44\text{ GB RAM}}$.</li>
-<li>PQ divides each vector into $M=64$ sub-vectors and clusters them into centroids represented by 1-byte indices $\implies$ reduces memory by <strong>$96%$</strong> to <strong><code>2.5 GB</code></strong>, fitting billions of vectors on a single node.</li>
+<li><strong>Memory Math for Raw Vectors</strong>:
+$$\text{RAM}_{\text{HNSW}} = N \times D \times 4\text{ bytes} \times 1.25\text{ (graph edge overhead)}$$
+For $N = 100\text{M}$ vectors at $D = 1536$: $10^8 \times 1536 \times 4 \times 1.25 = \mathbf{768\text{ GB RAM}}$!</li>
+<li><strong>Two-Stage Quantized Rescoring</strong>:<ul>
+<li>Compress vectors in RAM by $32\times$ using <strong>Binary Quantization (1 bit per dim = 192 bytes/vector $\implies 19.2\text{ GB RAM}$)</strong> or <strong>Scalar Quantization (<code>int8</code> = $4\times$ compression)</strong>.</li>
+<li>Fetch Top-$4K$ candidates in RAM using ultra-fast bitwise <code>XOR + POPCNT</code> Hamming distance, then fetch the exact <code>float32</code> vectors for only those $4K$ candidates from NVMe SSD (<code>DiskANN</code> / <code>mmap</code>) to re-rank the final Top-$K$ with $99%$ recall!</li>
 </ul>
 </li>
-<li><strong>Semantic Caching</strong>:<ul>
-<li>Before calling an expensive LLM ($500\text{ms}$, $$0.03$), compute query vector and query Milvus/Qdrant/Redis.</li>
-<li>If a cached query exists with <strong>Cosine Similarity $\ge 0.96$</strong>, return the cached response immediately in <strong><code>5 ms</code></strong> with zero LLM API cost!</li>
+</ul>
+<h3 id="24-4-module-24-critical-hidden-edge-cases-vector-ai-infrastructure-traps" class="scroll-mt-20 group relative">
+        <a href="#24-4-module-24-critical-hidden-edge-cases-vector-ai-infrastructure-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        24.4 Module 24 Critical Hidden Edge Cases & Vector/AI Infrastructure Traps
+      </h3><ul>
+<li><strong>1. The Multi-Tenant HNSW Post-Filtering vs. Pre-Filtering Disaster (&quot;Zero Results Returned&quot;)</strong>:<ul>
+<li><em>Failure Mode</em>: You store 50M document chunks across 100,000 SaaS tenants in one shared HNSW index. Tenant A (who owns $500$ chunks, or $0.001%$ of the index) runs a search: <code>SELECT ... WHERE tenant_id = &#39;A&#39; ORDER BY embedding &lt;=&gt; :q LIMIT 10</code>.<ul>
+<li><strong>If Post-Filtering runs</strong>: HNSW finds the global Top-100 nearest vectors across all tenants, and <em>then</em> filters by <code>tenant_id == &#39;A&#39;</code>. Because Tenant A is only $0.001%$ of the dataset, <strong>0 of the global Top-100 belong to Tenant A</strong> $\implies$ the query returns <strong>0 results</strong> even though Tenant A has 500 relevant docs!</li>
+<li><strong>If Naive Pre-Filtering runs</strong>: Applying a bitmap filter <em>before</em> HNSW traversal disconnects the HNSW graph (because intermediate &quot;bridge&quot; nodes in the skip-list belong to other tenants), causing graph search to get stuck in a local minimum or degrade to a slow brute-force scan!</li>
+</ul>
+</li>
+<li><em>Production Fix</em>:<ol>
+<li><strong>Physical/Logical Partitioning per Tenant (Tiered Isolation)</strong>: In Qdrant / Milvus / pgvector, isolate large enterprise tenants into dedicated collections/partitions, and group small tenants using <strong>Payload-Indexed Single-Stage Filterable HNSW</strong> (where additional intra-tenant graph edges are built per <code>tenant_id</code> payload value so filtered graph walks stay connected!).</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>2. Cross-Tenant / PII Semantic Cache Poisoning</strong>:<ul>
+<li><em>Failure Mode</em>: To save LLM latency and cost, an engineer adds a Redis/Vector Semantic Cache in front of the LLM: if an incoming prompt has Cosine Similarity $\ge 0.96$ with a previous prompt, return the cached LLM answer.<ul>
+<li>User Alice asks: <em>&quot;Summarize my latest Q3 payroll and bonus statement.&quot;</em> $\to$ Cached.</li>
+<li>10 seconds later, User Bob asks: <em>&quot;Summarize my latest Q3 payroll and bonus statement.&quot;</em> $\to$ Cosine Similarity is <strong><code>1.00</code></strong>! The Semantic Cache returns <strong>Alice&#39;s private salary and bonus numbers to Bob</strong>!</li>
+</ul>
+</li>
+<li><em>Production Fix</em>: <strong>Never query a Semantic Cache globally across security boundaries!</strong> Every semantic cache lookup <strong>must</strong> enforce a strict hard equality pre-filter on:
+$$\text{CacheNamespaceKey} = \text{SHA256}(\text{tenant_id} \parallel \text{user_id} \parallel \text{rbac_role_bitmap} \parallel \text{model_version} \parallel \text{system_prompt_hash})$$
+Only prompts within the exact same authorization namespace may ever match via vector similarity.</li>
+</ul>
+</li>
+<li><strong>3. Embedding Model Upgrade Space Incompatibility (Why You Cannot Mix <code>v1</code> and <code>v2</code> Vectors)</strong>:<ul>
+<li><em>Failure Mode</em>: A team switches their embedding model from <code>text-embedding-3-small</code> to <code>text-embedding-3-large</code> (or fine-tunes their encoder) for newly ingested documents while leaving 50M historical vectors in the same index. Because the two models have completely orthogonal coordinate spaces, cosine similarity between a <code>v2</code> query vector and a <code>v1</code> document vector is <strong>random noise</strong>, silently destroying search relevance!</li>
+<li><em>Production Fix</em>: Always tag every vector with <code>embedding_model_version</code> and execute <strong>Blue-Green Shadow Index Migration</strong>: build a new HNSW index <code>docs_v2</code> in the background, dual-embed new writes to both <code>v1</code> and <code>v2</code>, backfill historical docs, and atomically flip the read alias once <code>docs_v2</code> reaches $100%$ coverage.</li>
+</ul>
+</li>
+<li><strong>4. LLM SSE Streaming Zombie Generation &amp; Token Budget Exhaustion</strong>:<ul>
+<li><em>Failure Mode</em>: A user triggers a long 4,000-token LLM generation (<code>$0.06</code> / 30s GPU compute) over Server-Sent Events (SSE) and closes their browser tab after 1 second. Because intermediate Nginx/ALB proxies buffer responses or fail to propagate TCP <code>FIN/RST</code> upstream immediately, the backend continues generating and paying for all 4,000 tokens for a disconnected user!</li>
+<li><em>Production Fix</em>: Disable proxy buffering (<code>X-Accel-Buffering: no</code>), wire the HTTP request&#39;s <code>req.Context().Done()</code> cancellation signal directly into the upstream LLM/vLLM stream <code>AbortController</code>, and enforce <strong>Token-Bucket Rate Limiting in Tokens/Min (TPM)</strong> rather than just Requests/Min (RPM).</li>
 </ul>
 </li>
 </ul>
@@ -2730,44 +2968,194 @@ $$t_w = \max(\text{event_timestamp}) - \Delta_{\text{delay}}$$</li>
         <a href="#25-1-grpc-protocol-buffers-wire-efficiency" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         25.1 gRPC & Protocol Buffers Wire Efficiency
       </h3><ul>
-<li><strong>The Cost of REST/JSON</strong>:<ul>
-<li>Text-based ASCII serialization, key name repetition in every payload (<code>{&quot;user_id&quot;: 42}</code> repeats <code>&quot;user_id&quot;</code> millions of times), and no built-in schema enforcement.</li>
+<li>Binary Tag-Length-Value (TLV) serialization with variable-length <code>Varint</code> encoding (<code>3–10x</code> smaller and faster to parse than ASCII JSON) over multiplexed HTTP/2 streams.</li>
 </ul>
-</li>
-<li><strong>Protocol Buffers Wire Format</strong>:<ul>
-<li>Binary tag-length-value encoding. Field names are replaced with compact <strong>1-byte integer field tags</strong> (<code>1</code>, <code>2</code>, <code>3</code>). Numbers are encoded using variable-length <strong>Varints</strong> (small integers use 1 byte instead of 8).</li>
-</ul>
-</li>
-<li><strong>HTTP/2 Transport Advantages</strong>:<ul>
-<li><strong>Single TCP Connection Multiplexing</strong>: Hundreds of concurrent RPC requests interleave binary frames over one persistent TCP connection, eliminating TCP 3-way handshake overhead.</li>
-<li><strong>Bidirectional Streaming</strong>: Native streaming RPCs (<code>rpc Chat(stream Message) returns (stream Message)</code>).</li>
-</ul>
-</li>
-</ul>
-<h3 id="25-2-service-mesh-architecture-envoy-istio" class="scroll-mt-20 group relative">
-        <a href="#25-2-service-mesh-architecture-envoy-istio" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        25.2 Service Mesh Architecture (Envoy / Istio)
+<h3 id="25-2-service-mesh-architecture-envoy-linkerd" class="scroll-mt-20 group relative">
+        <a href="#25-2-service-mesh-architecture-envoy-linkerd" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        25.2 Service Mesh Architecture (Envoy / Linkerd)
       </h3><ul>
-<li><strong>The Microservice SDK Fatigue</strong>: Writing circuit breakers, mTLS, telemetry, and retry logic in 5 different languages (Go, Java, Python, Node, Rust) leads to inconsistent behavior and library maintenance nightmares.</li>
-<li><strong>Sidecar Proxy Pattern</strong>:<ul>
-<li>An Envoy proxy runs alongside every application container (sharing the same Linux network namespace <code>localhost</code>).</li>
-<li>Application makes raw HTTP/gRPC call to <code>localhost:8080</code>. Envoy intercepts traffic via <code>iptables</code> and handles:<ol>
-<li><strong>Mutual TLS (mTLS)</strong>: Automatic cryptographic identity verification and wire encryption between services.</li>
-<li><strong>Canary Routing &amp; Traffic Splitting</strong>: Routing 5% of traffic to <code>v2</code> and 95% to <code>v1</code>.</li>
-<li><strong>Automatic Retries &amp; Circuit Breaking</strong>: Configured centrally via control plane without changing one line of application code.</li>
+<li>Offloads mTLS certificate rotation (SPIFFE/SPIRE), telemetry, circuit breaking, and canary traffic splitting into an out-of-process proxy sidecar or eBPF node agent.</li>
+</ul>
+<h3 id="25-3-module-25-critical-hidden-edge-cases-grpc-service-mesh-traps" class="scroll-mt-20 group relative">
+        <a href="#25-3-module-25-critical-hidden-edge-cases-grpc-service-mesh-traps" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        25.3 Module 25 Critical Hidden Edge Cases & gRPC/Service Mesh Traps
+      </h3><ul>
+<li><strong>1. The gRPC Over Kubernetes L4 Load Balancer Single-Pod Pinning Disaster</strong>:<ul>
+<li><em>Failure Mode</em>: Service A calls Service B via gRPC using a standard Kubernetes <code>ClusterIP</code> Service (<code>service-b.prod.svc.cluster.local:50051</code>). By default, Kubernetes <code>ClusterIP</code> uses <strong>L4 TCP <code>iptables</code> / <code>IPVS</code> load balancing</strong>, which balances <em>connections</em>, NOT <em>requests</em>. Because gRPC multiplexes <strong>all RPCs over a single persistent HTTP/2 TCP connection</strong>, Pod A opens 1 TCP connection and routes <strong>100% of its 20,000 RPS to a single Pod of Service B</strong>, melting that pod at $100%$ CPU while the other 9 Pods of Service B sit at $0%$ CPU!</li>
+<li><em>Production Fix</em>: Never route gRPC through a naive L4 TCP load balancer without one of:<ol>
+<li><strong>Client-Side Load Balancing with Headless Service</strong>: Configure Service B with <code>clusterIP: None</code> (Headless DNS returns all Pod A-records) and configure the gRPC client with <code>dns:///service-b:50051</code> and <code>{&quot;loadBalancingConfig&quot;: [{&quot;round_robin&quot;:{}}]}</code> so the gRPC client maintains a subchannel to <em>every</em> backend pod and round-robins individual RPCs.</li>
+<li><strong>L7 HTTP/2-Aware Proxy (Envoy / Linkerd)</strong>: Terminate and multiplex individual HTTP/2 frames across all backend pods at Layer 7.</li>
+<li><strong>Server-Side <code>MaxConnectionAge</code></strong>: Configure the gRPC server with <code>KeepaliveParams{MaxConnectionAge: 2 * time.Minute, MaxConnectionAgeGrace: 10 * time.Second}</code> to periodically force clients to reconnect and rebalance across new pods during autoscaling!</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>2. HTTP/2 Single-Connection TCP Head-of-Line (HoL) Blocking Under Packet Loss</strong>:<ul>
+<li><em>Failure Mode</em>: While HTTP/2 eliminates <em>application-layer</em> head-of-line blocking, all 100 concurrent gRPC streams multiplexed on one HTTP/2 connection still share a <strong>single Linux kernel TCP socket</strong>. If just <strong>1 TCP packet is dropped</strong> on the network, the Linux kernel holds back delivery of <em>all 100 streams</em> to user space until that single lost packet is retransmitted—spiking P99 latency across all 100 unrelated requests!</li>
+<li><em>Production Fix</em>: For high-throughput gRPC clients ($&gt; 1,000\text{ RPS}$ per pod), configure a <strong>gRPC Channel Pool</strong> ($4\text{–}8$ independent HTTP/2 TCP connections per target pod) so a single packet drop only impacts $\frac{1}{8}$ of in-flight streams.</li>
+</ul>
+</li>
+<li><strong>3. Protobuf Wire-Compatibility Corruption (Reusing Deleted Field Tag Numbers)</strong>:<ul>
+<li><em>Failure Mode</em>: A developer removes <code>string legacy_phone = 4;</code> from a <code>.proto</code> file and a month later adds <code>int64 account_balance = 4;</code> reusing tag <code>#4</code>. Because Protocol Buffers never transmit field names on the wire—only <strong>field tag numbers (<code>4</code>) and wire types</strong>—older services still emitting tag <code>#4</code> cause the new service to deserialize string bytes as an integer balance (or fail with wire-type mismatch)!</li>
+<li><em>Production Fix</em>: <strong>Never reuse a Protobuf field tag number or change its type.</strong> Whenever deleting a field, immediately lock its tag number and name using the <code>reserved</code> keyword:<pre><code class="language-protobuf">message UserAccount {
+  reserved 4, 11 to 14;
+  reserved &quot;legacy_phone&quot;, &quot;old_status&quot;;
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>4. GraphQL $N+1$ Resolver Amplification &amp; Recursive Depth Bomb</strong>:<ul>
+<li><em>Failure Mode</em>: A client sends a nested GraphQL query <code>posts(limit: 50) { author { company {owner { posts { author ... } } } } }</code>. Without batching, resolving 50 posts executes 1 query for posts + 50 queries for authors + 50 queries for companies = $101$ serial SQL round-trips ($N+1$ explosion), and malicious deeply nested queries exhaust server CPU/RAM!</li>
+<li><em>Production Fix</em>:<ol>
+<li>Enforce <strong>DataLoader Request-Scoped Batching</strong> on every GraphQL resolver (coalescing 50 <code>SELECT * FROM users WHERE id = ?</code> calls in the same event-loop tick into a single <code>SELECT * FROM users WHERE id IN (1..50)</code>).</li>
+<li>Enforce a hard <strong>Query Depth Limit ($\le 7$)</strong>, <strong>Static Query Complexity Cost Limit</strong>, and <strong>Persisted Queries (Allowlist)</strong> in production.</li>
 </ol>
 </li>
 </ul>
 </li>
 </ul>
-<h2 id="part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-30-point-audit" class="scroll-mt-20 group relative">
-        <a href="#part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-30-point-audit" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
-        PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (30-POINT AUDIT)
-      </h2><p>Whenever you (the AI Architect) finish proposing or reviewing a system design, you <strong>MUST</strong> run this <strong>30-Point Red-Team Audit</strong> against the design before declaring it complete:</p>
-<ol>
+<hr>
+<h2 id="module-26-production-codebase-engineering-zero-downtime-migrations-db-engine-physics-runtime-mechanics" class="scroll-mt-20 group relative">
+        <a href="#module-26-production-codebase-engineering-zero-downtime-migrations-db-engine-physics-runtime-mechanics" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        Module 26: Production Codebase Engineering — Zero-Downtime Migrations, DB Engine Physics & Runtime Mechanics
+      </h2><h3 id="26-1-zero-downtime-database-schema-migrations-at-million-user-scale" class="scroll-mt-20 group relative">
+        <a href="#26-1-zero-downtime-database-schema-migrations-at-million-user-scale" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        26.1 Zero-Downtime Database Schema Migrations at Million-User Scale
+      </h3><ul>
+<li><strong>The Metadata Lock (MDL) Queue Outage</strong>:<ul>
+<li><em>How a 10ms <code>ALTER TABLE</code> Takes Down Production</em>: Suppose you run <code>ALTER TABLE orders ADD COLUMN metadata JSON;</code> on a busy table. To modify the table definition, PostgreSQL/MySQL must acquire an <strong><code>ACCESS EXCLUSIVE</code> / Metadata Write Lock</strong>.</li>
+<li>Suppose a slow reporting query (<code>SELECT ... FROM orders</code>) has been running for $8\text{ seconds}$ holding a shared <code>ACCESS SHARE</code> read lock.</li>
+<li>Your <code>ALTER TABLE</code> cannot acquire its exclusive lock, so it <strong>waits in the lock queue</strong> behind the slow query.</li>
+<li><strong>The Catastrophe</strong>: Because the <code>ALTER TABLE</code> is waiting for an exclusive lock, <strong>every single subsequent production <code>SELECT</code>, <code>INSERT</code>, and <code>UPDATE</code> arriving on <code>orders</code> must queue <em>behind</em> the waiting <code>ALTER TABLE</code></strong>! At $5,000\text{ RPS}$, within $2\text{ seconds}$, $10,000$ queries are blocked, connection pools hit $100%$, and the entire application suffers a total P0 outage!</li>
+</ul>
+</li>
+<li><strong>Mandatory Zero-Downtime DDL Rules</strong>:<ol>
+<li><strong>Always Set a Strict <code>lock_timeout</code> Before Any DDL</strong>:<pre><code class="language-sql">SET lock_timeout = &#39;2s&#39;;          -- Fail the migration script fast if lock isn&#39;t acquired in 2s!
+SET statement_timeout = &#39;10s&#39;;
+ALTER TABLE orders ADD COLUMN metadata JSONB;
+</code></pre>
+If the lock cannot be acquired within $2\text{ seconds}$, the <code>ALTER</code> aborts harmlessly and retries in your CI/CD script—never blocking production traffic!</li>
+<li><strong>Never Build Indexes Blocking Writes</strong>:<ul>
+<li>PostgreSQL: Always use <code>CREATE INDEX CONCURRENTLY idx_orders_user ON orders (user_id);</code> (scans table in two passes without blocking concurrent <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code>).</li>
+<li>MySQL 8.0+: Always specify <code>ALTER TABLE ... ADD INDEX ..., ALGORITHM=INPLACE, LOCK=NONE;</code> (or <code>ALGORITHM=INSTANT</code> for metadata-only column additions).</li>
+</ul>
+</li>
+<li><strong>Adding <code>NOT NULL</code> or <code>FOREIGN KEY</code> Constraints Without Full-Table Locks</strong>:<ul>
+<li>Adding <code>ALTER TABLE orders ADD CONSTRAINT chk_amt CHECK (amount &gt;= 0);</code> scans all 100M rows while holding an <code>ACCESS EXCLUSIVE</code> lock!</li>
+<li><em>Fix (2-Step <code>NOT VALID</code> Pattern)</em>:<pre><code class="language-sql">-- Step 1: Instant metadata-only change (enforces constraint on NEW writes only, 0 table scan!)
+SET lock_timeout = &#39;2s&#39;;
+ALTER TABLE orders ADD CONSTRAINT chk_amt CHECK (amount &gt;= 0) NOT VALID;
+
+-- Step 2: Validate existing 100M rows in the background (holds only SHARE UPDATE EXCLUSIVE lock, never blocks reads or writes!)
+ALTER TABLE orders VALIDATE CONSTRAINT chk_amt;
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>The 4-Phase Expand-and-Contract Pattern (Renaming / Changing Columns Across Rolling K8s Deploys)</strong>:<ul>
+<li>During a Kubernetes rolling deployment, <strong>Old Code ($v_1$) and New Code ($v_2$) run simultaneously against the same database for several minutes</strong>. If you run <code>ALTER TABLE users RENAME COLUMN name TO full_name</code>, all running $v_1$ pods immediately crash with <code>ERROR: column &quot;name&quot; does not exist</code>!</li>
+<li><em>4-Phase Zero-Downtime Execution</em>:<ul>
+<li><strong>Phase 1 (Expand)</strong>: Add nullable column <code>full_name</code> (with <code>lock_timeout = &#39;2s&#39;</code>). Deploy Code $v_{1.1}$ that <strong>dual-writes</strong> to both <code>name</code> and <code>full_name</code>, while still reading from <code>name</code>.</li>
+<li><strong>Phase 2 (Backfill)</strong>: Run a throttled batch job (<code>UPDATE users SET full_name = name WHERE id BETWEEN :start AND :end AND full_name IS NULL</code>, sleeping $50\text{ms}$ whenever replica lag $&gt; 1\text{s}$).</li>
+<li><strong>Phase 3 (Switch Reads)</strong>: Once $100%$ backfilled, deploy Code $v_{1.2}$ that reads from <code>full_name</code> and stops reading <code>name</code>.</li>
+<li><strong>Phase 4 (Contract)</strong>: Deploy Code $v_2$ that stops writing to <code>name</code>, then drop <code>name</code> in a subsequent release.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="26-2-database-engine-physics-postgresql-mvcc-xid-wraparound-mysql-gap-locks" class="scroll-mt-20 group relative">
+        <a href="#26-2-database-engine-physics-postgresql-mvcc-xid-wraparound-mysql-gap-locks" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        26.2 Database Engine Physics: PostgreSQL MVCC, XID Wraparound & MySQL Gap Locks
+      </h3><ul>
+<li><strong>1. PostgreSQL MVCC Write Amplification &amp; HOT (Heap-Only Tuple) Updates</strong>:<ul>
+<li><em>Internal Architecture</em>: Unlike MySQL InnoDB (which stores secondary indexes pointing to the Clustered Primary Key and stores old row versions in a separate Rollback/Undo Segment), <strong>PostgreSQL stores secondary indexes pointing directly to the physical 6-byte heap page/tuple address (<code>ctid = (block_number, tuple_index)</code>)</strong>.</li>
+<li><em>The Write-Amplification Bomb</em>: When you run <code>UPDATE users SET last_login = NOW() WHERE id = 1</code> in PostgreSQL, Postgres inserts a <strong>brand-new physical row tuple</strong> (<code>ctid</code> changes from <code>(10, 1)</code> to <code>(42, 8)</code>). Because <code>ctid</code> changed, if the table has <strong>8 secondary indexes</strong>, Postgres must insert 8 new index entries—even though none of those 8 indexed columns changed!</li>
+<li><em>Production Fix (Enabling HOT Updates)</em>:<ul>
+<li>PostgreSQL avoids updating secondary indexes <strong>only</strong> if the <code>UPDATE</code> qualifies as a <strong>Heap-Only Tuple (HOT) Update</strong>: (a) <strong>zero</strong> indexed columns are modified by the <code>UPDATE</code>, and (b) the new row version fits inside the <strong>exact same 8KB heap page</strong> as the old row!</li>
+<li>For high-update tables in PostgreSQL, always set <strong><code>ALTER TABLE users SET (fillfactor = 80);</code></strong> (reserving $20%$ free space on every 8KB page for in-page HOT updates) and <strong>never index frequently mutated counter/timestamp columns</strong>!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>2. PostgreSQL Transaction ID (XID) Wraparound Outage</strong>:<ul>
+<li><em>Mechanism</em>: PostgreSQL uses 32-bit transaction IDs (<code>xmin</code>, <code>xmax</code>). Using modular arithmetic, any XID is compared within a $2^{31} \approx 2.14\text{ billion}$ transaction window into the past and future. Old committed tuples must be marked <strong>Frozen</strong> by <code>AUTOVACUUM</code> before they reach $2\text{ billion}$ transactions in age; otherwise, old rows would suddenly appear to be &quot;in the future&quot; and <strong>vanish from the database</strong>!</li>
+<li><em>The Outage</em>: If a long-running idle transaction (<code>idle in transaction</code>), an abandoned replication slot, or aggressive write load prevents <code>AUTOVACUUM FREEZE</code> from completing, PostgreSQL hits the safety limit ($3\text{M}$ XIDs before $2^{31}$) and <strong>completely shuts down all writes across the entire database cluster</strong> (<code>ERROR: database is not accepting commands to avoid wraparound data loss</code>)!</li>
+<li><em>Production Fix</em>:<ol>
+<li>Enforce <code>SET idle_in_transaction_session_timeout = &#39;30s&#39;;</code> globally so abandoned transactions are killed automatically.</li>
+<li>Alert on <code>max(age(datfrozenxid)) &gt; 500,000,000</code> and monitor inactive logical replication slots (<code>pg_replication_slots</code> where <code>active = false</code>, which hold back the WAL and XID horizon forever!).</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>3. PgBouncer <code>transaction</code> Pooling Mode Traps</strong>:<ul>
+<li>At $&gt; 500$ concurrent connections, PostgreSQL process-per-connection overhead ($10\text{MB}$ RAM per backend + OS context switching) requires <strong>PgBouncer in <code>pool_mode = transaction</code></strong> (where a server connection is assigned to a client only for the duration of a single <code>BEGIN...COMMIT</code> transaction).</li>
+<li><em>Critical Gotcha</em>: Session-level commands (<code>SET search_path</code>, <code>SET TIME ZONE</code>, <code>LISTEN/NOTIFY</code>, session advisory locks <code>pg_advisory_lock()</code>, and temporary tables without <code>ON COMMIT DROP</code>) <strong>leak across different users</strong> sharing the same pooled connection! Always use <strong>Transaction-Scoped equivalents</strong>: <code>SET LOCAL ...</code> and <code>pg_advisory_xact_lock()</code>.</li>
+</ul>
+</li>
+<li><strong>4. MySQL InnoDB <code>REPEATABLE READ</code> Gap-Lock Deadlocks on Non-Existent Rows</strong>:<ul>
+<li><em>Mechanism</em>: Under MySQL&#39;s default <code>REPEATABLE READ</code> isolation level, <code>SELECT ... FOR UPDATE</code> locks not only existing index records, but also the <strong>Gaps</strong> between index keys to prevent phantom reads.</li>
+<li><em>The Surprising Deadlock</em>: Suppose table <code>orders</code> currently has <code>id = 10</code> and <code>id = 20</code>.<ul>
+<li>Transaction A runs <code>SELECT * FROM orders WHERE id = 15 FOR UPDATE;</code> (row <code>15</code> does not exist) $\implies$ acquires a <strong>Shared Gap Lock</strong> on $(10, 20)$.</li>
+<li>Concurrently, Transaction B runs <code>SELECT * FROM orders WHERE id = 15 FOR UPDATE;</code> $\implies$ <strong>also succeeds</strong> in acquiring a Shared Gap Lock on $(10, 20)$ (because gap locks do not conflict with each other!).</li>
+<li>Next, Transaction A runs <code>INSERT INTO orders (id) VALUES (15);</code> (waits for B&#39;s gap lock). Transaction B runs <code>INSERT INTO orders (id) VALUES (15);</code> (waits for A&#39;s gap lock) $\implies$ <strong>Instant Deadlock</strong>!</li>
+</ul>
+</li>
+<li><em>Production Fix</em>: Use <code>INSERT ... ON DUPLICATE KEY UPDATE</code> instead of <code>SELECT FOR UPDATE + INSERT</code>, or set OLTP isolation level to <strong><code>READ COMMITTED</code></strong> (which disables gap locking for normal searches and only uses record locks).</li>
+</ul>
+</li>
+</ul>
+<h3 id="26-3-container-runtime-linux-kernel-physics-kubernetes-oomkills-cfs-throttling-graceful-drain" class="scroll-mt-20 group relative">
+        <a href="#26-3-container-runtime-linux-kernel-physics-kubernetes-oomkills-cfs-throttling-graceful-drain" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        26.3 Container, Runtime & Linux Kernel Physics (Kubernetes OOMKills, CFS Throttling & Graceful Drain)
+      </h3><ul>
+<li><strong>1. Kubernetes CPU Limits (<code>cfs_quota_us</code>) Artificial Latency Throttling</strong>:<ul>
+<li><em>Mechanism</em>: When you set <code>resources.limits.cpu: &quot;1000m&quot;</code> (1 vCPU) in Kubernetes, the Linux kernel CFS scheduler grants the container <strong>$100\text{ms}$ of CPU time per $100\text{ms}$ period</strong> (<code>cpu.cfs_period_us = 100000</code>).</li>
+<li><em>The Trap</em>: Suppose your Go/Java/Rust container runs <strong>16 worker threads</strong> on a 16-core node. When a burst of requests arrives, all 16 threads execute in parallel for <strong>$6.25\text{ms}$</strong> ($16 \times 6.25\text{ms} = 100\text{ms}$ total CPU quota consumed!). For the remaining <strong>$93.75\text{ms}$ of the period, the Linux kernel freezes all 16 threads completely</strong>—spiking P99 latency from $6\text{ms}$ to $100\text{ms}+$ even when the underlying EC2 node is $80%$ idle!</li>
+<li><em>Production Fix</em>: Set accurate <code>resources.requests.cpu</code> for scheduling, <strong>omit <code>resources.limits.cpu</code> (or set it $4\times$ higher than requests)</strong> on latency-sensitive services, and set <code>GOMAXPROCS</code> (via <code>uber-go/automaxprocs</code>) / JVM <code>-XX:ActiveProcessorCount</code> to match the container&#39;s CPU request rather than the host node&#39;s 64 cores!</li>
+</ul>
+</li>
+<li><strong>2. Container Memory Limits vs. Runtime Heap (<code>Exit Code 137 / OOMKilled</code>)</strong>:<ul>
+<li><em>The Trap</em>: A container is given <code>resources.limits.memory: 2Gi</code>. By default, Go&#39;s GC (<code>GOGC=100</code>) doubles heap size before collecting, or Node.js/JVM expands heap + off-heap native buffers past <code>2Gi</code>. The Linux kernel cgroup OOM killer immediately sends <strong><code>SIGKILL</code> (<code>Exit Code 137</code>)</strong> with zero chance for graceful shutdown, dropping all in-flight user requests!</li>
+<li><em>Production Fix</em>: Always set runtime soft memory limits to <strong>$80\text{–}85%$ of the container cgroup limit</strong> so the garbage collector runs aggressively before the kernel OOM-kills the process:<ul>
+<li><strong>Go 1.19+</strong>: <code>GOMEMLIMIT=1700MiB</code> (for a <code>2Gi</code> container)</li>
+<li><strong>JVM</strong>: <code>-XX:MaxRAMPercentage=75.0 -XX:+UseG1GC</code></li>
+<li><strong>Node.js</strong>: <code>NODE_OPTIONS=&quot;--max-old-space-size=1600&quot;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>3. The Kubernetes Rolling Deploy <code>502 Bad Gateway</code> Race (<code>SIGTERM</code> vs. Endpoint Removal)</strong>:<ul>
+<li><em>Mechanism</em>: When Kubernetes terminates a pod during a rolling deploy or scale-down, two things happen <strong>in parallel</strong> (not sequentially!):<ol>
+<li>Kubelet sends <code>SIGTERM</code> to your container process.</li>
+<li>Control plane removes the Pod IP from the <code>Endpoints</code> / <code>EndpointSlice</code> object, which asynchronously propagates to <code>kube-proxy</code> (<code>iptables</code>), Envoy, and AWS ALB Ingress over <strong>$2\text{–}5\text{ seconds}$</strong>.</li>
+</ol>
+</li>
+<li><em>The Outage</em>: If your application catches <code>SIGTERM</code> and <strong>immediately calls <code>server.Close()</code> / stops accepting new TCP connections</strong>, any traffic routed by <code>kube-proxy</code> or ALB during that $2\text{–}5\text{s}$ propagation window hits <code>Connection Refused</code> and returns <strong><code>502 Bad Gateway</code> / <code>504</code> to users on every single deployment</strong>!</li>
+<li><em>Production Fix (Zero-Dropped-Packet Shutdown Sequence)</em>:<ol>
+<li>On <code>SIGTERM</code> (or Kubernetes <code>preStop: exec: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 5&quot;]</code>), immediately flip <code>/readyz</code> health check to return <code>503 Service Unavailable</code>.</li>
+<li><strong>Continue accepting and serving normal HTTP/gRPC requests for $5\text{–}10\text{ seconds}$</strong> while load balancers drain the Pod IP from their active target pools.</li>
+<li>After the $5\text{s}$ sleep, invoke <code>httpServer.Shutdown(ctx)</code> (with a $25\text{s}$ drain deadline) to finish in-flight requests, flush telemetry/batch buffers, close DB pools, and exit <code>0</code>.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-45-point-audit" class="scroll-mt-20 group relative">
+        <a href="#part-v-the-master-red-team-critic-extreme-edge-case-audit-checklist-45-point-audit" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (45-POINT AUDIT)
+      </h2><p>Whenever you (the AI Architect) finish proposing a system design <strong>or</strong> reviewing a real production codebase/PR, you <strong>MUST</strong> run this <strong>45-Point Red-Team Audit</strong> against the architecture or code before declaring it complete:</p>
+<h3 id="core-architecture-sql-storage-checks-points-1-30" class="scroll-mt-20 group relative">
+        <a href="#core-architecture-sql-storage-checks-points-1-30" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        Core Architecture, SQL & Storage Checks (Points 1–30)
+      </h3><ol>
 <li><strong>The Day-0 Over-Engineering Check</strong>: Did the design introduce microservices, Kafka, Redis, or sharding before proving via back-of-the-envelope math that a single vertically scaled machine + RDBMS cannot handle the concurrent load?</li>
 <li><strong>The Qualitative Word Check</strong>: Are there any unquantified words (<em>&quot;fast&quot;</em>, <em>&quot;low latency&quot;</em>, <em>&quot;short TTL&quot;</em>, <em>&quot;huge data&quot;</em>, <em>&quot;scalable&quot;</em>)? Replace every single one with concrete numbers (<code>P99 ms</code>, <code>RPS</code>, <code>GB/day</code>, <code>seconds</code>).</li>
-<li><strong>The Network-Call-Inside-Transaction Check</strong>: Does any code path open a DB transaction (<code>BEGIN</code> / <code>SELECT ... FOR UPDATE</code>), make an external network call (<code>HTTP</code>, <code>SQS.push</code>, <code>Kafka.put</code>, <code>Redis</code>), and then <code>COMMIT</code>? Refactor immediately to decouple via pullers/queues or transactional outbox pattern.</li>
+<li><strong>The Network-Call-Inside-Transaction Check</strong>: Does any code path open a DB transaction (<code>BEGIN</code> / <code>SELECT ... FOR UPDATE</code>), make an external network call (<code>HTTP</code>, <code>SQS.push</code>, <code>Kafka.put</code>, <code>Redis</code>), and then <code>COMMIT</code>? Refactor immediately to decouple via pullers/queues or the Transactional Outbox pattern.</li>
 <li><strong>The Explicit Single-Statement Transaction Check</strong>: Are standalone SQL statements (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) wrapped in explicit <code>START TRANSACTION ... COMMIT</code> blocks, wasting 2 extra network round-trips?</li>
 <li><strong>The Unbounded <code>DELETE</code> / Soft-Delete Trap</strong>:<ul>
 <li>Are hard <code>DELETE</code>s executed in the user request path (triggering B+ Tree rebalancing)?</li>
@@ -2796,8 +3184,7 @@ $$t_w = \max(\text{event_timestamp}) - \Delta_{\text{delay}}$$</li>
 <li><strong>The Stop-The-World (STW) Batching Check</strong>: When batching high-velocity writes in memory, does flushing hold a mutex during network I/O (stalling worker threads) or deep-copy the map (causing a <code>2x</code> RAM spike)? Upgrade to <strong>Active-Passive Double Buffering (Pointer Swap)</strong> with <strong>Double-Checked Locking</strong>.</li>
 <li><strong>The Push-vs-Pull Config Race Check</strong>: When combining Push (Redis Pub/Sub) and Pull (1-min DB poll) for control-plane config propagation, is every update guarded by <code>if incoming.version &gt; local_cache.version</code> so a delayed poll never overwrites a newer push?</li>
 <li><strong>The Distributed Lock Correctness &amp; Fencing Check</strong>:<ul>
-<li>Are Redis locks acquired via atomic Lua (<code>SETNX</code> + <code>EXPIRE</code>) and released via atomic Lua (<code>GET == owner</code> $
-ightarrow$ <code>DEL</code>)?</li>
+<li>Are Redis locks acquired via atomic Lua (<code>SET key val NX PX ttl</code>) and released via atomic Lua (<code>if GET == owner then DEL</code>)?</li>
 <li>If a client experiences a long STW GC pause or VM freeze while holding a lock, is the shared storage protected by <strong>Monotonically Increasing Fencing Tokens</strong>?</li>
 <li>In multi-node Redlock ($N=5, Q=3$), does a client that fails to reach quorum (<code>&lt; 3</code>) <strong>immediately release partial locks</strong> across all nodes to prevent split-vote deadlocks?</li>
 </ul>
@@ -2834,24 +3221,50 @@ ightarrow$ <code>DEL</code>)?</li>
 <li><strong>The Live Streaming Manifest Thundering Herd Check</strong>: In live broadcasts, are manifest polls protected by an Origin Shield with Request Collapsing to prevent millions of concurrent requests from destroying origin transcoders?</li>
 <li><strong>The GeoHash Equator/Meridian Boundary Check</strong>: Does every geo-proximity lookup query the target bounding box <em>plus its 8 adjacent neighbor cells</em> before filtering with Haversine distance, resolving boundary discontinuities?</li>
 </ol>
+<h3 id="distributed-consensus-transactions-resiliency-production-codebase-checks-points-31-45" class="scroll-mt-20 group relative">
+        <a href="#distributed-consensus-transactions-resiliency-production-codebase-checks-points-31-45" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
+        Distributed Consensus, Transactions, Resiliency & Production Codebase Checks (Points 31–45)
+      </h3><ol start="31">
+<li><strong>The Consensus Zombie-Leader &amp; <code>PreVote</code> Check</strong>: In Raft/consensus clusters, are linearizable reads protected by <code>ReadIndex</code> quorum heartbeats (or bounded Leader Leases) so partitioned leaders never serve stale reads, and is <code>PreVote</code> enabled so rejoining partitioned nodes do not disrupt the active leader?</li>
+<li><strong>The Stuck Idempotency Key &amp; Parameter Tampering Check</strong>: Does the <code>idempotency_keys</code> table include a <code>locked_until</code> lease timestamp (so a worker <code>OOMKill</code> while <code>status = &#39;PROCESSING&#39;</code> does not return <code>409 Conflict</code> forever), and does it verify <code>request_hash == SHA256(body)</code> (returning <code>422</code> if a client reuses a key with different parameters)?</li>
+<li><strong>The Out-of-Order Saga Cancellation &amp; CDC Inbox Check</strong>: If a <code>Cancel</code> / <code>Void</code> compensation arrives <em>before</em> the delayed original <code>Create</code> / <code>Authorize</code> RPC, does it write a <code>CANCELLED</code> tombstone row so the late forward request aborts? And do all CDC/Kafka consumers record <code>event_id</code> in a local transactional <code>inbox_processed_events</code> table to deduplicate at-least-once replays?</li>
+<li><strong>The Ledger Canonical Lock-Ordering &amp; Hot-Account Check</strong>: When locking multiple accounts/rows in a transaction, are IDs sorted canonically (<code>ORDER BY account_id ASC FOR UPDATE</code>) to eliminate AB-BA deadlocks? And are high-velocity merchant/system credit accounts sharded into $K=64$ sub-accounts (or credited append-only) to prevent single-row lock serialization?</li>
+<li><strong>The $3^4$ Retry Amplification &amp; Retry Budget Check</strong>: Are retries restricted to a <strong>single caller layer</strong> using <strong>AWS Full Jitter</strong> and capped by a <strong>Process-Wide Retry Budget ($\le 10%$)</strong> so a partial downstream slowdown cannot trigger an $81\times$ retry storm?</li>
+<li><strong>The Overload Queue LIFO + CoDel &amp; Failover DNS Check</strong>: Do overloaded worker queues drop requests whose wait time exceeds their deadline budget (CoDel / LIFO) instead of burning 100% CPU on already-timed-out FIFO requests? And does the DB pool set DNS TTL $\le 5\text{s}$ and immediately evict all connections upon catching <code>READONLY</code> errors after a primary failover?</li>
+<li><strong>The Refresh Token Family Reuse &amp; Zanzibar Cycle Check</strong>: Does presenting an already-rotated Refresh Token immediately revoke the entire <code>token_family_id</code>? And do multi-tenant tables include <code>tenant_id</code> in the composite PK / RLS policy to prevent BOLA/IDOR leaks?</li>
+<li><strong>The Stream Idle-Partition Watermark &amp; State TTL Check</strong>: In Flink/stream processing, is <code>withIdleness()</code> configured so a single quiet Kafka partition cannot freeze the global watermark across all busy partitions, and does every RocksDB keyed state descriptor enforce a <code>StateTtlConfig</code>?</li>
+<li><strong>The High-Cardinality Metric Explosion Check</strong>: Are unbounded identifiers (<code>user_id</code>, <code>order_id</code>, <code>email</code>, raw URL paths) strictly forbidden inside Prometheus/Datadog metric labels (keeping label combinations $&lt; 1,000$ per metric and placing high-cardinality IDs in Logs/Traces/Exemplars instead)?</li>
+<li><strong>The Multi-Tenant Vector Filter &amp; Semantic Cache Isolation Check</strong>: Does multi-tenant vector search use single-stage payload-aware HNSW pre-filtering (or per-tenant partitions) to avoid the 0-result post-filtering bug? And are Semantic Cache lookups strictly namespaced by <code>(tenant_id, user_id, permission_scope_hash)</code> so User A&#39;s private LLM response is never served to User B?</li>
+<li><strong>The gRPC L4 Load-Balancer Pinning Check</strong>: Are gRPC services routed via L7 HTTP/2-aware proxies (Envoy/Linkerd) or client-side round-robin DNS across headless pods (plus server <code>MaxConnectionAge</code>) so HTTP/2 connection multiplexing does not pin 100% of traffic to a single backend pod?</li>
+<li><strong>The Zero-Downtime Migration <code>lock_timeout</code> &amp; Expand-Contract Check</strong>: Does every SQL migration start with <code>SET lock_timeout = &#39;2s&#39;</code>, create indexes with <code>CONCURRENTLY</code> / <code>LOCK=NONE</code>, validate constraints with <code>NOT VALID</code> + <code>VALIDATE CONSTRAINT</code>, and use the 4-phase Expand-and-Contract pattern so rolling deployments never block queries or break running pods?</li>
+<li><strong>The Postgres MVCC HOT-Update &amp; XID Wraparound Check</strong>: On high-update PostgreSQL tables, is <code>fillfactor = 80</code> set with zero indexes on frequently mutated columns (enabling Heap-Only Tuple updates), is <code>idle_in_transaction_session_timeout</code> configured, and are <code>SET LOCAL</code> / transaction locks used when behind PgBouncer <code>pool_mode = transaction</code>?</li>
+<li><strong>The Container OOMKill &amp; K8s CPU Throttling Check</strong>: Are runtime heap limits (<code>GOMEMLIMIT</code>, <code>-XX:MaxRAMPercentage=75.0</code>, <code>--max-old-space-size</code>) set to $80\text{–}85%$ of the container memory limit to prevent kernel <code>SIGKILL (Exit 137)</code>, and are restrictive K8s CPU <code>limits</code> avoided to prevent CFS 100ms quota throttling spikes?</li>
+<li><strong>The Kubernetes <code>SIGTERM</code> 502 Bad-Gateway Drain Check</strong>: On receiving <code>SIGTERM</code>, does the server fail <code>/readyz</code> immediately, <strong>continue serving traffic for $5\text{–}10\text{ seconds}$</strong> while kube-proxy/ALB removes the pod IP from endpoints, and only <em>then</em> drain active connections?</li>
+</ol>
 <hr>
 <h2 id="part-vi-copy-paste-system-prompt-for-any-ai-session" class="scroll-mt-20 group relative">
         <a href="#part-vi-copy-paste-system-prompt-for-any-ai-session" class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-brand-400 p-1" title="Link to section">#</a>
         PART VI: COPY-PASTE SYSTEM PROMPT FOR ANY AI SESSION
       </h2><blockquote>
-<p><strong>How to use</strong>: Copy the block below (along with this document attached in context) whenever starting a new system design session with an AI assistant:</p>
+<p><strong>How to use</strong>: Copy the block below (along with <code>SYSTEM_DESIGN_MASTER_BRAIN.md</code> attached in context) whenever starting a new system design or production codebase review session with any AI assistant:</p>
 </blockquote>
-<pre><code class="language-markdown">You are a Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook.
-Whenever I ask you to design, critique, or scale a system, you MUST follow this exact workflow:
+<pre><code class="language-markdown">You are a Staff/Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (26 Modules &amp; 45-Point Red-Team Audit).
+Operate in Dual Mode depending on my request:
 
-1. **SOCRATIC INTERROGATION FIRST**: Do NOT jump into drawing boxes or proposing microservices. First, ask me targeted clarifying questions from Part I (Workload Ratio, Concurrency vs. Total Volume, Consistency vs. Latency, Consumer Type, Multi-Tenancy, and Failure Blast Radius) and force every qualitative word (&quot;fast&quot;, &quot;huge&quot;, &quot;real-time&quot;) into concrete numbers.
-2. **BACK-OF-THE-ENVELOPE CAPACITY &amp; STORAGE MATH**: Compute exact RAM, Disk, IOPS, and Network Bandwidth numbers from first principles (key sizes, `uint64` offsets, `robj` headers, connection pool sizing, unit tech economics) before choosing any database or sharding strategy.
-3. **SKETCH-TO-SCALE ITERATIVE EVOLUTION**:
-   - Start with **Attempt 1 (Day-0 Monolith / Single Node / Pseudo-Code Handler)**.
-   - Identify the exact **CPU / RAM / Disk / Network / Lock Bottleneck** under concurrent load.
-   - Evolve step-by-step (`Attempt 1 -&gt; Bottleneck -&gt; Attempt 2 -&gt; Bottleneck -&gt; Final Production Design`) using the **Framework of Opposites** (Part II) and the **Decision-Flow Routing Engine** (Part III).
-4. **IMPLEMENTATION-GRADE DEPTH**: Provide exact SQL queries (`FOR UPDATE SKIP LOCKED`, Covered Indexes, `ON DUPLICATE KEY UPDATE`), Redis Lua scripts, binary on-disk layouts, and handler pseudo-code—never just high-level boxes.
-5. **RED-TEAM AUDIT**: Conclude every design by auditing it against the **18-Point Red-Team Critic Checklist** (Part V) to surface and resolve subtle race conditions, crash recovery flaws, and operational edge cases.
+MODE A — SYSTEM DESIGN &amp; ARCHITECTURE RFCs:
+1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions from Part I (Workload Ratio, Concurrency vs. Total Volume, Consistency vs. Latency, Consumer Type, Multi-Tenancy, and Failure Blast Radius) and force every qualitative word (&quot;fast&quot;, &quot;huge&quot;, &quot;real-time&quot;) into concrete numbers.
+2. BACK-OF-THE-ENVELOPE CAPACITY &amp; STORAGE MATH: Compute exact RAM, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database or sharding strategy.
+3. SKETCH-TO-SCALE ITERATIVE EVOLUTION:
+   - Start with Attempt 1 (Day-0 Monolith / Single Node / Blunt SQL &amp; Pseudocode Handler).
+   - Identify the exact CPU / RAM / Disk / Network / Lock Bottleneck under concurrent load.
+   - Evolve step-by-step (Attempt 1 -&gt; Bottleneck -&gt; Attempt 2 -&gt; Bottleneck -&gt; Final Production Design) using the Framework of Opposites (Part II) and the Decision-Flow Routing Engine (Part III).
+4. IMPLEMENTATION-GRADE DEPTH: Provide exact SQL schemas (Composite Covered Indexes, FOR UPDATE SKIP LOCKED, ON DUPLICATE KEY UPDATE), Redis Lua scripts, binary on-disk layouts, and handler pseudocode—never just high-level boxes.
+
+MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW &amp; DEBUGGING:
+- Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
+- Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = &#39;2s&#39;, CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
+
+5. 45-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 45-Point Red-Team Critic Checklist (Part V) to surface and resolve subtle race conditions, crash recovery flaws, and operational edge cases.
 </code></pre>
 
             </article>
@@ -2859,7 +3272,7 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
             <!-- Footer -->
             <footer class="mt-20 pt-8 border-t border-darkborder text-center text-xs text-slate-500 space-y-2">
                 <p>System Design Master Brain — Authored from first principles. Released under the MIT License.</p>
-                <p>Equipped with 25 Distributed Modules, Socratic Interrogation, and a 30-Point Red-Team Audit.</p>
+                <p>Equipped with 26 Distributed Modules, Dual-Mode Codebase Enforcement, Socratic Interrogation, and a 45-Point Red-Team Audit.</p>
             </footer>
         </main>
     </div>
@@ -2882,7 +3295,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
 
     <!-- Progressive Enhancement Script (Copy buttons, Search, Themes, Math) -->
     <script>
-        // Copy Text Helper
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.createElement('div');
@@ -2896,7 +3308,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
         document.addEventListener('DOMContentLoaded', () => {
             const article = document.getElementById('article-content');
 
-            // 1. Add 1-click copy buttons to all pre code blocks
             article.querySelectorAll('pre').forEach((pre) => {
                 const code = pre.querySelector('code');
                 if (!code) return;
@@ -2914,14 +3325,12 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                 pre.appendChild(copyBtn);
             });
 
-            // 2. Syntax Highlight with Highlight.js
             if (window.hljs) {
                 article.querySelectorAll('pre code').forEach((block) => {
                     try { hljs.highlightElement(block); } catch (e) {}
                 });
             }
 
-            // 3. KaTeX math auto-render
             function renderMath() {
                 if (window.renderMathInElement) {
                     try {
@@ -2941,7 +3350,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
             }
             renderMath();
 
-            // 4. Build Search Index
             const searchIndex = [];
             article.querySelectorAll('h2, h3').forEach((h) => {
                 searchIndex.push({
@@ -2951,7 +3359,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                 });
             });
 
-            // 5. Sidebar Filter Input
             const filterInput = document.getElementById('sidebar-filter');
             const moduleList = document.getElementById('module-links-list');
             filterInput.addEventListener('input', (e) => {
@@ -2962,7 +3369,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                 });
             });
 
-            // 6. Search Spotlight Modal Logic
             const searchModal = document.getElementById('search-modal');
             const searchBtn = document.getElementById('search-modal-btn');
             const searchInput = document.getElementById('search-input');
@@ -3029,14 +3435,12 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                 renderSearchResults(e.target.value);
             });
 
-            // 7. Mobile Menu Toggle
             const mobileBtn = document.getElementById('mobile-menu-btn');
             const sidebar = document.getElementById('sidebar');
             mobileBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('-translate-x-full');
             });
 
-            // 8. Dark/Light Theme Switcher
             const themeToggle = document.getElementById('theme-toggle');
             const themeDarkIcon = document.getElementById('theme-icon-dark');
             const themeLightIcon = document.getElementById('theme-icon-light');
@@ -3067,7 +3471,6 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                 setTheme(!isDark);
             });
 
-            // 9. Copy Prompt Button
             const copyPromptBtn = document.getElementById('copy-prompt-btn');
             copyPromptBtn.addEventListener('click', () => {
                 const promptSection = document.getElementById('part-vi-copy-paste-system-prompt-for-any-ai-session');
@@ -3078,7 +3481,7 @@ Whenever I ask you to design, critique, or scale a system, you MUST follow this 
                         return;
                     }
                 }
-                copyText(`You are a Principal Systems Architect operating with the System Design Master Brain playbook. Follow the 6-stage lifecycle: Socratic Interrogation -> Capacity Math -> Day-0 Monolith -> Sketch-to-Scale -> Implementation Depth -> 30-Point Red-Team Audit.`);
+                copyText(`You are a Principal Systems Architect operating with the System Design Master Brain playbook (26 Modules & 45-Point Red-Team Audit). Follow Dual-Mode Operation: Mode A (Socratic Interrogation -> Capacity Math -> Day-0 Monolith -> Sketch-to-Scale -> Implementation Depth) for System Design, and Mode B (Direct Codebase & Migration Red-Team Enforcement) for live repositories, concluding with the 45-Point Red-Team Audit.`);
             });
         });
     </script>

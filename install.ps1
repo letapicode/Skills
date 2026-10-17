@@ -30,7 +30,11 @@ function Copy-Or-DownloadFile {
     }
 
     if ($ScriptDir -and (Test-Path (Join-Path $ScriptDir $Filename))) {
-        Copy-Item (Join-Path $ScriptDir $Filename) -Destination $DestinationPath -Force
+        $srcFull = (Resolve-Path (Join-Path $ScriptDir $Filename)).Path
+        $destFull = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($DestinationPath)
+        if ($srcFull -ne $destFull) {
+            Copy-Item $srcFull -Destination $DestinationPath -Force
+        }
     } else {
         $url = "$RepoRawUrl/$Filename"
         Invoke-RestMethod -Uri $url -OutFile $DestinationPath
@@ -49,21 +53,23 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
-# 3. Current Workspace (.cursorrules, .windsurfrules, .codeiumrules, CLAUDE.md, .github/copilot-instructions.md)
+# 3. Current Workspace (.cursorrules, .windsurfrules, .codeiumrules, CLAUDE.md, SKILL.md, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
 $currentDir = Get-Location
-$isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml")
+$isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml") -or (Test-Path "pom.xml") -or (Test-Path "build.gradle")
 if ($isProjectDir) {
     Copy-Or-DownloadFile ".cursorrules" (Join-Path $currentDir ".cursorrules")
     Copy-Or-DownloadFile ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
     Copy-Or-DownloadFile ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
     Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
+    Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
+    Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
     Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "✔ Installed rules for Cursor, Windsurf, Codeium, Claude Code, and Codex/Copilot in project: $currentDir" -ForegroundColor Green
+    Write-Host "✔ Installed workspace rules & 26-module playbook for Cursor, Windsurf, Codeium, Claude Code, and Codex/Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Installation Complete!" -ForegroundColor Green
+Write-Host "Installation Complete! (26 Modules + 45-Point Red-Team Audit Active)" -ForegroundColor Green
 Write-Host "You can now ask your AI coding assistant (Claude, Codex/Copilot, Codeium, Cursor, Windsurf, Antigravity, Gemini):"
 Write-Host '  "Design a distributed rate limiter with 100k RPS and P99 < 5ms."' -ForegroundColor Yellow
-Write-Host '  "Review this architecture using the 30-Point Red-Team Audit."' -ForegroundColor Yellow
+Write-Host '  "Audit this codebase / PR using the 45-Point Red-Team Checklist."' -ForegroundColor Yellow
 Write-Host ""

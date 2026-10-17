@@ -9,8 +9,8 @@
 [![Compatible with Antigravity / Gemini](https://img.shields.io/badge/Antigravity%20%2F%20Gemini-Compatible-ea4335.svg)]()
 [![Live Documentation](https://img.shields.io/badge/Live%20Docs-GitHub%20Pages-success.svg)](https://OWNER.github.io/SystemDesignSkill/)
 
-> **Transform any AI coding assistant into a Staff/Principal Systems Architect.**  
-> Grounded in 25 production-grade distributed systems modules, first-principles capacity math, Day-0 monolith baselines, and an exhaustive 30-point red-team audit.
+> **Transform any AI coding assistant into a Staff/Principal Systems Architect—for both System Design RFCs and Real Production Codebases at Million-User Scale.**  
+> Grounded in **26 production-grade distributed systems modules**, first-principles capacity math, Day-0 monolith baselines, and an exhaustive **45-point red-team audit**.
 >
 > 📖 **Read the live web documentation**: [System Design Master Brain on GitHub Pages](https://OWNER.github.io/SystemDesignSkill/)
 
@@ -18,32 +18,41 @@
 
 ## Why System Design Master Brain?
 
-Standard AI models fail at real-world system design in predictable ways:
-- **Hand-Wavy Box Diagrams**: Drawing microservices and message buses without calculating bytes, IOPS, or bandwidth.
-- **Premature Over-Engineering**: Recommending Kafka, Redis clusters, and sharding before proving why a single vertical RDBMS instance fails.
-- **Blindness to Edge Cases**: Ignoring critical production landmines like connection pool exhaustion, half-open TCP sockets, cache stampedes, lock escalation, and split-brain failures.
+Standard AI models fail at real-world systems engineering in two predictable ways:
+1. **In Architecture Mode**: They draw hand-wavy microservice and Kafka box diagrams on Day 0 without calculating bytes, IOPS, connection pool limits, or proving why a single vertical RDBMS node saturates.
+2. **In Real Codebases**: They write naive SQL migrations that trigger metadata-lock outages, place external HTTP calls inside DB transactions, stack $3^4 = 81\times$ retry storms, leak high-cardinality labels into Prometheus, and drop in-flight requests during Kubernetes rolling restarts.
 
-**System Design Master Brain** fixes this by embedding a rigorous architectural discipline into your AI agent.
+**System Design Master Brain** fixes both by embedding a **Dual-Mode Principal Architect Engine** into your AI tools:
 
 ```
-[1. Socratic Interrogation] ──▶ Force qualitative words into P99 ms & RPS
-           │
-[2. Capacity Math]          ──▶ Calculate RAM, Disk, IOPS & Bandwidth from first principles
-           │
-[3. Day-0 Monolith]         ──▶ Prove single-node saturation limits before distributing
-           │
-[4. Sketch-to-Scale]        ──▶ Evolve: Attempt 1 ──▶ Bottleneck ──▶ Production Design
-           │
-[5. Implementation Depth]   ──▶ Real SQL schemas, indexes, isolation levels, Lua scripts
-           │
-[6. 30-Point Red-Team Audit]──▶ Rigorous checklist for cascading failures & edge cases
+┌────────────────────────────────────────────────────────────────────────────┐
+│ MODE A: Architecture & System Design RFCs (Greenfield / Scaling)           │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [1. Socratic Interrogation] ──▶ Force qualitative words into P99 ms & RPS  │
+│ [2. Capacity Math]          ──▶ Compute RAM, Disk, IOPS & Ephemeral Ports  │
+│ [3. Day-0 Monolith]         ──▶ Prove single-node limits before sharding   │
+│ [4. Sketch-to-Scale]        ──▶ Attempt 1 ──▶ Bottleneck ──▶ Production    │
+│ [5. Implementation Depth]   ──▶ Exact SQL schemas, indexes, Lua scripts    │
+│ [6. 45-Point Red-Team Audit]──▶ Audit for split-brain, stampedes & races   │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ MODE B: Real-Codebase Implementation, PR Review & Production Debugging     │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Zero network calls inside DB transactions (Transactional Outbox / Inbox) │
+│ • Canonical lock ordering (ORDER BY id ASC FOR UPDATE) & SKIP LOCKED       │
+│ • Lease-backed idempotency keys (locked_until + SHA-256 parameter check)   │
+│ • Zero-downtime DDL migrations (SET lock_timeout='2s', Expand-Contract)    │
+│ • Single-layer Full-Jitter retries + 10% retry budget + LIFO/CoDel queues  │
+│ • Postgres MVCC HOT updates (fillfactor=80), PgBouncer & K8s SIGTERM drain │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## ⚡ 1-Line Universal Install
 
-Install the skill across your AI tools with a single terminal command:
+Install the skill across your AI tools (or directly into your current project workspace) with a single terminal command:
 
 ### macOS & Linux
 ```bash
@@ -56,9 +65,9 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 ```
 
 *What the installer does automatically:*
-1. Installs the skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
-2. Installs the skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
-3. Installs **GitHub Copilot / OpenAI Codex** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), and **Cursor** (`.cursorrules`) into your project root.
+1. Installs the global skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
+2. Installs the global skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
+3. If run inside a project repository, installs **GitHub Copilot / OpenAI Codex** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 26-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
 
 ---
 
@@ -66,88 +75,107 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 | Platform | Setup Instructions |
 |---|---|
-| **GitHub Copilot & OpenAI Codex** | Copy `.github/copilot-instructions.md` into your repository root |
+| **GitHub Copilot & OpenAI Codex** | Copy `.github/copilot-instructions.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into your repository root |
 | **Claude Code (CLI)** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/`, or place `CLAUDE.md` in your project root |
 | **Claude.ai (Web / Projects)** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your Project Knowledge and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
-| **Codeium (VS Code / JetBrains)** | Copy `.codeiumrules` into the root directory of your project |
-| **Codeium Windsurf IDE** | Copy `.windsurfrules` into the root directory of your project |
-| **Cursor** | Copy `.cursorrules` into the root directory of your project |
+| **Codeium (VS Code / JetBrains)** | Copy `.codeiumrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
+| **Codeium Windsurf IDE** | Copy `.windsurfrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
+| **Cursor** | Copy `.cursorrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Antigravity / Gemini** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.gemini/antigravity/skills/system-design-master-brain/` |
 | **ChatGPT / OpenAI Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
 
 ---
 
-## 📚 The 25 Core Architecture Modules
+## 📚 The 26 Core Architecture & Production Modules
 
-The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and failure modes across **25 architectural pillars**:
+The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and hidden failure modes across **26 architectural pillars**:
 
-| Module | Architectural Domain | Core Topics & Key Algorithms |
+| Module | Architectural Domain | Core Topics, Schemas & Hidden Edge Cases |
 |:---:|---|---|
 | **01** | **Real-Time Presence & DB Internals** | B+ Tree fill-factors, Connection pooling math, SingleFlight cache stampede coalescing |
-| **02** | **Scaling & Protocol Routing** | ProxySQL wire-protocol routing, Async SQS/Kafka delegation, WebSockets vs. SSE |
-| **03** | **Concurrency & Relational KV** | `FOR UPDATE SKIP LOCKED`, Optimistic OCC, Building a distributed KV store on RDBMS |
-| **04** | **Non-Relational & Slack Architecture** | Columnar, Wide-Column, Graph DB internals, Slack real-time gateway architecture |
-| **05** | **Load Balancing & Distributed Locks** | Regional L7 LB, Remote vs. Distributed locks, Redlock clock drift vs. Chubby |
-| **06** | **Distributed IDs & Sharding** | Snowflake 64-bit layout, $O(\log N + K)$ cursor pagination, Logical shard migrations |
-| **07** | **CDN Internals & Direct Storage** | Toy CDN in 63 lines, Presigned S3 uploads, Gravatar 3-box cache pipeline |
-| **08** | **Write Batching & Hot Counters** | 5-Stage STW batching evolution, Sliding window hashtags, Unread indicators |
-| **09** | **C-Level Caching & Consistent Hash** | Redis `robj`, `epoll`, 16-sample LRU, MurmurHash3 virtual node distribution rings |
-| **10** | **Storage Engines Part 2: Bitcask** | 1 TB single-file word dictionary, Append-only datafile, Hint file, In-memory Keydir |
-| **11** | **Storage Engines Part 3: LSM Trees** | MemTable (SkipList), WAL, SSTables, Leveled compaction, Bloom & Deletable filters |
-| **12** | **Live Video & Object Storage** | HLS `.m3u8` at 20M concurrents, S3 Storage Stamps, Lexicographic partition hashing |
-| **13** | **Search Engines & Multi-Tenancy** | Inverted index, BK-Tree, Metaphone, Hot-key scatter/gather, Multi-tenant routing |
-| **14** | **Distributed Schedulers & Flash Sales** | One-time/cron job pullers, Flash sale unit allocation, SLA rebalancing |
-| **15** | **Probabilistic Data & File Sync** | HyperLogLog harmonic mean math, Dropbox content-addressable chunking & sync |
-| **16** | **Geo-Proximity & Social Graph** | GeoHash Base32 interleaving, Uber/Gojek matching engine, FlockDB graph sharding |
-| **17** | **Distributed Consensus** | Raft state machine replication, Randomized election timers, Quorum math ($Q = \lfloor N/2 \rfloor + 1$) |
-| **18** | **Distributed Transactions** | Sagas (Choreography vs. Orchestration), Transactional Outbox pattern, CDC Debezium |
-| **19** | **Financial Ledgers & Payments** | Immutable double-entry bookkeeping, $\sum \text{Debits} - \sum \text{Credits} = 0$, Webhooks |
-| **20** | **SRE Resiliency Patterns** | Circuit breakers (Resilience4j), Bulkheading, Full Jitter backoff formula |
-| **21** | **Security & Auth at Scale** | Stateless JWT revocation with Bloom filters, Google Zanzibar (ReBAC tuple model) |
-| **22** | **Stream Processing & State Machines** | Apache Flink event time, Watermarks, Chandy-Lamport distributed checkpointing |
-| **23** | **Observability & Distributed Tracing** | OpenTelemetry W3C TraceContext propagation, Tail-based sampling collector |
-| **24** | **Vector DBs & Semantic Caching** | HNSW skip-list graph, Product Quantization (IVF-PQ), Semantic cache with cosine similarity |
-| **25** | **Service Mesh & Modern RPC** | gRPC / Protobuf varint encoding, Envoy sidecar proxy, mTLS at scale |
+| **02** | **Scaling & Protocol Routing** | ProxySQL wire-protocol routing, Async SQS/Kafka delegation, WebSockets vs. SSE, Naked WSS DMZ |
+| **03** | **Concurrency & Relational KV** | `FOR UPDATE SKIP LOCKED`, `NOWAIT`, Optimistic OCC, Building a distributed KV store on RDBMS |
+| **04** | **Non-Relational & Slack Architecture** | Columnar RLE, Wide-Column tombstones, Graph supernode traps, Slack real-time gateway architecture |
+| **05** | **Load Balancing & Distributed Locks** | Regional L7 LB, Remote vs. Distributed locks, Redlock quorum release & monotonic fencing tokens |
+| **06** | **Distributed IDs & Sharding** | Snowflake 64-bit layout & NTP drift, $O(\log N + K)$ cursor pagination, `8,192` logical shards |
+| **07** | **CDN Internals & Direct Storage** | Toy CDN in 63 lines, Presigned S3 uploads (`content-length-range`), Proof-of-Ownership challenge |
+| **08** | **Write Batching & Hot Counters** | 5-Stage STW batching evolution (Double-Buffered Pointer Swap), Sliding window hashtags, Unread dots |
+| **09** | **C-Level Caching & Consistent Hash** | Redis `robj`, `epoll`, 16-sample LRU, MurmurHash3 virtual node distribution rings ($\ge 256$ vnodes) |
+| **10** | **Storage Engines Part 2: Bitcask** | 1 TB single-file word dictionary (`uint64`), Append-only datafile, Hint file, Leftmost CRC32 torn writes |
+| **11** | **Storage Engines Part 3: LSM Trees** | MemTable (SkipList), WAL, SSTables, Leveled compaction, Deletable Bloom filters, S3 cold tiering |
+| **12** | **Live Video & Object Storage** | HLS `.m3u8` at 20M concurrents, Origin Shield collapsing, S3 Storage Stamps & Reed-Solomon erasure coding |
+| **13** | **Search Engines & Multi-Tenancy** | Inverted index, BK-Tree, Metaphone, 3 Hot-key solutions, Size-aware dynamic shard split routing |
+| **14** | **Distributed Schedulers & Flash Sales** | One-time/cron job pullers, Unit tech economics, Flash sale unrolled rows, SLA rebalancing |
+| **15** | **Probabilistic Data & File Sync** | HyperLogLog harmonic mean math, Dropbox content-addressable chunking & recursive SQLite paths |
+| **16** | **Geo-Proximity & Social Graph** | GeoHash Base32 interleaving & 8-neighbor lookup, Stateless 5s ride matching, FlockDB clustered PK |
+| **17** | **Distributed Consensus** | Raft state machine, `ReadIndex` zombie-leader protection, `PreVote` protocol, Dedicated WAL NVMe |
+| **18** | **Distributed Transactions** | Sagas (Orchestration vs. Choreography), Out-of-order cancel tombstones, Transactional Outbox & Inbox |
+| **19** | **Financial Ledgers & Payments** | Immutable double-entry bookkeeping, Canonical lock ordering (`ORDER BY id ASC`), $K=64$ sharded hot accounts |
+| **20** | **SRE Resiliency Patterns** | Circuit breakers, Bulkheading, Full Jitter, $10\%$ Retry Budgets, LIFO + CoDel load shedding, Failover DNS TTL |
+| **21** | **Security & Auth at Scale** | Refresh token family theft revocation, Google Zanzibar ReBAC & Zookies, Leopard bitsets, SSRF dialer |
+| **22** | **Stream Processing & State** | Apache Flink event time, `withIdleness()` watermarks, RocksDB `StateTtlConfig`, Cooperative rebalancing |
+| **23** | **Observability & Tracing** | OpenTelemetry W3C TraceContext, Tail-based sampling, $<1,000$ metric label cardinality law, Histogram merge |
+| **24** | **Vector DBs & AI Infrastructure** | HNSW & Binary Quantization, Single-stage pre-filtering, Namespaced Semantic Cache, SSE abort propagation |
+| **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
+| **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
 
 ---
 
-## 🛡 The 30-Point Master Red-Team Audit
+## 🛡 The 45-Point Master Red-Team Audit
 
-Before any system design is approved, the AI runs this 30-point audit to catch hidden failure modes:
+Before any system design or production pull request is approved, the AI audits it against 45 real-world failure modes:
 
 <details>
-<summary><b>Click to expand the 30-Point Audit Checklist</b></summary>
+<summary><b>Click to expand all 45 Red-Team Audit Checks</b></summary>
 
-1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single node cannot handle it?
+### Core Architecture, SQL & Storage Checks (1–30)
+1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle it?
 2. **Unquantified Words**: Did any *"fast"* or *"scalable"* slip through without ms/RPS numbers?
-3. **Network Call Inside DB Transaction**: Does any DB transaction hold locks across an HTTP/SQS/Redis call?
+3. **Network Call Inside DB Transaction**: Does any DB transaction hold locks across an HTTP/SQS/Redis/Kafka call?
 4. **Single-Statement Transaction**: Are standalone `INSERT`/`UPDATE`s wrapped in unnecessary `BEGIN...COMMIT`?
-5. **Unbounded DELETE Trap**: Are soft-deletes scanned without bounded index limits (`LIMIT 100`)?
-6. **Upsert & Index**: Is `INSERT ... ON DUPLICATE KEY UPDATE` used instead of `REPLACE INTO`?
-7. **High-Contention Inventory**: Is `FOR UPDATE SKIP LOCKED` used for interchangeable pools?
-8. **Cache Stampede**: Is Mutex locking (`SET NX EX`) or SingleFlight used for cache misses?
-9. **WebSocket Port Exhaustion**: Are inbound reverse-proxy connection limits configured to avoid ephemeral port exhaustion?
-10. **Half-Open TCP Sockets**: Are bidirectional application-level PING/PONG heartbeats active?
-11. **Stop-The-World Batching**: Does in-memory batching use a non-blocking dual-buffer ring swap?
-12. **Push vs. Pull Config Race**: Do long-poll workers fetch state updates via pull to prevent dropped push events?
-13. **Distributed Lock Fencing**: Do distributed locks emit monotonically increasing fencing tokens?
-14. **Binary Relay**: Are file uploads uploaded directly to object storage via presigned URLs?
-15. **Storage Engine I/O**: Is sequential write throughput (Bitcask/LSM append-only) used for high-write ingest?
-16. **Regular Flow == Error Flow**: Does dead-letter processing reuse the main idempotent ingestion pipeline?
-17. **Multi-Tenant Hot-Shard**: Are noisy-neighbor tenants isolated onto dedicated virtual/physical shards?
-18. **Stateless Self-Healing**: Does node heartbeat state auto-expire via TTL without manual cleanup?
-19. **Connection Pool In-Flight Eviction**: Are idle database connections verified via keepalive before query execution?
-20. **Read-Your-Own-Writes**: Are recently updated sessions pinned to the primary database for replication lag window?
-21. **Poison Pill DLQ**: Do failing malformed messages get routed to a DLQ after exponential backoff?
-22. **Unindexed FOR UPDATE**: Are all locked queries backed by unique/covering indexes to avoid table locks?
-23. **S3 Multipart Abandonment**: Is an S3 lifecycle rule configured to abort incomplete multipart uploads after 7 days?
-24. **Graph Supernodes**: Are high-degree celebrity nodes partitioned into separate adjacency shards?
-25. **Cassandra Tombstone Overload**: Are range queries protected against scanning $>100,000$ tombstones?
-26. **Snowflake Clock Drift**: Does the ID generator halt or borrow future sequences when NTP steps backward?
-27. **Proof-of-Ownership**: Are content-addressed file chunks validated with cryptographic hashes before deduplication?
-28. **Consistent Hashing Domino**: Are virtual nodes ($V \ge 256$) deployed to distribute shard failure load evenly?
-29. **Live Video Manifest Herd**: Are HLS `.m3u8` manifests cached with short TTLs ($0.5\text{–}1\text{s}$) at the CDN edge?
-30. **GeoHash Boundaries**: Does spatial proximity search query the center cell plus all 8 adjacent neighbor cells?
+5. **Unbounded DELETE Trap**: Are soft-deletes scanned without composite indexes and `ORDER BY id ASC LIMIT 100` reapers?
+6. **Upsert & Index**: Is `INSERT ... ON DUPLICATE KEY UPDATE` used instead of `REPLACE INTO`, backed by covering indexes?
+7. **High-Contention Inventory**: Is `FOR UPDATE SKIP LOCKED` used for interchangeable pools and `NOWAIT` for specific seats?
+8. **Cache Stampede & Punching Bag**: Is SingleFlight (`sem_map` + `res_map`) or 90%-TTL prefreshing used for hot cache misses?
+9. **WebSocket Port Exhaustion**: Are unidirectional streams using SSE/CDN-polling, and $>65\text{k}$ sockets using naked WSS DMZ nodes?
+10. **Half-Open TCP Sockets**: Are bidirectional application-level `PING/PONG` heartbeats active?
+11. **Stop-The-World Batching**: Does in-memory batching use non-blocking Active-Passive Double Buffering (pointer swap)?
+12. **Push vs. Pull Config Race**: Are hybrid Push+Pull config updates guarded by `incoming.version > local.version`?
+13. **Distributed Lock Fencing**: Do distributed locks use atomic Lua release and monotonically increasing fencing tokens?
+14. **Binary Relay & CDN URL**: Are file uploads sent directly to S3 via presigned URLs (`content-length-range`), storing only `image_id`?
+15. **Storage Engine I/O**: Are offsets `uint64`, reads `fseek`+`fread`, CRC32 prefixes leftmost, and LSM tombstones kept to $L_{\max}$?
+16. **Regular Flow == Error Flow**: Do zero-data-loss ingestion servers spool to local disk first with 70%-disk LB self-detachment?
+17. **Multi-Tenant Hot-Shard**: Do stateful DBs use logical shards (`8,192`) and search indices use dynamic split routing?
+18. **Stateless Self-Healing Pulse**: Is static metadata piggybacked onto 5s heartbeats so wiped nodes self-heal in 5 seconds?
+19. **Connection Pool In-Flight Eviction**: Are expired DB connections closed strictly inside `pool.Put(conn)` after query completion?
+20. **Read-Your-Own-Writes**: Are post-write reads pinned to the Primary DB for $5\text{–}10\text{s}$ (or GTID-gated)?
+21. **Poison Pill DLQ**: Do consumers cap retries at $\le 3$ before routing malformed payloads to a DLQ?
+22. **Unindexed `FOR UPDATE`**: Are all locked queries verified via `EXPLAIN` to hit a narrow index instead of escalating to table locks?
+23. **S3 Multipart Abandonment**: Is `AbortIncompleteMultipartUpload` (7 days) configured on every S3 bucket?
+24. **Graph Supernodes**: Are celebrity 1-to-N follower lists stored in clustered relational tables (FlockDB) rather than graph pointers?
+25. **Cassandra Tombstone Overload**: Are high-frequency deletes avoided in wide-column stores in favor of time-partitioned table drops?
+26. **Snowflake Clock Drift**: Does the ID generator handle backward NTP steps ($\le 5\text{ms}$ wait, $>5\text{ms}$ fail-fast)?
+27. **Proof-of-Ownership**: Are deduplicated content-addressed files verified with a random byte-range challenge?
+28. **Consistent Hashing Domino**: Are virtual nodes ($V \ge 256$) deployed to distribute node failure load uniformly?
+29. **Live Video Manifest Herd**: Are HLS `.m3u8` manifests protected by an Origin Shield with request collapsing?
+30. **GeoHash Boundaries**: Does spatial proximity search query the center cell plus all **8 adjacent neighbor cells**?
+
+### Distributed Consensus, Transactions, Resiliency & Production Codebase Checks (31–45)
+31. **Consensus Zombie-Leader & `PreVote`**: Are linearizable Raft reads protected by `ReadIndex`/Leases, and is `PreVote` enabled?
+32. **Stuck Idempotency Key & Parameter Tampering**: Do `PROCESSING` idempotency keys have a `locked_until` lease and `SHA256(body)` `422` verification?
+33. **Out-of-Order Saga Cancel & CDC Inbox**: Do early `Cancel` requests write a `CANCELLED` tombstone row, and do CDC consumers deduplicate via an `inbox` table?
+34. **Ledger Canonical Lock Ordering & Hot Accounts**: Are multi-account locks sorted (`ORDER BY id ASC FOR UPDATE`) and hot merchant accounts sharded into $K=64$ sub-accounts?
+35. **$3^4$ Retry Amplification & Retry Budget**: Are retries restricted to a single layer with Full Jitter and a $\le 10\%$ process retry budget?
+36. **Overload LIFO/CoDel & Failover DNS**: Do overloaded queues shed expired requests via CoDel/LIFO, and do DB pools use `5s` DNS TTL + `READONLY` eviction?
+37. **Refresh Token Family & Multi-Tenant BOLA**: Does reused refresh token detection revoke the entire `token_family_id`, and is `tenant_id` in composite PKs/RLS?
+38. **Stream Idle-Partition Watermark & State TTL**: Does Flink configure `withIdleness()` for quiet partitions and `StateTtlConfig` on all RocksDB state?
+39. **High-Cardinality Metric Explosion**: Are `user_id`, `order_id`, and raw URLs excluded from Prometheus/Datadog metric labels ($<1,000$ series per metric)?
+40. **Vector Pre-Filtering & Semantic Cache Scope**: Does multi-tenant vector search use payload-aware pre-filtering, and is the Semantic Cache namespaced by `(tenant_id, user_id, scope_hash)`?
+41. **gRPC L4 Pinning & Channel Pool**: Does gRPC use L7 Envoy/Linkerd or headless round-robin DNS (plus `MaxConnectionAge`) to avoid single-pod L4 pinning?
+42. **Zero-Downtime DDL `lock_timeout` & Expand-Contract**: Do migrations set `SET lock_timeout = '2s'`, use `CONCURRENTLY` / `NOT VALID`, and follow 4-phase Expand-and-Contract?
+43. **Postgres MVCC HOT Updates & PgBouncer**: Are high-update Postgres tables using `fillfactor = 80` for HOT updates, `idle_in_transaction_session_timeout`, and `SET LOCAL`?
+44. **Container OOMKill & K8s CPU Throttling**: Is runtime memory capped at $80\text{–}85\%$ (`GOMEMLIMIT` / `MaxRAMPercentage`) and K8s CPU `limits` throttling avoided?
+45. **Kubernetes `SIGTERM` 502 Drain Race**: On `SIGTERM`, does the app fail `/readyz`, sleep $5\text{–}10\text{s}$ while continuing to serve traffic, and then drain connections?
 
 </details>
 
@@ -155,29 +183,31 @@ Before any system design is approved, the AI runs this 30-point audit to catch h
 
 ## 📋 Copy-Paste System Prompt (For Raw Chat Interfaces)
 
-If you are using ChatGPT, Claude.ai, or another raw LLM chat interface, attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:
+If you are using ChatGPT, Claude.ai, or another web LLM interface, attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:
 
 ```markdown
-You are a Principal Systems Architect operating with the System Design Master Brain playbook.
-Whenever I ask you to design, critique, scale, or review a system, you MUST strictly follow this exact lifecycle:
+You are a Staff/Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (26 Modules & 45-Point Red-Team Audit).
+Operate in Dual Mode depending on my request:
 
-1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions (Workload Ratio, Peak Concurrency vs. Total Data, SLA/P99 latency, Consistency model, Blast radius) and force every qualitative word ("fast", "huge", "scalable") into concrete numbers.
-2. CAPACITY MATH: Compute exact RAM, Disk, IOPS, and Network Bandwidth numbers from first principles before choosing any database or sharding strategy.
-3. DAY-0 MONOLITH BASELINE: Formulate the simplest working implementation on a single vertical RDBMS instance. Calculate the exact numerical threshold where it breaks.
+MODE A — SYSTEM DESIGN & ARCHITECTURE RFCs:
+1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions (Workload Ratio, Peak Concurrency vs. Total Volume, P99 SLA, Consistency model, Blast radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
+2. CAPACITY MATH: Compute exact RAM, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database or sharding strategy.
+3. DAY-0 MONOLITH BASELINE: Formulate the simplest working implementation on a single vertical RDBMS instance with blunt SQL and pseudocode. Calculate the exact numerical threshold where it breaks.
 4. SKETCH-TO-SCALE EVOLUTION: Walk through Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Architecture using the Framework of Opposites.
-5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis data structures/Lua scripts, and idempotency guarantees.
-6. 30-POINT RED-TEAM AUDIT: Audit the final architecture against the 30-point checklist from the playbook before declaring the design complete.
+5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite covering indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis Lua scripts, and idempotency guarantees.
+
+MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
+- Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
+- Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
+
+6. 45-POINT RED-TEAM AUDIT: Conclude every design or code review by auditing it against the 45-Point Red-Team Checklist from the playbook.
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from systems engineers worldwide!
-Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
-- How to propose new distributed systems modules (Module 26+).
-- How to add failure modes and edge cases to the Red-Team Audit checklist.
-- Standards for first-principles calculations and zero-personal-identifier policy.
+We welcome contributions from systems engineers worldwide! Please see our [Contributing Guide](CONTRIBUTING.md) for details on proposing new modules (Module 27+), production benchmarks, and failure modes.
 
 ---
 

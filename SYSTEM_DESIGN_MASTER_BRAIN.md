@@ -1,7 +1,7 @@
-# System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 16-Module Pattern Playbook
+# System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 26-Module Pattern Playbook
 
 > **How to Use This Document**:  
-> Feed or attach this file (`SYSTEM_DESIGN_MASTER_BRAIN.md`) to any AI coding or architecture assistant (or load it as an agent skill). When given any system design problem, RFC, or production bottleneck, the AI must adopt the **Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, and 16-Module Lego-Block Playbook** defined below.
+> Load this playbook as an AI agent skill (`SKILL.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.github/copilot-instructions.md`) or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` directly in context. Whether designing a distributed system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the **Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 26-Module Lego-Block Playbook, and 45-Point Red-Team Audit** defined below.
 
 ---
 
@@ -60,6 +60,27 @@ Whenever a user presents a system design prompt, **interrogate the requirements*
 
 ---
 
+### 1.3 Dual-Mode Execution: Architecture RFC Mode vs. Real-Codebase Implementation Mode
+To be maximally effective both on architectural whiteboards and inside live production repositories, operate in one of two explicit modes based on the user's task:
+
+- **Mode A — Architecture, RFC & System Design Mode** *(Triggered when asked to design a system, plan an architecture, or evaluate scaling trade-offs)*:
+  1. Execute **Socratic Interrogation First** (Section 1.2) to lock down RPS, P99 latency, consistency, and failure blast radius.
+  2. Compute **First-Principles Capacity & Storage Math** (RAM, Disk, IOPS, Bandwidth, Ephemeral Ports).
+  3. Start with the **Day-0 3-Tier Monolith Baseline** and prove numerically where it breaks before adding distributed components.
+  4. Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (Part II).
+  5. Conclude with the **45-Point Master Red-Team Audit** (Part V).
+
+- **Mode B — Real-Codebase Implementation, PR Review & Production Debugging Mode** *(Triggered when writing backend code, SQL migrations, API handlers, reviewing PRs, or debugging live latency/outages in a repo)*:
+  - **Do NOT stall with abstract whiteboard questions** when the code is right in front of you. Inspect the actual handlers, queries, schemas, and configs directly and enforce these **Non-Negotiable Codebase Laws**:
+    1. **Zero Network I/O Inside DB Transactions**: Never make an HTTP, gRPC, Redis, SQS, or Kafka call between `BEGIN` and `COMMIT`. Move external calls outside the transaction or write to a local `outbox` table in the same transaction.
+    2. **Every Outbound Call Must Have an Explicit Timeout & Bounded Retry**: Never use default infinite HTTP/gRPC/DB clients. Propagate `context.WithTimeout` / `AbortSignal.timeout()`, use **AWS Full Jitter** on retries, and cap retries via a process-wide retry budget ($\le 10\%$).
+    3. **Every Mutating Endpoint Must Be Idempotent**: Require an `Idempotency-Key` or deterministic natural unique constraint (`ON CONFLICT DO NOTHING` / `ON DUPLICATE KEY UPDATE`), verifying `SHA256(request_body)` on replay.
+    4. **Lock Ordering & Contention Safety**: Sort multi-row lock acquisitions canonically (`ORDER BY id ASC FOR UPDATE`) to make AB-BA deadlocks mathematically impossible. Use `FOR UPDATE SKIP LOCKED` for worker queues/inventory pools and `FOR UPDATE NOWAIT` for specific item claims.
+    5. **Zero-Downtime Schema Migrations**: Every DDL migration must set `SET lock_timeout = '2s'`, build indexes concurrently (`CREATE INDEX CONCURRENTLY` / `ALGORITHM=INPLACE, LOCK=NONE`), and follow the **Expand-and-Contract** pattern so rolling deployments never break old running pods.
+    6. **Bounded Queries & Cursor Pagination**: Forbid unindexed queries, `SELECT *` on wide tables, unbounded `IN (...)` lists, and deep `OFFSET` pagination (`OFFSET > 1000`). Enforce composite covering indexes and keyset cursor pagination (`WHERE (created_at, id) < (:cursor_ts, :cursor_id) ORDER BY created_at DESC, id DESC LIMIT 50`).
+
+---
+
 ## PART II: THE "FRAMEWORK OF OPPOSITES" GENERATOR MATRIX
 
 Whenever you propose an architecture or write an engineering design document (RFC), systematically generate alternative designs by inverting each design dimension into its **Opposite Pole** and evaluating the trade-off:
@@ -115,7 +136,7 @@ flowchart TD
 
 ---
 
-## PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01-25)
+## PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01–26)
 
 ## Module 01: Real-Time Presence, Connection Pooling, B+ Tree Storage Internals & Cache Stampede Coalescing
 
@@ -1054,324 +1075,552 @@ flowchart TD
 - **Quorum Mathematics**:
   - In a cluster of $N$ nodes, the majority quorum size is:
     $$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1$$
-  - **Odd Cluster Rule**: Always deploy odd node counts ($N = 3, 5, 7$). An $N=3$ cluster tolerates $F=1$ failure ($Q=2$); an $N=4$ cluster also only tolerates $F=1$ failure ($Q=3$) while adding an extra failure surface and network latency. An $N=5$ cluster tolerates $F=2$ failures ($Q=3$).
-  - **Quorum Intersection Property**: Any two majorities must overlap by at least one node ($Q_1 \cap Q_2 \ne \emptyset$), ensuring at least one node possesses the latest committed state.
+  - **Odd Cluster Rule**: Always deploy odd node counts ($N = 3, 5, 7$). An $N=3$ cluster tolerates $F=1$ failure ($Q=2$); an $N=4$ cluster also only tolerates $F=1$ failure ($Q=3$) while adding an extra failure surface and higher write quorum latency. An $N=5$ cluster tolerates $F=2$ failures ($Q=3$).
+  - **Quorum Intersection Property**: Any two majorities must overlap by at least one node ($Q_1 \cap Q_2 \ne \emptyset$), guaranteeing that any newly elected leader's quorum contains at least one node possessing the highest committed log entry.
 
 ### 17.2 The Raft Consensus Algorithm (State Machine Replication)
 - **Node States**: Every node exists in one of three states: **Follower**, **Candidate**, or **Leader**.
 - **1. Randomized Election Timers**:
   - Followers reset their election timer whenever receiving a valid heartbeat (`AppendEntries` RPC) from the Leader.
   - If a follower hears nothing within a randomized window ($150\text{ms}–300\text{ms}$), it transitions to Candidate, increments `currentTerm`, votes for itself, and broadcasts `RequestVote` RPCs.
-  - Randomizing timeouts prevents **Split-Vote Deadlocks** where multiple nodes become candidates simultaneously.
+  - Randomizing timeouts prevents **Split-Vote Livelocks** where multiple nodes become candidates simultaneously and split the vote indefinitely.
 - **2. Election Safety & Up-to-Date Log Rule**:
-  - A node votes for a candidate *only* if the candidate's log is at least as up-to-date as its own (`lastLogTerm > myLastLogTerm`, or `lastLogTerm == myLastLogTerm && lastLogIndex >= myLastLogIndex`). This prevents out-of-date nodes from ever being elected leader.
+  - A node votes for a candidate *only* if the candidate's log is at least as up-to-date as its own:
+    $$\text{candidate.lastLogTerm} > \text{my.lastLogTerm} \quad \lor \quad (\text{candidate.lastLogTerm} == \text{my.lastLogTerm} \land \text{candidate.lastLogIndex} \ge \text{my.lastLogIndex})$$
+    This prevents a lagging node from ever winning an election and overwriting committed entries.
 - **3. Log Replication & Commit Index**:
   - Client sends command to Leader $\implies$ Leader appends entry to its local WAL $\implies$ Leader broadcasts `AppendEntries` to followers.
-  - Once entry is replicated across a majority ($Q$), Leader advances `commitIndex`, applies entry to its finite state machine, and returns success to client.
+  - Once the entry is persisted on a majority ($Q$), the Leader advances `commitIndex`, applies the entry to its local state machine, returns success to the client, and notifies followers of the new `commitIndex` on the next heartbeat.
 - **4. Network Partitions & Split-Brain Prevention**:
-  - If a 5-node cluster splits into $\{N_1, N_2\}$ and $\{N_3, N_4, N_5\}$, the minority partition $\{N_1, N_2\}$ can never reach quorum ($2 < 3$) and rejects all writes. The majority partition $\{N_3, N_4, N_5\}$ elects a leader and proceeds safely. Upon partition healing, $N_1$ and $N_2$ truncate uncommitted entries and sync from the majority leader.
+  - If a 5-node cluster splits into $\{N_1, N_2\}$ (containing old Leader $N_1$) and $\{N_3, N_4, N_5\}$, the minority partition $\{N_1, N_2\}$ can never reach quorum ($2 < 3$) and blocks all writes. The majority partition $\{N_3, N_4, N_5\}$ elects a new leader for `term + 1` and proceeds safely. Upon partition healing, $N_1$ sees the higher term, steps down to Follower, truncates its uncommitted log tail, and syncs from the majority leader.
 
 ### 17.3 Leaderless Quorum Systems (Dynamo / Cassandra Model)
 - **Configurable Consistency ($N, W, R$)**:
-  - $N$: Replication factor (number of nodes storing each partition).
-  - $W$: Write quorum (number of nodes that must acknowledge a write).
-  - $R$: Read quorum (number of nodes that must respond to a read).
-- **Strong Consistency Condition**:
+  - $N$: Replication factor (nodes storing each key range).
+  - $W$: Write quorum (nodes that must acknowledge a write before returning `200 OK`).
+  - $R$: Read quorum (nodes queried on a read before returning the newest version).
+- **Strong Overlap Condition**:
   $$W + R > N$$
-  *(If $N=3, W=2, R=2$, every read is guaranteed to intersect with at least one node containing the latest write).*
-- **Conflict Resolution Primitives**:
-  - **Read Repair**: Client reads from $R$ nodes; if timestamps differ, client returns latest version and sends background writes to stale nodes.
-  - **Hinted Handoff**: If target replica is down during write, another node holds an ephemeral "hint" and delivers it once target recovers.
+  *(Example: $N=3, W=2, R=2 \implies 2+2 > 3$. Every read quorum intersects with at least one node from the latest write quorum).*
+- **Anti-Entropy & Repair Primitives**:
+  - **Read Repair**: Coordinator reads from $R$ nodes; if versions differ, returns the newest value to the client and asynchronously writes the newest value back to stale replicas.
+  - **Hinted Handoff**: If a target replica is unreachable during a write, the coordinator writes a local "hint" file and replays it once the replica recovers.
+  - **Merkle Tree Anti-Entropy**: Background exchanges of hierarchical cryptographic hashes of key ranges ($O(\log K)$ network transfer) to locate and repair silent replica divergence.
+
+### 17.4 Module 17 Critical Hidden Edge Cases & Consensus Traps
+- **1. The "Zombie Leader" Stale Read Trap & `ReadIndex` / Leader Leases**:
+  - *Failure Mode*: Suppose Leader $N_1$ is partitioned into a minority $\{N_1, N_2\}$ while $\{N_3, N_4, N_5\}$ elects $N_3$ as the new leader and commits new writes. If a client sends a `GET` request to $N_1$ and $N_1$ serves the read directly from its local in-memory state machine without checking quorum, $N_1$ returns **stale, split-brain data**—violating linearizability!
+  - *Production Fix*: Never serve linearizable reads from local leader memory unchecked. Implement either:
+    1. **Raft `ReadIndex` Protocol**: Leader records its current `commitIndex` as `readIndex`, sends a lightweight round of heartbeat RPCs to confirm a majority still recognizes it as leader, waits until `appliedIndex >= readIndex`, and then serves the read.
+    2. **Bounded Leader Leases**: Leader acquires a time-bounded lease ($T_{\text{lease}} < T_{\text{election\_min}} / \text{clock\_drift\_factor}$) during which followers promise not to vote for any other candidate.
+- **2. The Disruptive Rejoining Node (`PreVote` Storm)**:
+  - *Failure Mode*: Node $N_5$ suffers a flaky asymmetric firewall drop where it cannot receive heartbeats from the Leader, so its election timer fires 500 times—incrementing its `currentTerm` from `4` to `504`. When the network heals, $N_5$ broadcasts `RequestVote(term=504)`. Even though $N_5$'s log is stale (so it cannot win the election), the healthy Leader sees `term 504 > 4` and is forced by Raft rules to **immediately step down to Follower**, halting all cluster writes during a pointless cluster-wide re-election!
+  - *Production Fix*: Enable the **Raft `PreVote` Extension** (`etcd --pre-vote=true`). Before incrementing `currentTerm`, a candidate first broadcasts a `PreVote` RPC asking: *"Would you vote for me if I incremented my term?"* Followers reject `PreVote` if they have received a valid leader heartbeat within the minimum election timeout. Thus, isolated nodes never inflate their term.
+- **3. Shared Disk `wal_fsync` Starvation & Endless Leader Flapping**:
+  - *Failure Mode*: Consensus engines (etcd, ZooKeeper, Raft) must call `fsync()` on every `AppendEntries` write before acknowledging. If etcd shares an EBS volume or NVMe drive with noisy application container logs or Prometheus compaction, disk I/O latency spikes to $250\text{ms}$—exceeding the $150\text{ms}$ Raft election timeout. Followers assume the leader died, trigger elections, and the new leader immediately stalls on the same disk, causing **endless Leader Flapping**.
+  - *Production Fix*: Isolate consensus WAL directories onto a dedicated physical NVMe/SSD spindle (`> 3,000 IOPS`), set I/O scheduling priority to real-time (`ionice -c 1 -n 0`), and monitor `wal_fsync_duration_seconds` P99 $< 10\text{ms}$.
+- **4. Leaderless `W + R > N` Sloppy Quorum & Last-Write-Wins (LWW) Data Loss**:
+  - *Failure Mode*: In Cassandra/Dynamo, `W + R > N` only provides strong consistency under **Strict Quorum** with synchronized clocks. If **Sloppy Quorum / Hinted Handoff** is enabled during a partition, writes succeed on non-replica stand-in nodes that do not intersect with $R$ read nodes! Furthermore, if two clients concurrently update the same key with `LWW` timestamps and one server's NTP clock is $15\text{ms}$ ahead, the earlier write silently overwrites the later write.
+  - *Production Fix*: Never use Leaderless LWW tables for financial balances, inventory, or uniqueness constraints; use Raft/Paxos (`LOCAL_SERIAL` / `SERIAL` Lightweight Transactions) or RDBMS row locks.
 
 ---
 
 ## Module 18: Distributed Transactions & Cross-Service Consistency (Sagas & Transactional Outbox)
 
-### 18.1 Why Two-Phase Commit (2PC) Fails in Microservices
+### 18.1 Why Two-Phase Commit (2PC / XA) Fails in Microservices
 - **The In-Doubt Blocking Disaster**:
-  - 2PC uses a Coordinator and Participants across two phases: (1) `PREPARE` (participants vote YES/NO and lock resources), (2) `COMMIT` (coordinator instructs commit).
-  - *Catastrophic Flaw*: If coordinator crashes after participants vote YES, all participant databases remain in the **In-Doubt State**, holding exclusive row latches indefinitely across network boundaries!
-  - Cross-service 2PC shatters service autonomy, reduces availability to the product of all service availabilities ($A_{\text{total}} = \prod A_i$), and is an enterprise anti-pattern.
+  - 2PC coordinates a transaction across two phases: (1) `PREPARE` (participants acquire exclusive row locks and vote YES/NO), and (2) `COMMIT` (coordinator instructs commit).
+  - *Catastrophic Flaw*: 2PC is a **blocking protocol**. If the Coordinator crashes after participants vote YES in Phase 1, all participant databases are trapped in the **In-Doubt State**—holding exclusive row and page latches across the network indefinitely until the coordinator recovers!
+  - Cross-service 2PC destroys microservice autonomy, multiplies tail latency, and reduces overall availability to the product of all participants ($A_{\text{total}} = \prod_{i=1}^k A_i$).
 
 ### 18.2 The Saga Pattern: Orchestration vs. Choreography
-- **Definition**: A Saga is a sequence of local database transactions where each step updates state in one service and emits an event or message to trigger the next step.
-- **Compensating Transactions (Semantic Rollback)**:
-  - If Step 3 (Payment) succeeds but Step 4 (Inventory Allocation) fails, the system executes **Compensating Transactions** in reverse order: `RefundPayment` $\to$ `CancelOrder`.
-  - Compensating transactions must be **strictly idempotent** and cannot assume state is unchanged (other concurrent transactions may have read the intermediate state).
-- **Orchestration vs. Choreography**:
-  - **Choreography (Event-Driven)**: Services subscribe to Kafka domain events (`OrderCreated` $\to$ `PaymentCompleted` $\to$ `InventoryReserved`).
-    - *Pros*: Loose coupling; no central coordinator.
-    - *Cons*: Cyclic dependencies; hard to debug or visualize transaction state across 10 services.
-  - **Orchestration (State Machine Driven - Temporal / Step Functions)**:
-    - A dedicated Orchestrator service executes an explicit state machine:
-      ```
-      CreateOrderPending -> AuthorizePayment -> ReserveInventory -> OrderApproved
-      ```
-    - *Pros*: Centralized visibility, explicit timeouts, and deterministic retry/compensation logic.
+- **Definition**: A Saga decomposes a distributed transaction into a sequence of local ACID transactions $(T_1, T_2, \dots, T_n)$, paired with **Compensating Transactions** $(C_n, \dots, C_2, C_1)$ that semantically undo committed steps on failure.
+- **Compensating Transaction Laws**:
+  - Because each local step $T_i$ commits immediately, isolation is relaxed from `SERIALIZABLE` to **ACD (Atomicity, Consistency, Durability — no global Isolation)**. Intermediate state is visible to other transactions ("Dirty Reads" at the Saga level).
+  - Compensations ($C_i$) must be **strictly idempotent**, **retryable forever** (they cannot fail permanently without escalating to human ops), and **commutative** with concurrent state.
+- **Choreography vs. Orchestration**:
+  - **Choreography (Broker Event-Driven)**: Services react to domain events (`OrderCreated` $\to$ `PaymentCharged` $\to$ `InventoryReserved`). Simple for $2\text{–}3$ steps; devolves into cyclic event spaghetti and unobservable state for $\ge 4$ steps.
+  - **Orchestration (Temporal / AWS Step Functions / State Machine DB)**: A central state machine explicitly invokes participants, tracks current step in a durable log, enforces per-step timeouts, and runs backward compensation deterministically.
 
 ### 18.3 The Transactional Outbox Pattern & CDC
-- **The Dual-Write Problem**: Writing to MySQL (`INSERT INTO orders`) and publishing to Kafka (`producer.send(event)`) in the same application code path is non-atomic. If the server dies between the DB commit and Kafka send, the event is permanently lost.
+- **The Dual-Write Anti-Pattern**:
+  - Executing `db.Commit()` followed by `kafkaProducer.Send()` in application code is **never atomic**. If the process crashes after `db.Commit()` before `kafkaProducer.Send()`, the database is updated but downstream services never receive the event. Conversely, if `kafkaProducer.Send()` runs before `db.Commit()` and the DB commit rolls back, downstream services act on a phantom transaction!
 - **Transactional Outbox Architecture**:
-  1. Business entity and outbox event are saved in the **exact same local database transaction**:
+  1. Write the business mutation and the outbox event row inside the **exact same local ACID transaction**:
      ```sql
      START TRANSACTION;
-     INSERT INTO orders (id, user_id, amount, status) VALUES (101, 42, 99.00, 'CREATED');
-     INSERT INTO outbox (id, aggregate_type, aggregate_id, payload, created_at)
-     VALUES (UUID(), 'Order', 101, '{"user_id": 42, "amount": 99.00}', NOW());
+     INSERT INTO orders (id, user_id, amount_cents, status) VALUES (9001, 42, 9900, 'PENDING');
+     INSERT INTO outbox_events (id, aggregate_type, aggregate_id, event_type, payload, created_at)
+     VALUES (170982341, 'Order', '9001', 'OrderCreated', '{"order_id":9001,"amount_cents":9900}', NOW());
      COMMIT;
      ```
-  2. A **Change Data Capture (CDC)** agent (Debezium / Maxwell) tails the database binlog/WAL and streams outbox rows to Kafka with **at-least-once delivery**.
-  3. A background reaper purges processed outbox rows with `ORDER BY id LIMIT 1000`.
+  2. A **Change Data Capture (CDC)** connector (Debezium reading MySQL binlog or Postgres logical replication WAL) streams `outbox_events` inserts to Kafka ordered by primary key / LSN.
 
-### 18.4 Distributed Idempotency Keys (Stripe Pattern)
-- Every mutating request includes an `Idempotency-Key: <UUID>` header.
-- **Atomic Claim Protocol**:
+### 18.4 Distributed Idempotency Keys (The Stripe Protocol)
+- Every mutating API (`POST /v1/charges`, `POST /v1/transfers`) requires an `Idempotency-Key: <UUIDv4>` header.
+- **Complete 4-Phase Atomic Idempotency State Machine**:
   ```sql
-  INSERT INTO idempotency_keys (key, request_hash, status, response_body, created_at)
-  VALUES ('key_abc123', SHA256(:body), 'PROCESSING', NULL, NOW())
-  ON DUPLICATE KEY UPDATE status = status; -- Checks if key exists
+  CREATE TABLE idempotency_keys (
+      idempotency_key VARCHAR(64) NOT NULL,
+      user_id BIGINT NOT NULL,
+      request_hash CHAR(64) NOT NULL,          -- SHA-256 of canonical request method + path + body
+      status ENUM('PROCESSING', 'COMPLETED', 'FAILED_RETRYABLE') NOT NULL,
+      locked_until TIMESTAMP NOT NULL,         -- Lease expiration in case worker pod OOMKills!
+      response_code INT NULL,
+      response_body JSON NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (user_id, idempotency_key),
+      INDEX idx_cleanup (created_at)
+  );
   ```
-- If row already exists:
-  - `status == 'PROCESSING'`: Return `409 Conflict` (request currently in flight).
-  - `status == 'COMPLETED'`: Short-circuit immediately and return cached `response_body` (0 compute/writes executed!).
+
+### 18.5 Module 18 Critical Hidden Edge Cases & Saga/Outbox Traps
+- **1. Idempotency Key Stuck in `'PROCESSING'` Forever After Worker Crash (`OOMKill`)**:
+  - *Failure Mode*: Worker A inserts `status = 'PROCESSING'` into `idempotency_keys`, begins calling the payment processor, and gets killed by Kubernetes (`SIGKILL` / `Exit 137`) before updating the row. When the client retries 5 seconds later, the server sees `status == 'PROCESSING'` and returns `409 Conflict` forever!
+  - *Production Fix*: Always include a **`locked_until` lease column** (`NOW() + INTERVAL 60 SECOND`). When a retry arrives and sees `status == 'PROCESSING'`:
+    - If `NOW() < locked_until`: Return `409 Conflict` (`Retry-After: 5`) because the original request is genuinely in flight.
+    - If `NOW() >= locked_until`: The original worker died! Atomically claim the expired lease via:
+      ```sql
+      UPDATE idempotency_keys
+      SET locked_until = NOW() + INTERVAL 60 SECOND
+      WHERE user_id = :uid AND idempotency_key = :key
+        AND status = 'PROCESSING' AND locked_until <= NOW();
+      ```
+      Then query the downstream provider using the deterministic `idempotency_key` to reconcile whether the charge succeeded before re-executing.
+- **2. Idempotency Parameter Tampering (`422 Unprocessable Entity` Check)**:
+  - *Failure Mode*: A buggy client (or attacker) reuses `Idempotency-Key: abc-123` from a `$10.00` charge on a new `$1,000.00` charge request. If the server blindly returns the cached `200 OK` without verifying the request parameters, the caller believes the `$1,000.00` charge succeeded!
+  - *Production Fix*: Always compute `request_hash = SHA256(method + path + canonical_json_body)`. On key hit, if `stored.request_hash != incoming.request_hash`, immediately reject with **`422 Unprocessable Entity`** (`"Idempotency key cannot be reused with different request parameters"`).
+- **3. The "Cancel Arrives Before Create" Out-of-Order Saga Race (Semantic Lock / Tombstone Latch)**:
+  - *Failure Mode*: A user submits an order (`AuthorizePayment` RPC sent to Payment Service, delayed in network queue for $3\text{s}$). At $t = 1.5\text{s}$, the user clicks "Cancel" (`VoidPayment` arrives at Payment Service first). `VoidPayment` looks for `order_id = 9001`, finds nothing, and returns `200 OK (No-Op)`. At $t = 3.0\text{s}$, the delayed `AuthorizePayment` finally lands on Payment Service and **charges the customer's card for a cancelled order**!
+  - *Production Fix*: Compensating transactions (`VoidPayment` / `CancelReservation`) must never be a silent no-op when the forward record doesn't exist yet! They must **insert a `CANCELLED` tombstone row** (`INSERT INTO payment_intents (order_id, status) VALUES (9001, 'CANCELLED')`). When the delayed `AuthorizePayment` finally arrives, its `INSERT` hits the `PRIMARY KEY (order_id)` conflict, sees `status == 'CANCELLED'`, and aborts!
+- **4. CDC At-Least-Once Duplicate Delivery & The Consumer Inbox Pattern**:
+  - *Failure Mode*: Debezium / Kafka Connect guarantees **at-least-once** delivery, NOT **exactly-once**. If the Debezium worker crashes after publishing 500 events to Kafka but before flushing its binlog offset to Kafka's `connect-offsets` topic, it restarts and **publishes those 500 events a second time**!
+  - *Production Fix*: Every downstream consumer must implement a **Transactional Inbox Table** (`processed_events(event_id VARCHAR(64) PRIMARY KEY, processed_at TIMESTAMP)`). Inside the consumer's local DB transaction, first execute `INSERT INTO processed_events (event_id) VALUES (:event_id)`. If it throws a duplicate key error, roll back and `ACK` the Kafka offset immediately!
+- **5. Outbox Table B+ Tree Bloat & Vacuum Starvation**:
+  - *Failure Mode*: Inserting and deleting 50M rows/day in `outbox_events` fragments the B+ tree and starves PostgreSQL Autovacuum.
+  - *Production Fix*: Either partition `outbox_events` by hour/day and drop old partitions (`DROP TABLE outbox_events_2026_10_15` — $O(1)$ filesystem unlink with zero B+ tree overhead), or on PostgreSQL use `pg_logical_emit_message(true, 'outbox', payload)` which writes the event **directly into the transactional WAL stream** (read by Debezium) without ever touching a heap table or index!
 
 ---
 
 ## Module 19: Financial Ledgers & Payment Systems (Double-Entry Bookkeeping)
 
-### 19.1 The Balance Update Anti-Pattern
-- **Anti-Pattern**: Storing `accounts(id, balance)` and running `UPDATE accounts SET balance = balance - 50 WHERE id = 1`.
-- **Why It Fails**:
-  1. Concurrency deadlocks on high-velocity accounts (merchant accounts).
-  2. Floating-point precision truncation issues.
-  3. Fails financial audits: You know the current balance, but cannot prove *how* the balance reached that number or reconstruct historical balance at timestamp $T$.
+### 19.1 The Mutable Balance Column Anti-Pattern
+- **Anti-Pattern**: Storing `users(id, balance)` and executing `UPDATE users SET balance = balance - 5000 WHERE id = 1`.
+- **Why It Fails Production Audits**:
+  1. **Zero Auditability**: If a balance is wrong, you have no immutable trail proving which transaction mutated it.
+  2. **Floating-Point Corruption**: Using `FLOAT` or `DOUBLE` (`0.1 + 0.2 = 0.30000000000000004`) creates phantom money across millions of operations.
+  3. **Lost Updates & Deadlocks**: High-velocity merchant accounts lock up under concurrent `UPDATE` statements.
 
 ### 19.2 Immutable Double-Entry Bookkeeping Architecture
-- **Fundamental Law of Double-Entry**:
-  $$\sum \text{Debits} - \sum \text{Credits} = 0$$
-  *Money is never created or destroyed; it is transferred between accounts.*
-- **Core Relational Schema**:
+- **The Fundamental Accounting Equation**:
+  $$\sum_{i} \text{Debits}_i - \sum_{j} \text{Credits}_j = 0$$
+  Every journal entry must contain $\ge 2$ postings (lines) in the same currency whose signed sum equals **strictly zero**. Money is never created or destroyed; it only moves from a source account (e.g., `Liability:User_Alice_Wallet`) to a destination account (e.g., `Liability:Merchant_Amazon_Payable` + `Revenue:Platform_Fee`).
+- **Production Relational Schema**:
   ```sql
-  CREATE TABLE accounts (
+  CREATE TABLE ledger_accounts (
       id BIGINT PRIMARY KEY,
-      currency VARCHAR(3) NOT NULL, -- USD, EUR, BTC
-      type ENUM('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE') NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      owner_id BIGINT NOT NULL,
+      currency CHAR(3) NOT NULL,               -- ISO-4217 ('USD', 'EUR', 'JPY')
+      scale TINYINT NOT NULL DEFAULT 6,        -- Micro-units: 10^6 = $1.000000
+      account_type ENUM('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE') NOT NULL,
+      allow_negative BOOLEAN NOT NULL DEFAULT FALSE,
+      current_balance_micros BIGINT NOT NULL DEFAULT 0,
+      version BIGINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
-  CREATE TABLE journals (
-      id BIGINT PRIMARY KEY, -- Snowflake ID
-      description VARCHAR(255) NOT NULL,
-      idempotency_key VARCHAR(64) UNIQUE NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  CREATE TABLE ledger_journals (
+      id BIGINT PRIMARY KEY,                   -- K-ordered Snowflake ID
+      idempotency_key VARCHAR(64) NOT NULL UNIQUE,
+      reference_type VARCHAR(32) NOT NULL,     -- 'ORDER_PAYMENT', 'PAYOUT', 'REFUND'
+      reference_id VARCHAR(64) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
-  CREATE TABLE postings (
+  CREATE TABLE ledger_postings (
       id BIGINT PRIMARY KEY,
-      journal_id BIGINT NOT NULL REFERENCES journals(id),
-      account_id BIGINT NOT NULL REFERENCES accounts(id),
-      amount BIGINT NOT NULL, -- Stored in smallest integer unit (cents / satoshis)
-      direction ENUM('DEBIT', 'CREDIT') NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      journal_id BIGINT NOT NULL REFERENCES ledger_journals(id),
+      account_id BIGINT NOT NULL REFERENCES ledger_accounts(id),
+      amount_micros BIGINT NOT NULL,           -- Positive for Credit, Negative for Debit (or explicit direction)
+      running_balance_micros BIGINT NOT NULL,  -- Account balance immediately after this posting!
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_account_history (account_id, id DESC)
   );
   ```
-- **Transaction Invariant Verification**: Inside the database transaction, verify that $\sum \text{Debits} == \sum \text{Credits}$; otherwise, `ROLLBACK`.
-- **Materialized Balance Snapshots**: Range queries over 10M historical postings are slow. Maintain periodic balance snapshots:
-  ```sql
-  CREATE TABLE balance_snapshots (
-      account_id BIGINT NOT NULL,
-      snapshot_date DATE NOT NULL,
-      closing_balance BIGINT NOT NULL,
-      PRIMARY KEY (account_id, snapshot_date)
-  );
-  ```
-  Current balance query: Read latest snapshot + $\sum \text{postings}$ strictly after `snapshot_date`.
+  *Note: Append-only `ledger_journals` and `ledger_postings` tables have `REVOKE UPDATE, DELETE` enforced at the database role level. Mistakes are only corrected via a new **Reversing Journal Entry**.*
 
-### 19.3 Payment Gateway State Machine
-- **Strict State Lifecycle**:
+### 19.3 Payment Gateway State Machine & Webhook Reconciliation
+- **Strict Authorization-Capture-Settlement Lifecycle**:
   ```
-  INITIATED -> AUTHORIZED -> CAPTURED -> SETTLED
-                     |            |
-                  VOIDED       REFUNDED / CHARGEBACK
+  CREATED -> AUTHORIZED (Hold Funds) -> CAPTURED (Claim Funds) -> SETTLED (Bank Payout)
+                 |                          |
+              VOIDED                    REFUNDED / CHARGEBACK_DISPUTED
   ```
-- **Asynchronous Webhook Reconciliation**:
-  - Payment providers (Stripe, Adyen) notify via webhooks.
-  - Webhook handlers must: (1) Verify HMAC-SHA256 signature, (2) Persist raw payload to disk/DB before processing, (3) Apply state transition idempotently via `WHERE status = 'AUTHORIZED'`.
+- **Defense-in-Depth Webhook Ingestion**:
+  1. Verify cryptographic signature (`Stripe-Signature` HMAC-SHA256 with timestamp tolerance $\le 300\text{s}$ to prevent replay attacks).
+  2. Insert `webhook_event_id` into `processed_webhooks` (idempotency guard).
+  3. Enforce monotonic state transitions in SQL (`UPDATE payments SET status = 'CAPTURED' WHERE id = :id AND status IN ('CREATED', 'AUTHORIZED')`) so an out-of-order `AUTHORIZED` webhook arriving *after* `CAPTURED` never regresses state!
+
+### 19.4 Module 19 Critical Hidden Edge Cases & Financial Ledger Traps
+- **1. The AB-BA Multi-Account Transfer Deadlock**:
+  - *Failure Mode*: Transaction 1 transfers $\$10$ from Account `100` to Account `200` (locks `100`, then tries to lock `200`). Simultaneously, Transaction 2 transfers $\$5$ from Account `200` to Account `100` (locks `200`, then tries to lock `100`). Both transactions wait on each other forever until the database deadlock detector kills one!
+  - *Production Fix (Canonical Lock Ordering)*: Before acquiring row locks on multiple accounts, **always sort the `account_id`s in ascending numerical order** (`min(a, b)` first, `max(a, b)` second):
+    ```sql
+    SELECT id, current_balance_micros, allow_negative
+    FROM ledger_accounts
+    WHERE id IN (100, 200)
+    ORDER BY id ASC
+    FOR UPDATE;
+    ```
+    Because every transaction in the entire codebase locks `100` before `200`, cycles in the wait-for graph are **mathematically impossible** ($0$ deadlocks!).
+- **2. The "Hot Merchant Account" Lock Contention Collapse**:
+  - *Failure Mode*: During a prime shopping event, $5,000\text{ users/sec}$ pay `Platform_Revenue` (`account_id = 1`). Every transfer debits a distinct user account (`allow_negative = FALSE`) and credits `account_id = 1`. Because locking `account_id = 1` serializes all 5,000 transactions on a single row latch (each holding the lock for $2\text{ms}$), maximum throughput caps at $\frac{1000\text{ms}}{2\text{ms}} = \mathbf{500\text{ TPS}}$, crashing checkout!
+  - *Production Fix (Sharded Sub-Accounts / Asymmetric Locking)*:
+    1. **Sub-Account Sharding**: Split hot system/merchant accounts into $K = 64$ sub-accounts (`account_id = 1_00` through `1_63`). Incoming credits pick `sub_account = hash(journal_id) % 64`, multiplying lock throughput by $64\times$ ($32,000\text{ TPS}$). Total balance is $\sum_{k=0}^{63} \text{balance}(1\_k)$.
+    2. **Append-Only Credit Deferral**: Only accounts that enforce `allow_negative = FALSE` (the debited user wallet) require synchronous `SELECT ... FOR UPDATE` balance verification on the hot path; credit-only revenue/collection accounts can batch-roll-up `ledger_postings` asynchronously every $1\text{ second}$.
+- **3. Multi-Currency FX Conversion & "Penny Slicing" Rounding Drift**:
+  - *Failure Mode*: Converting $\$10.00\text{ USD}$ split across 3 items (`$3.33 + $3.33 + $3.33 = $9.99`) loses $\$0.01$! Or converting `USD -> EUR` inside a single journal violates the single-currency zero-sum invariant.
+  - *Production Fix*:
+    1. Store all monetary amounts as `BIGINT` micro-units ($10^{-6}$) or minor units (cents), **never `FLOAT`**.
+    2. Use **Banker's Rounding (`ROUND_HALF_EVEN`)** for rate conversions, and allocate any remainder cent ($\Delta = \text{Total} - \sum \text{Parts}$) deterministically to the first line item.
+    3. Cross-currency transfers must use **two balanced single-currency legs** bridged via explicit `FX_Clearing_USD` and `FX_Clearing_EUR` accounts within the same atomic journal.
 
 ---
 
-## Module 20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading & Jitter)
+## Module 20: SRE Resiliency Patterns (Circuit Breakers, Bulkheading, Jitter & Load Shedding)
 
 ### 20.1 Circuit Breakers (Resilience4j / Envoy Pattern)
-- **The Cascading Breakdown**: If downstream Service B begins taking 10s per request, upstream Service A's thread pool fills with blocked callers, cascading out-of-memory crashes up to the API Gateway.
+- **The Cascading Breakdown**: If downstream Service B slows down to $10\text{s}$ per call, upstream Service A's worker threads block waiting for B, exhausting A's memory and connection pools and cascading the outage across the entire company.
 - **Circuit Breaker State Machine**:
   ```
-  [CLOSED] --(Failure Rate > 50%)--> [OPEN]
-     ^                                  |
-     |---(Probe 5% Traffic Success)--- [HALF-OPEN] <--(Sleep 30s Window)
+  [CLOSED] --(Failure/Slow-Call Rate > 50% over N=100 calls)--> [OPEN (Fail Fast in 0ms)]
+     ^                                                                   |
+     |--------(10 Probe Calls Succeed)-------- [HALF-OPEN] <--(Wait 30s)-+
   ```
-  - **Closed**: All calls pass through; sliding window tracks success/failure ratio.
-  - **Open**: Short-circuits all calls immediately in **`0 ms`**, returning fallback response or cached data without placing load on downstream.
-  - **Half-Open**: Allows limited test requests through to verify downstream health.
 
-### 20.2 Bulkheading (Failure Pool Isolation)
-- **Principle**: Ship hulls are divided into watertight compartments (bulkheads) so a single hull puncture does not sink the vessel.
-- **Software Implementation**:
-  - Separate thread pools and connection pools per downstream dependency:
-    - ThreadPool A: Payment Service (size: 20 threads)
-    - ThreadPool B: Recommendation Service (size: 10 threads)
-  - If Recommendation Service hangs, ThreadPool B exhausts its 10 threads, but Payment Service continues running with 0 disruption.
+### 20.2 Bulkheading (Fault-Domain Resource Isolation)
+- Partition thread pools, connection pools, and rate limits **per downstream dependency** and **per caller tier**. If the `Recommendations` service hangs, it can only exhaust the 10 threads in `RecommendationPool`, leaving `CheckoutPool` (50 threads) 100% healthy.
 
-### 20.3 Retry Storms & Full Jitter Formula
-- **The Retry Stampede**: If 10,000 requests fail simultaneously and retry with standard exponential backoff ($t = 2^k$), all 10,000 clients retry at the *exact same second*, destroying the recovering service with synchronized load spikes.
-- **AWS Full Jitter Algorithm**:
-  $$t_{\text{sleep}} = \text{random}\left(0, \min(T_{\max}, T_{\text{base}} \times 2^{\text{attempt}})\right)$$
-  *Full Jitter smooths request distribution uniformly across time, eliminating synchronization thundering herds.*
+### 20.3 Retry Storms & AWS Full Jitter Formula
+- **The Synchronized Retry Herd**: If 10,000 clients fail during a $1\text{s}$ network blip and retry with deterministic exponential backoff ($t = 2^k\text{s}$), all 10,000 clients hammer the recovering server in synchronized waves at $t = 1\text{s}, 2\text{s}, 4\text{s}, 8\text{s}$.
+- **AWS Full Jitter Formula**:
+  $$t_{\text{sleep}} = \text{random}\left(0, \min\left(T_{\max}, T_{\text{base}} \times 2^{\text{attempt}}\right)\right)$$
+  Full Jitter spreads retry load uniformly across $[0, T_{\text{window}}]$, cutting peak recovery load by $>70\%$.
 
-### 20.4 gRPC Deadline / Context Propagation
-- **Wasted Compute Problem**: Client sets a 500ms timeout on API Gateway. Gateway calls Auth Service (100ms) $\to$ Inventory Service (200ms) $\to$ Database. If 520ms elapse, the client disconnected, but the database and backend continue executing the expensive query for 3 seconds.
-- **Solution**: Propagate remaining deadline budget in RPC headers:
-  ```
-  grpc-timeout: 200m
-  ```
-  Every downstream node checks `context.deadline()` before initiating work; if deadline has passed, aborts immediately.
+### 20.4 Deadline / Context Propagation
+- Propagate remaining timeout budget (`grpc-timeout: 180m` or `X-Request-Deadline-Epoch-Ms`) across every RPC hop. Before executing a database query or downstream call, check `if remaining_budget_ms < 10ms: abort_immediately()`—never burn CPU and DB locks for a client that has already disconnected!
+
+### 20.5 Module 20 Critical Hidden Edge Cases & SRE Resiliency Traps
+- **1. The $3^4 = 81\times$ Multiplicative Retry Amplification Storm**:
+  - *Failure Mode*: Mobile App retries $3\times$ $\to$ API Gateway retries $3\times$ $\to$ Order Service retries $3\times$ $\to$ Payment Service retries $3\times$ $\to$ Database Driver retries $3\times$. When the database experiences a minor $30\%$ CPU spike causing a few timeouts, each failed user request generates **$3^4 = 81$ database queries**! Load skyrockets $81\times$ in 2 seconds, causing a total meltdown.
+  - *Production Fix*:
+    1. **Single-Layer Retry Rule**: Only retry at **one layer** (either the immediate caller for transient network errors, or the edge client with an `Idempotency-Key`), never at stacked middle layers.
+    2. **Process-Wide Retry Budget (Envoy / Finagle Pattern)**: Maintain a sliding window ratio $r = \frac{\text{retries}}{\text{original\_requests}}$. Cap $r \le 0.10$ (max $10\%$ extra retry traffic). Once the retry budget is exhausted, fail fast on first error without retrying!
+- **2. The FIFO Queue Timeout Death Spiral (Why LIFO + CoDel Saves Overloaded Servers)**:
+  - *Failure Mode*: A service has a $2.0\text{s}$ client timeout and an internal FIFO worker queue of 1,000 requests. Under a traffic spike, queue wait time hits $2.1\text{s}$. With a **FIFO queue**, workers spend **100% of their CPU processing requests that have been waiting $2.1\text{s}$**—whose callers already timed out $100\text{ms}$ ago! Useful throughput drops to **zero** while CPU stays pinned at $100\%$.
+  - *Production Fix*:
+    1. **Bounded Queue + CoDel (Controlled Delay) Load Shedding**: Stamp every queued request with `enqueued_at`. When a worker dequeues a request, if `now() - enqueued_at > max_queue_wait_ms` (e.g., $250\text{ms}$), immediately drop it (`HTTP 503 Overload`) and check the next item.
+    2. **Adaptive LIFO Under Overload**: During queue saturation, switch dequeue order from FIFO to **LIFO** so the freshest requests (most likely to complete within the client's timeout) are served first!
+- **3. The JVM / Node.js / Go DNS Caching Trap During Database Failover**:
+  - *Failure Mode*: AWS RDS Multi-AZ or ElastiCache fails over to the standby node and updates its DNS CNAME (`db.prod.internal`) to the new IP with a $5\text{s}$ DNS TTL. However:
+    - Older JVM configs cache successful DNS lookups **forever** (`networkaddress.cache.ttl = -1`).
+    - Node.js `dns.lookup()` uses OS `getaddrinfo` without caching, or long-lived HTTP/DB pools keep writing to existing sockets connected to the old primary (which is now rebooted as a **Read-Only Replica**!).
+    - Result: A "30-second RDS failover" causes a **45-minute production outage** until all app pods are manually restarted!
+  - *Production Fix*:
+    1. Set JVM `networkaddress.cache.ttl=5` and `networkaddress.cache.negative.ttl=1`.
+    2. Configure database connection pools (`HikariCP`, `pgxpool`, `mysql2`) to immediately **evict and close all connections** in the pool upon catching `MySQL Error 1290 (ER_OPTION_PREVENTS_STATEMENT --read-only)` or `Postgres SQLSTATE 25006 (read_only_sql_transaction)`.
+- **4. Metastable Failures (The "Work Amplification After Recovery" Trap)**:
+  - *Failure Mode*: Even after a traffic spike subsides back to normal (e.g., $5,000\text{ RPS}$), the system remains at $100\%$ CPU and $0\text{ RPS}$ goodput indefinitely because of a self-sustaining feedback loop: empty caches causing $100\%$ DB misses, GC thrashing from queued request buffers, or lock contention reducing throughput below baseline.
+  - *Production Fix*: Implement **Emergency Load Shedding & Cache Warmup Gates**—to break a metastable loop, you must shed incoming traffic *below* the degraded capacity (e.g., reject $80\%$ of traffic at the L7 edge for 60 seconds) until caches warm up and in-flight queues drain to zero.
 
 ---
 
 ## Module 21: Enterprise Security & Fine-Grained Authorization at Scale (Google Zanzibar ReBAC)
 
 ### 21.1 Stateless Token Invalidation (JWT Revocation at Scale)
-- **The JWT Trade-Off**: JWTs are self-contained and cryptographically signed, but cannot be invalidated before expiration without introducing shared state.
+- **The JWT Dilemma**: Stateless JWTs avoid a database lookup on every request, but cannot be revoked individually before expiration if a device is stolen or a user is banned.
 - **Production Hybrid Token Architecture**:
-  1. **Short-Lived Access Tokens**: Lifetime of $5\text{–}15\text{ minutes}$ stored in memory.
-  2. **Rotating Refresh Tokens**: Stored in primary database with `token_family` and `is_revoked` flag.
-  3. **Immediate Revocation (Blacklist)**: When a user changes password or logs out, publish `revoked_user_id` to an in-memory Redis cluster. API gateways check `redis.exists(user_id:token_version)` or a local **Bloom Filter of Revoked IDs** before honoring the token.
+  1. **Short-Lived Access JWTs ($T_{\text{ttl}} = 5\text{–}10\text{ min}$)**: Verified in $0.05\text{ms}$ via local Ed25519 / RS256 public key in API Gateway memory.
+  2. **Stateful Rotating Refresh Tokens ($T_{\text{ttl}} = 30\text{ days}$)**: Stored as `SHA256(token)` in the Auth DB.
+  3. **Instant Emergency Revocation (`Epoch` / Redis Push)**: Embed `token_version` (or `session_id`) in the JWT claims. When an account is banned or logs out everywhere, push `revoked:user_id -> timestamp` to Redis Pub/Sub / Gateway local RAM cache (bounded to the 10-minute Access Token TTL window!).
 
 ### 21.2 Google Zanzibar (Relationship-Based Access Control - ReBAC)
-- **Why RBAC Fails in Modern SaaS**: Simple roles (`role = EDITOR`) cannot model *"User A can view Document X because User A is a member of Team Y which belongs to Organization Z"*.
-- **The Zanzibar Tuple Data Model**:
-  - Permissions are represented as directed relationship tuples:
-    $$\langle \text{object} \rangle \# \langle \text{relation} \rangle @ \langle \text{user} \rangle$$
-  - *Examples*:
-    - `doc:readme#owner@user:alice`
-    - `doc:readme#viewer@group:engineers#member`
-    - `group:engineers#member@user:bob`
-- **Graph Reachability & Subgraph Traversal**:
-  - Checking `check(user:bob, view, doc:readme)` traverses the relationship graph via BFS/DFS with local edge caching.
-- **The "New Enemy" Problem & Zookies**:
-  - *Problem*: Alice removes Bob's view access to Document X. Alice immediately adds sensitive text to Document X. Bob reads from a replica that hasn't received the ACL deletion yet (reading stale permissions).
-  - *Fix (Zookies)*: When ACLs are modified, return an opaque timestamp consistency token (Zookie). Access checks must evaluate at a snapshot timestamp $\ge$ the Zookie, guaranteeing permission changes are visible before subsequent data reads.
+- **Why RBAC & ABAC Fail at Scale**: Role-Based Access Control cannot cleanly answer: *"Can User Bob view `doc:budget_2026` because `doc:budget_2026` is inside `folder:finance` which is shared with `group:execs#member` which contains `group:vp_eng#member` which contains `user:bob`?"*
+- **The Zanzibar Relation Tuple Model**:
+  $$\langle \text{object\_namespace}:\text{object\_id} \rangle \# \langle \text{relation} \rangle @ \langle \text{user\_or\_userset} \rangle$$
+  - `doc:budget_2026#parent@folder:finance`
+  - `folder:finance#viewer@group:execs#member`
+  - `group:execs#member@user:bob`
+- **The "New Enemy" Problem & Zookies (Consistency Tokens)**:
+  - *Scenario*: Alice removes Bob from `doc:secret` at $t_1$, and at $t_2$ writes confidential strategy into `doc:secret`. If the ACL check hits a stale replica at $t_0 < t_1$ while the document read hits $t_2$, Bob reads the secret he was specifically barred from seeing!
+  - *Fix (Zookies)*: Every document mutation stores a monotonic Spanner/DB commit timestamp token (**Zookie**) on the document metadata. When Bob requests `doc:secret`, the app passes the document's Zookie to Zanzibar (`Check(doc:secret#viewer@user:bob, at_least_as_fresh_as = doc.zookie)`), forcing the ACL replica to wait until its replication watermark $\ge \text{zookie}$ before answering!
+
+### 21.3 Module 21 Critical Hidden Edge Cases & Auth/Zanzibar Traps
+- **1. Refresh Token Theft & Automatic Token Family Revocation**:
+  - *Failure Mode*: An attacker steals a user's Refresh Token `RT_1` from device storage. Both the attacker and the legitimate user attempt to use `RT_1` to mint a new Access Token. If `RT_1` is simply deleted on first use, one of them succeeds and the other gets a generic `401`, leaving the attacker with a valid new token `RT_2` if the attacker won the race!
+  - *Production Fix (Refresh Token Reuse Detection)*: Group every login session's refresh tokens under a `family_id`. When `RT_1` is exchanged, mark `RT_1.status = 'ROTATED'` (do **not** delete it) and issue `RT_2` in the same `family_id`. If any request *ever* presents a token whose status is already `'ROTATED'`, it proves **both the thief and the victim hold tokens from this family** $\implies$ **immediately execute `UPDATE refresh_tokens SET status = 'REVOKED' WHERE family_id = :fid`** and revoke all active sessions for that family!
+- **2. Zanzibar Cyclic Group Membership Infinite Loop & Leopard Indexing**:
+  - *Failure Mode*: Enterprise Admin adds `group:eng` as a member of `group:product`, and later adds `group:product` as a member of `group:eng`. A naive recursive graph traversal (`Check`) enters an infinite loop and crashes the authorization service with a stack overflow or timeout!
+  - *Production Fix*:
+    1. Reject cycles at write time by running a reachability check before inserting `group:A#member@group:B#member`.
+    2. Maintain a per-request **Visited Tuple Set** during graph expansion with a hard max depth (e.g., `max_depth = 15`).
+    3. For deep nested enterprise groups, use **Leopard Indexing**: precompute flattened transitive group membership as compressed Roaring Bitmaps (`User2Group` and `Group2Group` bitsets) so `Intersection(UserGroups(bob), AllowedGroups(doc))` evaluates in **$O(1)$ bitwise AND operations** without recursive network hops!
+- **3. Multi-Tenant BOLA / IDOR via Missing Composite Primary Keys**:
+  - *Failure Mode*: A multi-tenant SaaS query runs `SELECT * FROM invoices WHERE id = :invoice_id` after verifying the user's JWT. An authenticated user from `tenant_id = 10` passes `invoice_id = 9942` belonging to `tenant_id = 20` and downloads a competitor's invoice (**Broken Object Level Authorization — OWASP API #1**).
+  - *Production Fix*: Make `tenant_id` the **leading column of every table's Primary Key (`PRIMARY KEY (tenant_id, id)`)** and enable **PostgreSQL Row-Level Security (`CREATE POLICY tenant_isolation ON invoices USING (tenant_id = current_setting('app.current_tenant_id')::bigint)`)** so it is structurally impossible for a query to omit tenant scoping.
+- **4. Server-Side Request Forgery (SSRF) via User-Configured Webhooks / URL Previews**:
+  - *Failure Mode*: Your system lets users register a webhook URL or paste a link to fetch an OpenGraph preview. An attacker registers `http://169.254.169.254/latest/meta-data/iam/security-credentials/` (AWS IMDSv1) or `http://10.0.1.50:6379/` (internal Redis) or uses **DNS Rebinding** (domain resolves to `8.8.8.8` during validation, then `127.0.0.1` 100ms later during `fetch()`).
+  - *Production Fix*:
+    1. Enforce **AWS IMDSv2** (hop-limit = 1, requires `PUT` token).
+    2. Resolve DNS **once** Inside a custom dialer (`net.DialContext`), verify the resolved IP is not in private/reserved CIDRs (`127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, `::1`, `fc00::/7`), and connect **directly to that verified IP socket** (preventing DNS rebinding), with HTTP redirects disabled (`maxRedirects = 0`).
 
 ---
 
 ## Module 22: Stream Processing & State Machines (Apache Flink, Watermarks & EOS)
 
-### 22.1 Event Time vs. Processing Time vs. Ingestion Time
-- **Processing Time**: Wall-clock time of the machine processing the event. Subject to network delays, queue buffering, and server clock skew.
-- **Event Time**: Timestamp when the event actually occurred on the client device (e.g. mobile sensor reading, user tap).
-- **The Late-Arriving Data Trap**: A user on a flight plays a game in airplane mode for 6 hours. Upon landing, the mobile app dumps 50,000 batched events with timestamps from 6 hours ago. Processing time assigns all 50,000 events to the current minute! Stream processing systems must strictly compute over **Event Time**.
+### 22.1 Event Time vs. Processing Time
+- **Processing Time**: Wall-clock time of the stream worker machine. Fast, zero lag, but non-deterministic under backlog replays or network delays.
+- **Event Time**: Timestamp embedded in the event payload when the action physically occurred on the device. Mandatory for accurate billing, fraud detection, and time-windowed analytics.
 
 ### 22.2 Watermarks & Windowing Primitives
-- **Watermark Definition**: A monotonically increasing timestamp metric $t_w$ asserting: *"All events with event time $\le t_w$ have been observed."*
-  $$t_w = \max(\text{event\_timestamp}) - \Delta_{\text{delay}}$$
-- **Window Types**:
-  1. **Tumbling Windows**: Fixed, non-overlapping windows (e.g., $10:00–10:05, 10:05–10:10$).
-  2. **Sliding / Hopping Windows**: Fixed length with overlapping hop interval (e.g., 5-minute window sliding every 1 minute).
-  3. **Session Windows**: Dynamic windows defined by periods of inactivity (e.g., user session ends after 15 minutes of silence).
-- **Handling Late Data Past Watermark**:
-  - Route late events to a **Side Output Stream** for audit and reconciliation; do not drop silently.
+- **Watermark ($W(t)$)**: A monotonically increasing timestamp assertion flowing through the stream declaring: *"No more events with `event_time < W(t)` are expected."*
+  $$W(t) = \max(\text{observed\_event\_time}) - \Delta_{\text{max\_out\_of\_orderness}}$$
+- **3-Tier Late Data Defence**:
+  1. **Bounded Out-of-Orderness Watermark** (e.g., $\Delta = 30\text{s}$ buffer before window fires).
+  2. **Allowed Lateness** (e.g., keep window state alive in RocksDB for $15\text{ min}$ after watermark passes; late events trigger an incremental `UPDATE` emission).
+  3. **Side Output Stream**: Events arriving $> 15\text{ min}$ late are routed to a dead-letter/reconciliation side stream rather than silently dropped!
 
 ### 22.3 End-to-End Exactly-Once Semantics (EOS)
-- **The Guarantee**: Input event is processed and results in state update and output event **exactly once**, even across node failures.
-- **Chandy-Lamport Distributed Checkpointing**:
-  - Stream coordinator injects checkpoint barriers into Kafka streams. When operators receive barriers, they snapshot their internal state (RocksDB state store) to S3/HDFS.
-- **Two-Phase Commit (2PC) Sink**:
-  - Flink Kafka Producer opens a Kafka transaction on checkpoint start and commits the transaction only when all operators acknowledge checkpoint completion (`read_committed` mode).
+- **Chandy-Lamport Asynchronous Barrier Snapshots**:
+  - JobManager injects `CheckpointBarrier(n)` into source Kafka partitions.
+  - Operators align barriers across input channels, snapshot their local RocksDB state asynchronously to S3, and forward the barrier downstream.
+  - Sink operators use a **Two-Phase Commit Sink**: pre-committing Kafka transactions on barrier arrival and issuing the final `commitTransaction()` only when the JobManager confirms Checkpoint $n$ succeeded across **all** operators (`isolation.level = read_committed`).
+
+### 22.4 Module 22 Critical Hidden Edge Cases & Stream Processing Traps
+- **1. The Idle Partition Watermark Freeze (Why One Quiet Kafka Partition Halts the Entire Job)**:
+  - *Failure Mode*: In Flink, a downstream operator with 32 input partitions advances its watermark to the **minimum watermark across all 32 input partitions**:
+    $$W_{\text{operator}} = \min_{i \in \{1..32\}} W_{\text{partition}_i}$$
+    If Partition 7 receives **zero events** during off-peak hours (or is assigned a low-volume tenant), $W_{\text{partition}_7}$ never advances! As a result, $W_{\text{operator}}$ freezes completely—**none of the windows for the other 31 busy partitions ever close or emit results**, and RocksDB state buffers grow until the cluster OOMs!
+  - *Production Fix*: Always configure **`WatermarkStrategy.withIdleness(Duration.ofSeconds(30))`**. If any input partition receives no events for $30\text{s}$, Flink marks it *Idle* and excludes it from the $\min()$ watermark calculation until it resumes emitting events.
+- **2. Unbounded RocksDB State Store Explosion (Missing `StateTtlConfig`)**:
+  - *Failure Mode*: A streaming job runs `stream.keyBy(e -> e.session_id)` with `ValueState` or `MapState` to deduplicate clicks or join two streams (`OrderCreated` + `OrderShipped`). For orders that are cancelled and *never* ship, their state remains in RocksDB forever! Over 6 months, RocksDB state grows to $10\text{ TB}$, incremental checkpoints take 20 minutes, and disk hits $100\%$.
+  - *Production Fix*: Every keyed state descriptor in a production stream job **must** attach a **`StateTtlConfig`** with `.cleanupInRocksdbCompactFilter(1000)` so expired keys are garbage-collected automatically during background RocksDB SSTable compaction.
+- **3. Kafka Consumer Group "Stop-The-World" Rebalance Storms**:
+  - *Failure Mode*: A Kafka consumer fetches `max.poll.records = 500`. Each record calls a slow external API taking $700\text{ms}$ ($500 \times 0.7\text{s} = 350\text{s}$), exceeding `max.poll.interval.ms = 300000` ($5\text{ min}$). The Kafka Group Coordinator declares the consumer dead, revokes its partitions, and triggers a **Stop-The-World Eager Rebalance** across the entire consumer group! The slow consumer finishes its loop, tries to commit offsets, fails with `CommitFailedException`, and rejoins—triggering *another* rebalance in an infinite **Rebalance Death Spiral**!
+  - *Production Fix*:
+    1. Switch partition assignment strategy from Eager (`RangeAssignor`) to **`CooperativeStickyAssignor`** (incremental rebalancing that only migrates affected partitions without pausing healthy consumers).
+    2. Enable **Static Group Membership** (`group.instance.id = pod-ordinal-name`) so brief rolling restarts do not trigger rebalances.
+    3. Lower `max.poll.records` ($50\text{–}100$) and decouple slow I/O with bounded local worker pools Using `kafkaConsumer.pause(partitions)` while processing backlogs!
 
 ---
 
 ## Module 23: Observability & Distributed Tracing at Scale (OpenTelemetry)
 
-### 23.1 The 3 Pillars of Observability
-- **Metrics**: Numerical aggregations over time (Prometheus, Datadog). High throughput, low storage cost, ideal for alerting.
-- **Logs**: Structured JSON event streams (Vector, Loki, OpenSearch). Rich context, high storage cost.
-- **Traces**: Lifecycle journey of a single request across multiple microservices.
+### 23.1 The Three Pillars & Their Cost/Signal Trade-offs
+- **Metrics (Prometheus / VictoriaMetrics / M3DB)**: Float64 counters, gauges, and histograms aggregated over time intervals. $O(1)$ storage per active label combination regardless of RPS! Best for real-time alerting and SLO dashboards.
+- **Logs (ClickHouse / Loki / OpenSearch)**: Unstructured or structured JSON event records. Cost scales linearly $O(\text{RPS})$ with traffic volume.
+- **Distributed Traces (Jaeger / Tempo / OpenTelemetry)**: Causal DAG of spans (`TraceID`, `SpanID`, `ParentSpanID`) measuring exact critical-path latency across microservice boundaries.
 
-### 23.2 Distributed Tracing & W3C TraceContext
-- **W3C Standard Headers**:
+### 23.2 W3C TraceContext Propagation
+- Every outbound HTTP/gRPC/Kafka call must inject the W3C standard header:
   ```
   traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
   ```
-  - `00`: Version.
-  - `4bf...`: Global 16-byte `Trace ID` (identifies the entire end-to-end user request).
-  - `00f...`: 8-byte `Parent Span ID` (identifies the calling microservice).
-  - `01`: `Trace Flags` (`01` = Sampled).
-- Every microservice reads `traceparent` from incoming RPC headers, creates a child span, and injects the updated header into downstream outbound calls.
+  (`version`-`16B_trace_id`-`8B_parent_span_id`-`flags`).
 
 ### 23.3 Head-Based vs. Tail-Based Trace Sampling
-- **Head-Based Sampling**: Sampling decision made at the API Gateway when request arrives (e.g., sample 1% of traffic).
-  - *Flaw*: A rare P99 error occurring 1 in 10,000 requests has a 99% probability of being dropped!
-- **Tail-Based Sampling**:
-  - Microservices collect 100% of trace spans and buffer them in local memory or an OpenTelemetry Collector cluster.
-  - The collector inspects the completed trace:
-    - If `HTTP status >= 500` or `duration > 2000ms`: **Retain 100% of the trace**.
-    - If `HTTP status == 200` and `duration < 50ms`: Retain only 0.1%.
+- **Head-Based Sampling**: Decision made at ingress (`0.1%` random sample). Fast and stateless, but drops $99.9\%$ of rare `HTTP 500` errors and P99.9 latency spikes!
+- **Tail-Based Sampling**: Spans are routed by `hash(TraceID)` to a stateful **OTel Collector Tail-Sampling Tier**, which buffers spans in memory for $10\text{s}$ and retains **100% of traces containing an error (`status >= 500`) or high latency (`duration > 1000ms`)**, while sampling normal `200 OK` traces at $0.05\%$.
+
+### 23.4 Module 23 Critical Hidden Edge Cases & Observability Traps
+- **1. The High-Cardinality Metric Label Explosion Outage (The $\$100\text{k}$ Prometheus Bomb)**:
+  - *Failure Mode*: A developer adds `user_id`, `order_id`, `ip_address`, or raw un-templated URL path (`/v1/users/981273/orders/44192`) as a label on a Prometheus counter or histogram:
+    ```python
+    http_request_duration_seconds.labels(method="GET", path=request.url, user_id=user.id).observe(lat)
+    ```
+    In time-series databases (Prometheus, Datadog, Cortex), **every unique combination of label key-values creates a brand-new persistent time-series in RAM** (and a 20-bucket histogram multiplies that by $20\times$!). With $5\text{M}$ users, cardinality explodes to $100,000,000+$ active series—OOM-killing Prometheus within 15 minutes and generating $\$100,000+$ in cloud metric overage charges!
+  - *Production Fix (The Cardinality Law)*:
+    1. **Never put unbounded values (`user_id`, `tenant_id`, `email`, `request_id`, raw URLs) in Metric Labels**. Always normalize route labels to their router template (`path="/v1/users/:id/orders/:orderId"`).
+    2. Total multiplicative cardinality of all labels on any single metric must stay **$< 1,000$ combinations**.
+    3. Attach high-cardinality debugging dimensions (`user_id`, `order_id`) via **OpenTelemetry Exemplars** on histogram buckets, or query them in **ClickHouse / Loki structured logs**.
+- **2. Synchronous Logging Blocking the Application Thread (`stdout` Pipe Stall)**:
+  - *Failure Mode*: Under an error storm, an application logs $50,000\text{ stack traces/sec}$ synchronously to `stdout` or a local disk file. When the Docker/containerd log driver buffer or disk I/O saturates, the kernel `write(1, ...)` syscall on `stdout` **blocks the application thread**! In Node.js, Python, or Go, a blocked `stdout` pipe freezes the entire HTTP server!
+  - *Production Fix*: Use **Non-Blocking Ring-Buffer Loggers** (e.g., Java Log4j2 LMAX Disruptor, Rust `tracing-appender`, Go `zap` buffered writer) configured with a **Drop-on-Full** policy for `INFO`/`DEBUG` logs and rate-limited sampling for identical error stack traces (`100 logs/sec` per callsite).
+- **3. Averaging Percentiles Across Pods (Why `avg(p99)` Is Mathematical Nonsense)**:
+  - *Failure Mode*: Computing `P99` latency inside each application pod and then graphing `AVG(pod_p99)` across 50 pods in Grafana. If 1 pod is receiving 90% of the traffic and failing with $10\text{s}$ latency while 49 idle pods have $5\text{ms}$ latency, `AVG(pod_p99)` reports a healthy $204\text{ms}$ while 90% of your users are experiencing a total outage!
+  - *Production Fix*: Never average pre-computed percentiles! Export **Prometheus Histograms (`_bucket` counters)** or **DDSketch / HDRHistogram** sketches from each pod, sum the bucket counters across all pods first (`sum(rate(http_request_duration_seconds_bucket[5m])) by (le)`), and compute `histogram_quantile(0.99, ...)` over the aggregated distribution.
 
 ---
 
-## Module 24: Vector Databases & AI Infrastructure (HNSW & Semantic Caches)
+## Module 24: Vector Databases & AI Infrastructure (HNSW, RAG & Semantic Caches)
 
 ### 24.1 High-Dimensional Vector Search Primitives
-- **Embeddings**: Deep learning models map unstructured data (text, images, code) into continuous $D$-dimensional vector spaces ($D = 768$ or $1536$ `float32` numbers).
-- **Distance Metrics**:
-  - **Cosine Similarity**: $\cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|}$ (measures angle; normalized range $[-1, +1]$).
-  - **Euclidean Distance ($L_2$)**: $\sqrt{\sum (A_i - B_i)^2}$.
-  - **Dot Product**: $\mathbf{A} \cdot \mathbf{B}$ (preferred when vectors are unit-normalized; fastest compute).
+- Dense embeddings ($D = 768\text{ to }3072$ `float32` dimensions) map semantic meaning into geometric space.
+- **Unit-Normalized Dot Product**: Normalize all embedding vectors to unit length ($\|\mathbf{v}\|_2 = 1$) at ingestion time so **Cosine Similarity reduces to a single hardware-accelerated SIMD Dot Product** ($\cos(\theta) = \mathbf{A} \cdot \mathbf{B}$), saving 2 square-root and division operations per comparison.
 
-### 24.2 HNSW (Hierarchical Navigable Small World) Index
-- **Why Brute-Force $k$-NN Fails**: Comparing a query vector against 10M 1536-dim vectors requires computing 15 billion float operations per search, taking seconds.
-- **HNSW Architecture (Skip-List Multi-Layer Graph)**:
-  - Top layers contain sparse long-range highway edges; bottom layer contains all vectors with short-range dense edges.
-  - Query starts at top layer, greedily navigates to closest neighbor, drops down to next layer, and repeats until reaching bottom layer.
-  - Delivers **$O(\log N)$ Approximate Nearest Neighbor (ANN)** search latency in **`1–5 ms`** at $98\%$ recall.
+### 24.2 HNSW (Hierarchical Navigable Small World) Graph Internals
+- Multi-layer proximity graph: Layer 0 contains all $N$ vectors (`M = 16–64` bidirectional links per node); higher layers act as exponentially sparser express highways ($P(\text{layer } l) = e^{-l / m_L}$).
+- Search starts at top layer entry point, greedily hops to the neighbor closest to Query $\mathbf{Q}$, drops down to the next layer, and maintains a dynamic candidate priority queue of size `efSearch` at Layer 0 ($O(\log N)$ complexity, $2\text{–}8\text{ms}$ P99).
 
-### 24.3 Product Quantization (IVF-PQ) & Semantic Caching
-- **Memory Optimization (Product Quantization)**:
-  - 10M 1536-dim vectors $\times 4\text{ bytes} = \mathbf{61.44\text{ GB RAM}}$.
-  - PQ divides each vector into $M=64$ sub-vectors and clusters them into centroids represented by 1-byte indices $\implies$ reduces memory by **$96\%$** to **`2.5 GB`**, fitting billions of vectors on a single node.
-- **Semantic Caching**:
-  - Before calling an expensive LLM ($500\text{ms}$, $\$0.03$), compute query vector and query Milvus/Qdrant/Redis.
-  - If a cached query exists with **Cosine Similarity $\ge 0.96$**, return the cached response immediately in **`5 ms`** with zero LLM API cost!
+### 24.3 Product Quantization (IVF-PQ) & Binary Quantization (BQ)
+- **Memory Math for Raw Vectors**:
+  $$\text{RAM}_{\text{HNSW}} = N \times D \times 4\text{ bytes} \times 1.25\text{ (graph edge overhead)}$$
+  For $N = 100\text{M}$ vectors at $D = 1536$: $10^8 \times 1536 \times 4 \times 1.25 = \mathbf{768\text{ GB RAM}}$!
+- **Two-Stage Quantized Rescoring**:
+  - Compress vectors in RAM by $32\times$ using **Binary Quantization (1 bit per dim = 192 bytes/vector $\implies 19.2\text{ GB RAM}$)** or **Scalar Quantization (`int8` = $4\times$ compression)**.
+  - Fetch Top-$4K$ candidates in RAM using ultra-fast bitwise `XOR + POPCNT` Hamming distance, then fetch the exact `float32` vectors for only those $4K$ candidates from NVMe SSD (`DiskANN` / `mmap`) to re-rank the final Top-$K$ with $99\%$ recall!
+
+### 24.4 Module 24 Critical Hidden Edge Cases & Vector/AI Infrastructure Traps
+- **1. The Multi-Tenant HNSW Post-Filtering vs. Pre-Filtering Disaster ("Zero Results Returned")**:
+  - *Failure Mode*: You store 50M document chunks across 100,000 SaaS tenants in one shared HNSW index. Tenant A (who owns $500$ chunks, or $0.001\%$ of the index) runs a search: `SELECT ... WHERE tenant_id = 'A' ORDER BY embedding <=> :q LIMIT 10`.
+    - **If Post-Filtering runs**: HNSW finds the global Top-100 nearest vectors across all tenants, and *then* filters by `tenant_id == 'A'`. Because Tenant A is only $0.001\%$ of the dataset, **0 of the global Top-100 belong to Tenant A** $\implies$ the query returns **0 results** even though Tenant A has 500 relevant docs!
+    - **If Naive Pre-Filtering runs**: Applying a bitmap filter *before* HNSW traversal disconnects the HNSW graph (because intermediate "bridge" nodes in the skip-list belong to other tenants), causing graph search to get stuck in a local minimum or degrade to a slow brute-force scan!
+  - *Production Fix*:
+    1. **Physical/Logical Partitioning per Tenant (Tiered Isolation)**: In Qdrant / Milvus / pgvector, isolate large enterprise tenants into dedicated collections/partitions, and group small tenants using **Payload-Indexed Single-Stage Filterable HNSW** (where additional intra-tenant graph edges are built per `tenant_id` payload value so filtered graph walks stay connected!).
+- **2. Cross-Tenant / PII Semantic Cache Poisoning**:
+  - *Failure Mode*: To save LLM latency and cost, an engineer adds a Redis/Vector Semantic Cache in front of the LLM: if an incoming prompt has Cosine Similarity $\ge 0.96$ with a previous prompt, return the cached LLM answer.
+    - User Alice asks: *"Summarize my latest Q3 payroll and bonus statement."* $\to$ Cached.
+    - 10 seconds later, User Bob asks: *"Summarize my latest Q3 payroll and bonus statement."* $\to$ Cosine Similarity is **`1.00`**! The Semantic Cache returns **Alice's private salary and bonus numbers to Bob**!
+  - *Production Fix*: **Never query a Semantic Cache globally across security boundaries!** Every semantic cache lookup **must** enforce a strict hard equality pre-filter on:
+    $$\text{CacheNamespaceKey} = \text{SHA256}(\text{tenant\_id} \parallel \text{user\_id} \parallel \text{rbac\_role\_bitmap} \parallel \text{model\_version} \parallel \text{system\_prompt\_hash})$$
+    Only prompts within the exact same authorization namespace may ever match via vector similarity.
+- **3. Embedding Model Upgrade Space Incompatibility (Why You Cannot Mix `v1` and `v2` Vectors)**:
+  - *Failure Mode*: A team switches their embedding model from `text-embedding-3-small` to `text-embedding-3-large` (or fine-tunes their encoder) for newly ingested documents while leaving 50M historical vectors in the same index. Because the two models have completely orthogonal coordinate spaces, cosine similarity between a `v2` query vector and a `v1` document vector is **random noise**, silently destroying search relevance!
+  - *Production Fix*: Always tag every vector with `embedding_model_version` and execute **Blue-Green Shadow Index Migration**: build a new HNSW index `docs_v2` in the background, dual-embed new writes to both `v1` and `v2`, backfill historical docs, and atomically flip the read alias once `docs_v2` reaches $100\%$ coverage.
+- **4. LLM SSE Streaming Zombie Generation & Token Budget Exhaustion**:
+  - *Failure Mode*: A user triggers a long 4,000-token LLM generation (`$0.06` / 30s GPU compute) over Server-Sent Events (SSE) and closes their browser tab after 1 second. Because intermediate Nginx/ALB proxies buffer responses or fail to propagate TCP `FIN/RST` upstream immediately, the backend continues generating and paying for all 4,000 tokens for a disconnected user!
+  - *Production Fix*: Disable proxy buffering (`X-Accel-Buffering: no`), wire the HTTP request's `req.Context().Done()` cancellation signal directly into the upstream LLM/vLLM stream `AbortController`, and enforce **Token-Bucket Rate Limiting in Tokens/Min (TPM)** rather than just Requests/Min (RPM).
 
 ---
 
 ## Module 25: Service Mesh & Modern RPC (gRPC vs. GraphQL vs. REST)
 
 ### 25.1 gRPC & Protocol Buffers Wire Efficiency
-- **The Cost of REST/JSON**:
-  - Text-based ASCII serialization, key name repetition in every payload (`{"user_id": 42}` repeats `"user_id"` millions of times), and no built-in schema enforcement.
-- **Protocol Buffers Wire Format**:
-  - Binary tag-length-value encoding. Field names are replaced with compact **1-byte integer field tags** (`1`, `2`, `3`). Numbers are encoded using variable-length **Varints** (small integers use 1 byte instead of 8).
-- **HTTP/2 Transport Advantages**:
-  - **Single TCP Connection Multiplexing**: Hundreds of concurrent RPC requests interleave binary frames over one persistent TCP connection, eliminating TCP 3-way handshake overhead.
-  - **Bidirectional Streaming**: Native streaming RPCs (`rpc Chat(stream Message) returns (stream Message)`).
+- Binary Tag-Length-Value (TLV) serialization with variable-length `Varint` encoding (`3–10x` smaller and faster to parse than ASCII JSON) over multiplexed HTTP/2 streams.
 
-### 25.2 Service Mesh Architecture (Envoy / Istio)
-- **The Microservice SDK Fatigue**: Writing circuit breakers, mTLS, telemetry, and retry logic in 5 different languages (Go, Java, Python, Node, Rust) leads to inconsistent behavior and library maintenance nightmares.
-- **Sidecar Proxy Pattern**:
-  - An Envoy proxy runs alongside every application container (sharing the same Linux network namespace `localhost`).
-  - Application makes raw HTTP/gRPC call to `localhost:8080`. Envoy intercepts traffic via `iptables` and handles:
-    1. **Mutual TLS (mTLS)**: Automatic cryptographic identity verification and wire encryption between services.
-    2. **Canary Routing & Traffic Splitting**: Routing 5% of traffic to `v2` and 95% to `v1`.
-    3. **Automatic Retries & Circuit Breaking**: Configured centrally via control plane without changing one line of application code.
+### 25.2 Service Mesh Architecture (Envoy / Linkerd)
+- Offloads mTLS certificate rotation (SPIFFE/SPIRE), telemetry, circuit breaking, and canary traffic splitting into an out-of-process proxy sidecar or eBPF node agent.
 
-## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (30-POINT AUDIT)
+### 25.3 Module 25 Critical Hidden Edge Cases & gRPC/Service Mesh Traps
+- **1. The gRPC Over Kubernetes L4 Load Balancer Single-Pod Pinning Disaster**:
+  - *Failure Mode*: Service A calls Service B via gRPC using a standard Kubernetes `ClusterIP` Service (`service-b.prod.svc.cluster.local:50051`). By default, Kubernetes `ClusterIP` uses **L4 TCP `iptables` / `IPVS` load balancing**, which balances *connections*, NOT *requests*. Because gRPC multiplexes **all RPCs over a single persistent HTTP/2 TCP connection**, Pod A opens 1 TCP connection and routes **100% of its 20,000 RPS to a single Pod of Service B**, melting that pod at $100\%$ CPU while the other 9 Pods of Service B sit at $0\%$ CPU!
+  - *Production Fix*: Never route gRPC through a naive L4 TCP load balancer without one of:
+    1. **Client-Side Load Balancing with Headless Service**: Configure Service B with `clusterIP: None` (Headless DNS returns all Pod A-records) and configure the gRPC client with `dns:///service-b:50051` and `{"loadBalancingConfig": [{"round_robin":{}}]}` so the gRPC client maintains a subchannel to *every* backend pod and round-robins individual RPCs.
+    2. **L7 HTTP/2-Aware Proxy (Envoy / Linkerd)**: Terminate and multiplex individual HTTP/2 frames across all backend pods at Layer 7.
+    3. **Server-Side `MaxConnectionAge`**: Configure the gRPC server with `KeepaliveParams{MaxConnectionAge: 2 * time.Minute, MaxConnectionAgeGrace: 10 * time.Second}` to periodically force clients to reconnect and rebalance across new pods during autoscaling!
+- **2. HTTP/2 Single-Connection TCP Head-of-Line (HoL) Blocking Under Packet Loss**:
+  - *Failure Mode*: While HTTP/2 eliminates *application-layer* head-of-line blocking, all 100 concurrent gRPC streams multiplexed on one HTTP/2 connection still share a **single Linux kernel TCP socket**. If just **1 TCP packet is dropped** on the network, the Linux kernel holds back delivery of *all 100 streams* to user space until that single lost packet is retransmitted—spiking P99 latency across all 100 unrelated requests!
+  - *Production Fix*: For high-throughput gRPC clients ($> 1,000\text{ RPS}$ per pod), configure a **gRPC Channel Pool** ($4\text{–}8$ independent HTTP/2 TCP connections per target pod) so a single packet drop only impacts $\frac{1}{8}$ of in-flight streams.
+- **3. Protobuf Wire-Compatibility Corruption (Reusing Deleted Field Tag Numbers)**:
+  - *Failure Mode*: A developer removes `string legacy_phone = 4;` from a `.proto` file and a month later adds `int64 account_balance = 4;` reusing tag `#4`. Because Protocol Buffers never transmit field names on the wire—only **field tag numbers (`4`) and wire types**—older services still emitting tag `#4` cause the new service to deserialize string bytes as an integer balance (or fail with wire-type mismatch)!
+  - *Production Fix*: **Never reuse a Protobuf field tag number or change its type.** Whenever deleting a field, immediately lock its tag number and name using the `reserved` keyword:
+    ```protobuf
+    message UserAccount {
+      reserved 4, 11 to 14;
+      reserved "legacy_phone", "old_status";
+    }
+    ```
+- **4. GraphQL $N+1$ Resolver Amplification & Recursive Depth Bomb**:
+  - *Failure Mode*: A client sends a nested GraphQL query `posts(limit: 50) { author { company {owner { posts { author ... } } } } }`. Without batching, resolving 50 posts executes 1 query for posts + 50 queries for authors + 50 queries for companies = $101$ serial SQL round-trips ($N+1$ explosion), and malicious deeply nested queries exhaust server CPU/RAM!
+  - *Production Fix*:
+    1. Enforce **DataLoader Request-Scoped Batching** on every GraphQL resolver (coalescing 50 `SELECT * FROM users WHERE id = ?` calls in the same event-loop tick into a single `SELECT * FROM users WHERE id IN (1..50)`).
+    2. Enforce a hard **Query Depth Limit ($\le 7$)**, **Static Query Complexity Cost Limit**, and **Persisted Queries (Allowlist)** in production.
 
-Whenever you (the AI Architect) finish proposing or reviewing a system design, you **MUST** run this **30-Point Red-Team Audit** against the design before declaring it complete:
+---
 
+## Module 26: Production Codebase Engineering — Zero-Downtime Migrations, DB Engine Physics & Runtime Mechanics
+
+### 26.1 Zero-Downtime Database Schema Migrations at Million-User Scale
+- **The Metadata Lock (MDL) Queue Outage**:
+  - *How a 10ms `ALTER TABLE` Takes Down Production*: Suppose you run `ALTER TABLE orders ADD COLUMN metadata JSON;` on a busy table. To modify the table definition, PostgreSQL/MySQL must acquire an **`ACCESS EXCLUSIVE` / Metadata Write Lock**.
+  - Suppose a slow reporting query (`SELECT ... FROM orders`) has been running for $8\text{ seconds}$ holding a shared `ACCESS SHARE` read lock.
+  - Your `ALTER TABLE` cannot acquire its exclusive lock, so it **waits in the lock queue** behind the slow query.
+  - **The Catastrophe**: Because the `ALTER TABLE` is waiting for an exclusive lock, **every single subsequent production `SELECT`, `INSERT`, and `UPDATE` arriving on `orders` must queue *behind* the waiting `ALTER TABLE`**! At $5,000\text{ RPS}$, within $2\text{ seconds}$, $10,000$ queries are blocked, connection pools hit $100\%$, and the entire application suffers a total P0 outage!
+- **Mandatory Zero-Downtime DDL Rules**:
+  1. **Always Set a Strict `lock_timeout` Before Any DDL**:
+     ```sql
+     SET lock_timeout = '2s';          -- Fail the migration script fast if lock isn't acquired in 2s!
+     SET statement_timeout = '10s';
+     ALTER TABLE orders ADD COLUMN metadata JSONB;
+     ```
+     If the lock cannot be acquired within $2\text{ seconds}$, the `ALTER` aborts harmlessly and retries in your CI/CD script—never blocking production traffic!
+  2. **Never Build Indexes Blocking Writes**:
+     - PostgreSQL: Always use `CREATE INDEX CONCURRENTLY idx_orders_user ON orders (user_id);` (scans table in two passes without blocking concurrent `INSERT`/`UPDATE`/`DELETE`).
+     - MySQL 8.0+: Always specify `ALTER TABLE ... ADD INDEX ..., ALGORITHM=INPLACE, LOCK=NONE;` (or `ALGORITHM=INSTANT` for metadata-only column additions).
+  3. **Adding `NOT NULL` or `FOREIGN KEY` Constraints Without Full-Table Locks**:
+     - Adding `ALTER TABLE orders ADD CONSTRAINT chk_amt CHECK (amount >= 0);` scans all 100M rows while holding an `ACCESS EXCLUSIVE` lock!
+     - *Fix (2-Step `NOT VALID` Pattern)*:
+       ```sql
+       -- Step 1: Instant metadata-only change (enforces constraint on NEW writes only, 0 table scan!)
+       SET lock_timeout = '2s';
+       ALTER TABLE orders ADD CONSTRAINT chk_amt CHECK (amount >= 0) NOT VALID;
+
+       -- Step 2: Validate existing 100M rows in the background (holds only SHARE UPDATE EXCLUSIVE lock, never blocks reads or writes!)
+       ALTER TABLE orders VALIDATE CONSTRAINT chk_amt;
+       ```
+  4. **The 4-Phase Expand-and-Contract Pattern (Renaming / Changing Columns Across Rolling K8s Deploys)**:
+     - During a Kubernetes rolling deployment, **Old Code ($v_1$) and New Code ($v_2$) run simultaneously against the same database for several minutes**. If you run `ALTER TABLE users RENAME COLUMN name TO full_name`, all running $v_1$ pods immediately crash with `ERROR: column "name" does not exist`!
+     - *4-Phase Zero-Downtime Execution*:
+       - **Phase 1 (Expand)**: Add nullable column `full_name` (with `lock_timeout = '2s'`). Deploy Code $v_{1.1}$ that **dual-writes** to both `name` and `full_name`, while still reading from `name`.
+       - **Phase 2 (Backfill)**: Run a throttled batch job (`UPDATE users SET full_name = name WHERE id BETWEEN :start AND :end AND full_name IS NULL`, sleeping $50\text{ms}$ whenever replica lag $> 1\text{s}$).
+       - **Phase 3 (Switch Reads)**: Once $100\%$ backfilled, deploy Code $v_{1.2}$ that reads from `full_name` and stops reading `name`.
+       - **Phase 4 (Contract)**: Deploy Code $v_2$ that stops writing to `name`, then drop `name` in a subsequent release.
+
+### 26.2 Database Engine Physics: PostgreSQL MVCC, XID Wraparound & MySQL Gap Locks
+- **1. PostgreSQL MVCC Write Amplification & HOT (Heap-Only Tuple) Updates**:
+  - *Internal Architecture*: Unlike MySQL InnoDB (which stores secondary indexes pointing to the Clustered Primary Key and stores old row versions in a separate Rollback/Undo Segment), **PostgreSQL stores secondary indexes pointing directly to the physical 6-byte heap page/tuple address (`ctid = (block_number, tuple_index)`)**.
+  - *The Write-Amplification Bomb*: When you run `UPDATE users SET last_login = NOW() WHERE id = 1` in PostgreSQL, Postgres inserts a **brand-new physical row tuple** (`ctid` changes from `(10, 1)` to `(42, 8)`). Because `ctid` changed, if the table has **8 secondary indexes**, Postgres must insert 8 new index entries—even though none of those 8 indexed columns changed!
+  - *Production Fix (Enabling HOT Updates)*:
+    - PostgreSQL avoids updating secondary indexes **only** if the `UPDATE` qualifies as a **Heap-Only Tuple (HOT) Update**: (a) **zero** indexed columns are modified by the `UPDATE`, and (b) the new row version fits inside the **exact same 8KB heap page** as the old row!
+    - For high-update tables in PostgreSQL, always set **`ALTER TABLE users SET (fillfactor = 80);`** (reserving $20\%$ free space on every 8KB page for in-page HOT updates) and **never index frequently mutated counter/timestamp columns**!
+- **2. PostgreSQL Transaction ID (XID) Wraparound Outage**:
+  - *Mechanism*: PostgreSQL uses 32-bit transaction IDs (`xmin`, `xmax`). Using modular arithmetic, any XID is compared within a $2^{31} \approx 2.14\text{ billion}$ transaction window into the past and future. Old committed tuples must be marked **Frozen** by `AUTOVACUUM` before they reach $2\text{ billion}$ transactions in age; otherwise, old rows would suddenly appear to be "in the future" and **vanish from the database**!
+  - *The Outage*: If a long-running idle transaction (`idle in transaction`), an abandoned replication slot, or aggressive write load prevents `AUTOVACUUM FREEZE` from completing, PostgreSQL hits the safety limit ($3\text{M}$ XIDs before $2^{31}$) and **completely shuts down all writes across the entire database cluster** (`ERROR: database is not accepting commands to avoid wraparound data loss`)!
+  - *Production Fix*:
+    1. Enforce `SET idle_in_transaction_session_timeout = '30s';` globally so abandoned transactions are killed automatically.
+    2. Alert on `max(age(datfrozenxid)) > 500,000,000` and monitor inactive logical replication slots (`pg_replication_slots` where `active = false`, which hold back the WAL and XID horizon forever!).
+- **3. PgBouncer `transaction` Pooling Mode Traps**:
+  - At $> 500$ concurrent connections, PostgreSQL process-per-connection overhead ($10\text{MB}$ RAM per backend + OS context switching) requires **PgBouncer in `pool_mode = transaction`** (where a server connection is assigned to a client only for the duration of a single `BEGIN...COMMIT` transaction).
+  - *Critical Gotcha*: Session-level commands (`SET search_path`, `SET TIME ZONE`, `LISTEN/NOTIFY`, session advisory locks `pg_advisory_lock()`, and temporary tables without `ON COMMIT DROP`) **leak across different users** sharing the same pooled connection! Always use **Transaction-Scoped equivalents**: `SET LOCAL ...` and `pg_advisory_xact_lock()`.
+- **4. MySQL InnoDB `REPEATABLE READ` Gap-Lock Deadlocks on Non-Existent Rows**:
+  - *Mechanism*: Under MySQL's default `REPEATABLE READ` isolation level, `SELECT ... FOR UPDATE` locks not only existing index records, but also the **Gaps** between index keys to prevent phantom reads.
+  - *The Surprising Deadlock*: Suppose table `orders` currently has `id = 10` and `id = 20`.
+    - Transaction A runs `SELECT * FROM orders WHERE id = 15 FOR UPDATE;` (row `15` does not exist) $\implies$ acquires a **Shared Gap Lock** on $(10, 20)$.
+    - Concurrently, Transaction B runs `SELECT * FROM orders WHERE id = 15 FOR UPDATE;` $\implies$ **also succeeds** in acquiring a Shared Gap Lock on $(10, 20)$ (because gap locks do not conflict with each other!).
+    - Next, Transaction A runs `INSERT INTO orders (id) VALUES (15);` (waits for B's gap lock). Transaction B runs `INSERT INTO orders (id) VALUES (15);` (waits for A's gap lock) $\implies$ **Instant Deadlock**!
+  - *Production Fix*: Use `INSERT ... ON DUPLICATE KEY UPDATE` instead of `SELECT FOR UPDATE + INSERT`, or set OLTP isolation level to **`READ COMMITTED`** (which disables gap locking for normal searches and only uses record locks).
+
+### 26.3 Container, Runtime & Linux Kernel Physics (Kubernetes OOMKills, CFS Throttling & Graceful Drain)
+- **1. Kubernetes CPU Limits (`cfs_quota_us`) Artificial Latency Throttling**:
+  - *Mechanism*: When you set `resources.limits.cpu: "1000m"` (1 vCPU) in Kubernetes, the Linux kernel CFS scheduler grants the container **$100\text{ms}$ of CPU time per $100\text{ms}$ period** (`cpu.cfs_period_us = 100000`).
+  - *The Trap*: Suppose your Go/Java/Rust container runs **16 worker threads** on a 16-core node. When a burst of requests arrives, all 16 threads execute in parallel for **$6.25\text{ms}$** ($16 \times 6.25\text{ms} = 100\text{ms}$ total CPU quota consumed!). For the remaining **$93.75\text{ms}$ of the period, the Linux kernel freezes all 16 threads completely**—spiking P99 latency from $6\text{ms}$ to $100\text{ms}+$ even when the underlying EC2 node is $80\%$ idle!
+  - *Production Fix*: Set accurate `resources.requests.cpu` for scheduling, **omit `resources.limits.cpu` (or set it $4\times$ higher than requests)** on latency-sensitive services, and set `GOMAXPROCS` (via `uber-go/automaxprocs`) / JVM `-XX:ActiveProcessorCount` to match the container's CPU request rather than the host node's 64 cores!
+- **2. Container Memory Limits vs. Runtime Heap (`Exit Code 137 / OOMKilled`)**:
+  - *The Trap*: A container is given `resources.limits.memory: 2Gi`. By default, Go's GC (`GOGC=100`) doubles heap size before collecting, or Node.js/JVM expands heap + off-heap native buffers past `2Gi`. The Linux kernel cgroup OOM killer immediately sends **`SIGKILL` (`Exit Code 137`)** with zero chance for graceful shutdown, dropping all in-flight user requests!
+  - *Production Fix*: Always set runtime soft memory limits to **$80\text{–}85\%$ of the container cgroup limit** so the garbage collector runs aggressively before the kernel OOM-kills the process:
+    - **Go 1.19+**: `GOMEMLIMIT=1700MiB` (for a `2Gi` container)
+    - **JVM**: `-XX:MaxRAMPercentage=75.0 -XX:+UseG1GC`
+    - **Node.js**: `NODE_OPTIONS="--max-old-space-size=1600"`
+- **3. The Kubernetes Rolling Deploy `502 Bad Gateway` Race (`SIGTERM` vs. Endpoint Removal)**:
+  - *Mechanism*: When Kubernetes terminates a pod during a rolling deploy or scale-down, two things happen **in parallel** (not sequentially!):
+    1. Kubelet sends `SIGTERM` to your container process.
+    2. Control plane removes the Pod IP from the `Endpoints` / `EndpointSlice` object, which asynchronously propagates to `kube-proxy` (`iptables`), Envoy, and AWS ALB Ingress over **$2\text{–}5\text{ seconds}$**.
+  - *The Outage*: If your application catches `SIGTERM` and **immediately calls `server.Close()` / stops accepting new TCP connections**, any traffic routed by `kube-proxy` or ALB during that $2\text{–}5\text{s}$ propagation window hits `Connection Refused` and returns **`502 Bad Gateway` / `504` to users on every single deployment**!
+  - *Production Fix (Zero-Dropped-Packet Shutdown Sequence)*:
+    1. On `SIGTERM` (or Kubernetes `preStop: exec: ["sh", "-c", "sleep 5"]`), immediately flip `/readyz` health check to return `503 Service Unavailable`.
+    2. **Continue accepting and serving normal HTTP/gRPC requests for $5\text{–}10\text{ seconds}$** while load balancers drain the Pod IP from their active target pools.
+    3. After the $5\text{s}$ sleep, invoke `httpServer.Shutdown(ctx)` (with a $25\text{s}$ drain deadline) to finish in-flight requests, flush telemetry/batch buffers, close DB pools, and exit `0`.
+
+---
+
+## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (45-POINT AUDIT)
+
+Whenever you (the AI Architect) finish proposing a system design **or** reviewing a real production codebase/PR, you **MUST** run this **45-Point Red-Team Audit** against the architecture or code before declaring it complete:
+
+### Core Architecture, SQL & Storage Checks (Points 1–30)
 1. **The Day-0 Over-Engineering Check**: Did the design introduce microservices, Kafka, Redis, or sharding before proving via back-of-the-envelope math that a single vertically scaled machine + RDBMS cannot handle the concurrent load?
 2. **The Qualitative Word Check**: Are there any unquantified words (*"fast"*, *"low latency"*, *"short TTL"*, *"huge data"*, *"scalable"*)? Replace every single one with concrete numbers (`P99 ms`, `RPS`, `GB/day`, `seconds`).
-3. **The Network-Call-Inside-Transaction Check**: Does any code path open a DB transaction (`BEGIN` / `SELECT ... FOR UPDATE`), make an external network call (`HTTP`, `SQS.push`, `Kafka.put`, `Redis`), and then `COMMIT`? Refactor immediately to decouple via pullers/queues or transactional outbox pattern.
+3. **The Network-Call-Inside-Transaction Check**: Does any code path open a DB transaction (`BEGIN` / `SELECT ... FOR UPDATE`), make an external network call (`HTTP`, `SQS.push`, `Kafka.put`, `Redis`), and then `COMMIT`? Refactor immediately to decouple via pullers/queues or the Transactional Outbox pattern.
 4. **The Explicit Single-Statement Transaction Check**: Are standalone SQL statements (`INSERT`, `UPDATE`, `DELETE`) wrapped in explicit `START TRANSACTION ... COMMIT` blocks, wasting 2 extra network round-trips?
 5. **The Unbounded `DELETE` / Soft-Delete Trap**:
    - Are hard `DELETE`s executed in the user request path (triggering B+ Tree rebalancing)?
@@ -1392,8 +1641,7 @@ Whenever you (the AI Architect) finish proposing or reviewing a system design, y
 11. **The Stop-The-World (STW) Batching Check**: When batching high-velocity writes in memory, does flushing hold a mutex during network I/O (stalling worker threads) or deep-copy the map (causing a `2x` RAM spike)? Upgrade to **Active-Passive Double Buffering (Pointer Swap)** with **Double-Checked Locking**.
 12. **The Push-vs-Pull Config Race Check**: When combining Push (Redis Pub/Sub) and Pull (1-min DB poll) for control-plane config propagation, is every update guarded by `if incoming.version > local_cache.version` so a delayed poll never overwrites a newer push?
 13. **The Distributed Lock Correctness & Fencing Check**:
-    - Are Redis locks acquired via atomic Lua (`SETNX` + `EXPIRE`) and released via atomic Lua (`GET == owner` $
-ightarrow$ `DEL`)?
+    - Are Redis locks acquired via atomic Lua (`SET key val NX PX ttl`) and released via atomic Lua (`if GET == owner then DEL`)?
     - If a client experiences a long STW GC pause or VM freeze while holding a lock, is the shared storage protected by **Monotonically Increasing Fencing Tokens**?
     - In multi-node Redlock ($N=5, Q=3$), does a client that fails to reach quorum (`< 3`) **immediately release partial locks** across all nodes to prevent split-vote deadlocks?
 14. **The Binary Relay & CDN URL Check**:
@@ -1422,22 +1670,45 @@ ightarrow$ `DEL`)?
 29. **The Live Streaming Manifest Thundering Herd Check**: In live broadcasts, are manifest polls protected by an Origin Shield with Request Collapsing to prevent millions of concurrent requests from destroying origin transcoders?
 30. **The GeoHash Equator/Meridian Boundary Check**: Does every geo-proximity lookup query the target bounding box *plus its 8 adjacent neighbor cells* before filtering with Haversine distance, resolving boundary discontinuities?
 
+### Distributed Consensus, Transactions, Resiliency & Production Codebase Checks (Points 31–45)
+31. **The Consensus Zombie-Leader & `PreVote` Check**: In Raft/consensus clusters, are linearizable reads protected by `ReadIndex` quorum heartbeats (or bounded Leader Leases) so partitioned leaders never serve stale reads, and is `PreVote` enabled so rejoining partitioned nodes do not disrupt the active leader?
+32. **The Stuck Idempotency Key & Parameter Tampering Check**: Does the `idempotency_keys` table include a `locked_until` lease timestamp (so a worker `OOMKill` while `status = 'PROCESSING'` does not return `409 Conflict` forever), and does it verify `request_hash == SHA256(body)` (returning `422` if a client reuses a key with different parameters)?
+33. **The Out-of-Order Saga Cancellation & CDC Inbox Check**: If a `Cancel` / `Void` compensation arrives *before* the delayed original `Create` / `Authorize` RPC, does it write a `CANCELLED` tombstone row so the late forward request aborts? And do all CDC/Kafka consumers record `event_id` in a local transactional `inbox_processed_events` table to deduplicate at-least-once replays?
+34. **The Ledger Canonical Lock-Ordering & Hot-Account Check**: When locking multiple accounts/rows in a transaction, are IDs sorted canonically (`ORDER BY account_id ASC FOR UPDATE`) to eliminate AB-BA deadlocks? And are high-velocity merchant/system credit accounts sharded into $K=64$ sub-accounts (or credited append-only) to prevent single-row lock serialization?
+35. **The $3^4$ Retry Amplification & Retry Budget Check**: Are retries restricted to a **single caller layer** using **AWS Full Jitter** and capped by a **Process-Wide Retry Budget ($\le 10\%$)** so a partial downstream slowdown cannot trigger an $81\times$ retry storm?
+36. **The Overload Queue LIFO + CoDel & Failover DNS Check**: Do overloaded worker queues drop requests whose wait time exceeds their deadline budget (CoDel / LIFO) instead of burning 100% CPU on already-timed-out FIFO requests? And does the DB pool set DNS TTL $\le 5\text{s}$ and immediately evict all connections upon catching `READONLY` errors after a primary failover?
+37. **The Refresh Token Family Reuse & Zanzibar Cycle Check**: Does presenting an already-rotated Refresh Token immediately revoke the entire `token_family_id`? And do multi-tenant tables include `tenant_id` in the composite PK / RLS policy to prevent BOLA/IDOR leaks?
+38. **The Stream Idle-Partition Watermark & State TTL Check**: In Flink/stream processing, is `withIdleness()` configured so a single quiet Kafka partition cannot freeze the global watermark across all busy partitions, and does every RocksDB keyed state descriptor enforce a `StateTtlConfig`?
+39. **The High-Cardinality Metric Explosion Check**: Are unbounded identifiers (`user_id`, `order_id`, `email`, raw URL paths) strictly forbidden inside Prometheus/Datadog metric labels (keeping label combinations $< 1,000$ per metric and placing high-cardinality IDs in Logs/Traces/Exemplars instead)?
+40. **The Multi-Tenant Vector Filter & Semantic Cache Isolation Check**: Does multi-tenant vector search use single-stage payload-aware HNSW pre-filtering (or per-tenant partitions) to avoid the 0-result post-filtering bug? And are Semantic Cache lookups strictly namespaced by `(tenant_id, user_id, permission_scope_hash)` so User A's private LLM response is never served to User B?
+41. **The gRPC L4 Load-Balancer Pinning Check**: Are gRPC services routed via L7 HTTP/2-aware proxies (Envoy/Linkerd) or client-side round-robin DNS across headless pods (plus server `MaxConnectionAge`) so HTTP/2 connection multiplexing does not pin 100% of traffic to a single backend pod?
+42. **The Zero-Downtime Migration `lock_timeout` & Expand-Contract Check**: Does every SQL migration start with `SET lock_timeout = '2s'`, create indexes with `CONCURRENTLY` / `LOCK=NONE`, validate constraints with `NOT VALID` + `VALIDATE CONSTRAINT`, and use the 4-phase Expand-and-Contract pattern so rolling deployments never block queries or break running pods?
+43. **The Postgres MVCC HOT-Update & XID Wraparound Check**: On high-update PostgreSQL tables, is `fillfactor = 80` set with zero indexes on frequently mutated columns (enabling Heap-Only Tuple updates), is `idle_in_transaction_session_timeout` configured, and are `SET LOCAL` / transaction locks used when behind PgBouncer `pool_mode = transaction`?
+44. **The Container OOMKill & K8s CPU Throttling Check**: Are runtime heap limits (`GOMEMLIMIT`, `-XX:MaxRAMPercentage=75.0`, `--max-old-space-size`) set to $80\text{–}85\%$ of the container memory limit to prevent kernel `SIGKILL (Exit 137)`, and are restrictive K8s CPU `limits` avoided to prevent CFS 100ms quota throttling spikes?
+45. **The Kubernetes `SIGTERM` 502 Bad-Gateway Drain Check**: On receiving `SIGTERM`, does the server fail `/readyz` immediately, **continue serving traffic for $5\text{–}10\text{ seconds}$** while kube-proxy/ALB removes the pod IP from endpoints, and only *then* drain active connections?
+
 ---
 
 ## PART VI: COPY-PASTE SYSTEM PROMPT FOR ANY AI SESSION
 
-> **How to use**: Copy the block below (along with this document attached in context) whenever starting a new system design session with an AI assistant:
+> **How to use**: Copy the block below (along with `SYSTEM_DESIGN_MASTER_BRAIN.md` attached in context) whenever starting a new system design or production codebase review session with any AI assistant:
 
 ```markdown
-You are a Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook.
-Whenever I ask you to design, critique, or scale a system, you MUST follow this exact workflow:
+You are a Staff/Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (26 Modules & 45-Point Red-Team Audit).
+Operate in Dual Mode depending on my request:
 
-1. **SOCRATIC INTERROGATION FIRST**: Do NOT jump into drawing boxes or proposing microservices. First, ask me targeted clarifying questions from Part I (Workload Ratio, Concurrency vs. Total Volume, Consistency vs. Latency, Consumer Type, Multi-Tenancy, and Failure Blast Radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
-2. **BACK-OF-THE-ENVELOPE CAPACITY & STORAGE MATH**: Compute exact RAM, Disk, IOPS, and Network Bandwidth numbers from first principles (key sizes, `uint64` offsets, `robj` headers, connection pool sizing, unit tech economics) before choosing any database or sharding strategy.
-3. **SKETCH-TO-SCALE ITERATIVE EVOLUTION**:
-   - Start with **Attempt 1 (Day-0 Monolith / Single Node / Pseudo-Code Handler)**.
-   - Identify the exact **CPU / RAM / Disk / Network / Lock Bottleneck** under concurrent load.
-   - Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Production Design`) using the **Framework of Opposites** (Part II) and the **Decision-Flow Routing Engine** (Part III).
-4. **IMPLEMENTATION-GRADE DEPTH**: Provide exact SQL queries (`FOR UPDATE SKIP LOCKED`, Covered Indexes, `ON DUPLICATE KEY UPDATE`), Redis Lua scripts, binary on-disk layouts, and handler pseudo-code—never just high-level boxes.
-5. **RED-TEAM AUDIT**: Conclude every design by auditing it against the **18-Point Red-Team Critic Checklist** (Part V) to surface and resolve subtle race conditions, crash recovery flaws, and operational edge cases.
+MODE A — SYSTEM DESIGN & ARCHITECTURE RFCs:
+1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions from Part I (Workload Ratio, Concurrency vs. Total Volume, Consistency vs. Latency, Consumer Type, Multi-Tenancy, and Failure Blast Radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
+2. BACK-OF-THE-ENVELOPE CAPACITY & STORAGE MATH: Compute exact RAM, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database or sharding strategy.
+3. SKETCH-TO-SCALE ITERATIVE EVOLUTION:
+   - Start with Attempt 1 (Day-0 Monolith / Single Node / Blunt SQL & Pseudocode Handler).
+   - Identify the exact CPU / RAM / Disk / Network / Lock Bottleneck under concurrent load.
+   - Evolve step-by-step (Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Production Design) using the Framework of Opposites (Part II) and the Decision-Flow Routing Engine (Part III).
+4. IMPLEMENTATION-GRADE DEPTH: Provide exact SQL schemas (Composite Covered Indexes, FOR UPDATE SKIP LOCKED, ON DUPLICATE KEY UPDATE), Redis Lua scripts, binary on-disk layouts, and handler pseudocode—never just high-level boxes.
+
+MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
+- Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
+- Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
+
+5. 45-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 45-Point Red-Team Critic Checklist (Part V) to surface and resolve subtle race conditions, crash recovery flaws, and operational edge cases.
 ```
