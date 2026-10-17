@@ -4,7 +4,7 @@ sync.py — Zero-Dependency Universal Rule Synchronizer & Release Verifier
 for System Design Master Brain.
 
 Usage:
-  python sync.py                           # Synchronize SKILL.md -> all 8 IDE rule files
+  python sync.py                           # Synchronize SKILL.md -> all 8 IDE/Agent rule files
   python sync.py --check                   # Verify all files are in sync, ASCII-safe, and 100% anonymous
   python sync.py --set-repo <owner>/<repo> # Replace OWNER/SystemDesignSkill placeholders across repo
 """
@@ -20,16 +20,19 @@ PLAIN_RULE_TARGETS = [
     "AGENTS.md",
     "CLAUDE.md",
     ".cursorrules",
-    ".windsurfrules",
     ".codeiumrules",
     ".clinerules",
     ".github/copilot-instructions.md",
 ]
 
+FULL_SKILL_TARGETS = [
+    ".agents/skills/system-design-master-brain/SKILL.md",
+]
+
 CURSOR_MDC_TARGET = ".cursor/rules/system-design-master-brain.mdc"
 
 CURSOR_MDC_FRONTMATTER = """---
-description: Staff/Principal Systems & AI Architect skill enforcing Dual-Mode execution (Socratic System Design RFCs + Direct Codebase Enforcement), First-Principles Capacity & GPU/KV-Cache Math, Sketch-to-Scale evolution, 28 Distributed & AI Modules, and a 60-Point Master Red-Team Audit.
+description: Staff/Principal Systems & AI Architect skill enforcing Dual-Mode execution (Socratic System Design RFCs + Direct Codebase Enforcement), First-Principles Capacity & GPU/KV-Cache Math, Sketch-to-Scale evolution, 28 Distributed & AI Modules, and a 65-Point Master Red-Team Audit.
 globs: "**/*"
 alwaysApply: true
 ---
@@ -64,7 +67,7 @@ def sync_rules(check_only: bool = False) -> bool:
     body = extract_skill_body(skill_raw)
     all_ok = True
 
-    # 1. Sync plain markdown rule targets
+    # 1. Sync plain markdown rule targets (AGENTS.md, CLAUDE.md, .cursorrules, etc.)
     for rel_path in PLAIN_RULE_TARGETS:
         target = ROOT / rel_path
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -80,7 +83,23 @@ def sync_rules(check_only: bool = False) -> bool:
             if check_only:
                 print(f"[OK] {rel_path} is in sync.")
 
-    # 2. Sync Cursor .mdc target
+    # 2. Sync full SKILL.md targets (Devin & OpenAI Codex .agents/skills/ bundle)
+    for rel_path in FULL_SKILL_TARGETS:
+        target = ROOT / rel_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        existing = target.read_text(encoding="utf-8") if target.exists() else None
+        if existing != skill_raw:
+            if check_only:
+                print(f"[OUT OF SYNC] {rel_path} differs from SKILL.md.")
+                all_ok = False
+            else:
+                target.write_text(skill_raw, encoding="utf-8", newline="\n")
+                print(f"[SYNCED] {rel_path}")
+        else:
+            if check_only:
+                print(f"[OK] {rel_path} is in sync.")
+
+    # 3. Sync Cursor .mdc target
     mdc_target = ROOT / CURSOR_MDC_TARGET
     mdc_target.parent.mkdir(parents=True, exist_ok=True)
     expected_mdc = CURSOR_MDC_FRONTMATTER + body
@@ -106,22 +125,36 @@ def set_repository_slug(slug: str) -> bool:
         return False
 
     owner, repo = slug.strip().split("/")
+    if not owner or not repo:
+        print("[FAIL] Both owner and repo name must be non-empty.", file=sys.stderr)
+        return False
+
     for rel_path in REPO_URL_FILES:
         path = ROOT / rel_path
         if not path.exists():
             continue
         content = path.read_text(encoding="utf-8")
         updated = content
+
+        # Update github.com/<owner>/<repo> (preserving .git or path suffixes, skipping JS ${owner}/${repo})
         updated = re.sub(
-            r"github\.com/[A-Za-z0-9_.-]+/SystemDesignSkill",
+            r"github\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?(?=\.git\b|/|\)|\"|'|\s|$)",
             f"github.com/{owner}/{repo}",
             updated,
         )
+        # Update raw.githubusercontent.com/<owner>/<repo>/main
         updated = re.sub(
-            r"raw\.githubusercontent\.com/[A-Za-z0-9_.-]+/SystemDesignSkill",
-            f"raw.githubusercontent.com/{owner}/{repo}",
+            r"raw\.githubusercontent\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/main",
+            f"raw.githubusercontent.com/{owner}/{repo}/main",
             updated,
         )
+        # Update GitHub Pages URL https://<owner>.github.io/<repo>
+        updated = re.sub(
+            r"https://[A-Za-z0-9_.-]+\.github\.io/[A-Za-z0-9_.-]+",
+            f"https://{owner}.github.io/{repo}",
+            updated,
+        )
+        # Update PowerShell variables in install.ps1
         updated = re.sub(
             r'\$RepoOwner\s*=\s*"[A-Za-z0-9_.-]+"',
             f'$RepoOwner = "{owner}"',
@@ -132,6 +165,7 @@ def set_repository_slug(slug: str) -> bool:
             f'$RepoName = "{repo}"',
             updated,
         )
+        # Update Bash variables in install.sh
         updated = re.sub(
             r'REPO_URL="https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git"',
             f'REPO_URL="https://github.com/{owner}/{repo}.git"',
@@ -154,18 +188,34 @@ def set_repository_slug(slug: str) -> bool:
 def run_quality_checks() -> bool:
     ok = sync_rules(check_only=True)
 
-    # Verify 60-Point Audit consistency across core files
+    # 1. Verify 65-Point Audit consistency across core files
     for fname in ["SYSTEM_DESIGN_MASTER_BRAIN.md", "SKILL.md", "README.md", "index.html"]:
         fpath = ROOT / fname
         text = fpath.read_text(encoding="utf-8")
-        if "60-Point" not in text and "60-point" not in text:
-            print(f"[FAIL] {fname} is missing 60-Point Audit reference.")
+        if "65-Point" not in text and "65-point" not in text:
+            print(f"[FAIL] {fname} is missing 65-Point Audit reference.")
             ok = False
-        if re.search(r"\b55-[Pp]oint\b", text):
-            print(f"[FAIL] {fname} still contains stale '55-Point' reference.")
+        if re.search(r"\b(55|60)-[Pp]oint\b", text):
+            print(f"[FAIL] {fname} still contains stale '55-Point' or '60-Point' reference.")
             ok = False
 
-    # Verify install.ps1 is pure ASCII for Windows PowerShell 5.1 compatibility
+    # 2. Verify legacy .windsurfrules file is removed
+    if (ROOT / ".windsurfrules").exists():
+        print("[FAIL] Deprecated .windsurfrules file still exists in repository.")
+        ok = False
+
+    # 3. Verify all internal #anchor links in index.html resolve to existing id="..." attributes
+    html_text = (ROOT / "index.html").read_text(encoding="utf-8")
+    html_ids = set(re.findall(r'\bid="([^"]+)"', html_text))
+    html_hrefs = re.findall(r'\bhref="#([^"]+)"', html_text)
+    broken_anchors = [a for a in html_hrefs if a and not a.startswith("${") and a not in html_ids]
+    if broken_anchors:
+        print(f"[FAIL] index.html contains broken internal #anchor links: {broken_anchors}")
+        ok = False
+    else:
+        print(f"[OK] All {len(html_hrefs) - 1} internal #anchor links in index.html resolve cleanly.")
+
+    # 4. Verify install.ps1 is pure ASCII for Windows PowerShell 5.1 compatibility
     ps1_bytes = (ROOT / "install.ps1").read_bytes()
     non_ascii = [b for b in ps1_bytes if b > 127]
     if non_ascii:
@@ -174,10 +224,11 @@ def run_quality_checks() -> bool:
     else:
         print("[OK] install.ps1 is 100% pure ASCII.")
 
-    # Verify zero local path leaks in tracked files
+    # 5. Verify zero local path leaks or deprecated windsurf references in tracked files
     leak_patterns = [
         re.compile(r"C:\\Users\\", re.IGNORECASE),
         re.compile(r"/Users/[A-Za-z0-9_-]+/Desktop", re.IGNORECASE),
+        re.compile(r"windsurf", re.IGNORECASE),
     ]
     for path in ROOT.rglob("*"):
         if path.is_dir() or ".git" in path.parts or path.name == "sync.py":
@@ -188,11 +239,11 @@ def run_quality_checks() -> bool:
             continue
         for pat in leak_patterns:
             if pat.search(text):
-                print(f"[FAIL] Local path pattern '{pat.pattern}' found in {path.relative_to(ROOT)}")
+                print(f"[FAIL] Forbidden pattern '{pat.pattern}' found in {path.relative_to(ROOT)}")
                 ok = False
 
     if ok:
-        print("\n[SUCCESS] All 8 IDE rule files, playbooks, installers, and anonymity checks passed!")
+        print("\n[SUCCESS] All 8 IDE/Agent rule files, playbooks, installers, anchors, and anonymity checks passed!")
     return ok
 
 

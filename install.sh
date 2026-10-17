@@ -1,119 +1,150 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# System Design Master Brain - Universal 1-Line Installer (macOS / Linux)
-# ==============================================================================
-# Usage:
-#   curl -fsSL https://raw.githubusercontent.com/<username>/SystemDesignSkill/main/install.sh | bash
-#
-# Or run locally from cloned repo:
-#   ./install.sh
+# System Design Master Brain — Universal Cross-Platform Installer (macOS/Linux/WSL)
+# Installs the skill globally for Claude Code, Devin, OpenAI Codex, Cursor,
+# Gemini CLI / Antigravity, and optionally into the current project workspace.
 # ==============================================================================
 
-set -e
+set -euo pipefail
 
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-BOLD='\033[1m'
-NC='\033[0m'
+REPO_URL="${SYSTEM_DESIGN_SKILL_REPO:-https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main}"
+SKILL_NAME="system-design-master-brain"
 
-echo -e "${BLUE}${BOLD}======================================================${NC}"
-echo -e "${BLUE}${BOLD}   System Design Master Brain - Universal Installer   ${NC}"
-echo -e "${BLUE}${BOLD}======================================================${NC}"
-echo ""
+BOLD="\033[1m"
+GREEN="\033[0;32m"
+CYAN="\033[0;36m"
+YELLOW="\033[0;33m"
+RESET="\033[0m"
 
-REPO_RAW_URL="${REPO_RAW_URL:-https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main}"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+echo -e "${BOLD}${CYAN}=================================================================${RESET}"
+echo -e "${BOLD}${CYAN}  System Design Master Brain — Universal Skill Installer         ${RESET}"
+echo -e "${BOLD}${CYAN}=================================================================${RESET}"
 
-# Function to get file content (from local clone if present, otherwise curl)
+# Determine if running from a local clone of SystemDesignSkill or via curl | bash
+SCRIPT_DIR=""
+if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+    CANDIDATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd || true)"
+    if [ -n "$CANDIDATE_DIR" ] && [ -f "$CANDIDATE_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md" ]; then
+        SCRIPT_DIR="$CANDIDATE_DIR"
+    fi
+elif [ -f "./SYSTEM_DESIGN_MASTER_BRAIN.md" ] && [ -f "./SKILL.md" ]; then
+    SCRIPT_DIR="$(pwd)"
+fi
+
 fetch_file() {
     local filename="$1"
     local dest="$2"
-
     mkdir -p "$(dirname "$dest")"
-
     if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/$filename" ]; then
-        if [ "$(cd "$(dirname "$dest")" && pwd)/$(basename "$dest")" != "$SCRIPT_DIR/$filename" ]; then
-            cp "$SCRIPT_DIR/$filename" "$dest"
-        fi
+        cp "$SCRIPT_DIR/$filename" "$dest"
     else
-        curl -fsSL "$REPO_RAW_URL/$filename" -o "$dest"
+        curl -fsSL "$REPO_URL/$filename" -o "$dest"
     fi
 }
 
-# Non-destructive workspace rule installer: preserves custom project AGENTS.md / CLAUDE.md
-safe_install_rule() {
-    local filename="$1"
-    local dest="$2"
+BEGIN_MARKER="<!-- BEGIN SYSTEM_DESIGN_MASTER_BRAIN -->"
+END_MARKER="<!-- END SYSTEM_DESIGN_MASTER_BRAIN -->"
 
-    if [ -f "$dest" ] && ! grep -q "# System Design Master Brain" "$dest" 2>/dev/null; then
-        cp "$dest" "${dest}.bak"
-        local tmp_file
-        tmp_file="$(mktemp)"
-        fetch_file "$filename" "$tmp_file"
-        printf "\n\n---\n\n" >> "$dest"
-        cat "$tmp_file" >> "$dest"
-        rm -f "$tmp_file"
-        echo -e "${YELLOW}  -> Preserved existing $dest (backed up to ${dest}.bak) and appended System Design Master Brain.${NC}"
+# Non-destructively install or update a rule file using HTML comment markers
+merge_rule_file() {
+    local src_file="$1"
+    local dest_file="$2"
+    mkdir -p "$(dirname "$dest_file")"
+
+    # Strip YAML frontmatter if present in source
+    local payload
+    payload="$(awk 'BEGIN{fm=0} /^---$/{if(NR==1){fm=1;next} if(fm==1){fm=0;next}} fm==0{print}' "$src_file")"
+
+    if [ ! -f "$dest_file" ]; then
+        printf "%s\n%s\n%s\n" "$BEGIN_MARKER" "$payload" "$END_MARKER" > "$dest_file"
+    elif grep -qF "$BEGIN_MARKER" "$dest_file"; then
+        python3 -c '
+import sys
+dest, b_mark, e_mark = sys.argv[1], sys.argv[2], sys.argv[3]
+payload = sys.stdin.read().strip()
+with open(dest, "r", encoding="utf-8") as f:
+    content = f.read()
+s = content.find(b_mark)
+e = content.find(e_mark)
+if s != -1 and e != -1 and e > s:
+    e += len(e_mark)
+    new_c = content[:s] + b_mark + "\n" + payload + "\n" + e_mark + content[e:]
+else:
+    new_c = content.rstrip() + "\n\n" + b_mark + "\n" + payload + "\n" + e_mark + "\n"
+with open(dest, "w", encoding="utf-8", newline="\n") as f:
+    f.write(new_c)
+' "$dest_file" "$BEGIN_MARKER" "$END_MARKER" <<< "$payload" 2>/dev/null || {
+            printf "\n\n%s\n%s\n%s\n" "$BEGIN_MARKER" "$payload" "$END_MARKER" >> "$dest_file"
+        }
     else
-        fetch_file "$filename" "$dest"
+        printf "\n\n%s\n%s\n%s\n" "$BEGIN_MARKER" "$payload" "$END_MARKER" >> "$dest_file"
     fi
 }
 
-# 1. Install for Claude Code (~/.claude/skills/system-design-master-brain)
-CLAUDE_SKILL_DIR="$HOME/.claude/skills/system-design-master-brain"
-mkdir -p "$CLAUDE_SKILL_DIR"
-fetch_file "SKILL.md" "$CLAUDE_SKILL_DIR/SKILL.md"
-fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CLAUDE_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
-echo -e "${GREEN}✔ Installed for Claude Code:${NC} $CLAUDE_SKILL_DIR"
+# 1. Claude Code Global Skill (~/.claude/skills/system-design-master-brain)
+CLAUDE_DIR="$HOME/.claude/skills/$SKILL_NAME"
+echo -e "\n${YELLOW}[1/5] Installing for Claude Code -> ${CLAUDE_DIR}${RESET}"
+fetch_file "SKILL.md" "$CLAUDE_DIR/SKILL.md"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CLAUDE_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+fetch_file "agents/openai.yaml" "$CLAUDE_DIR/agents/openai.yaml"
+echo -e "${GREEN}  ✓ Claude Code skill installed.${RESET}"
 
-# 2. Install for OpenAI ChatGPT Desktop App (Codex) & Codex CLI (~/.codex/skills & ~/.agents/skills)
-CODEX_DIR="$HOME/.codex/skills/system-design-master-brain"
-mkdir -p "$CODEX_DIR/agents"
+# 2. Devin & OpenAI Codex CLI Global Skills (~/.agents/skills & ~/.codex/skills)
+AGENTS_DIR="$HOME/.agents/skills/$SKILL_NAME"
+CODEX_DIR="$HOME/.codex/skills/$SKILL_NAME"
+echo -e "\n${YELLOW}[2/5] Installing for Devin & OpenAI Codex -> ${AGENTS_DIR}${RESET}"
+fetch_file "SKILL.md" "$AGENTS_DIR/SKILL.md"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$AGENTS_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+fetch_file "agents/openai.yaml" "$AGENTS_DIR/agents/openai.yaml"
 fetch_file "SKILL.md" "$CODEX_DIR/SKILL.md"
-fetch_file "AGENTS.md" "$CODEX_DIR/AGENTS.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CODEX_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
-fetch_file "agents/openai.yaml" "$CODEX_DIR/agents/openai.yaml"
-if [ ! -f "$HOME/.codex/AGENTS.md" ]; then
-    fetch_file "AGENTS.md" "$HOME/.codex/AGENTS.md"
+echo -e "${GREEN}  ✓ Devin & OpenAI Codex skills installed.${RESET}"
+
+# 3. Devin Global Rules (~/.config/devin/AGENTS.md)
+DEVIN_CONFIG_DIR="$HOME/.config/devin"
+echo -e "\n${YELLOW}[3/5] Installing for Devin Global Rules -> ${DEVIN_CONFIG_DIR}${RESET}"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$DEVIN_CONFIG_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+merge_rule_file "$CLAUDE_DIR/SKILL.md" "$DEVIN_CONFIG_DIR/AGENTS.md"
+echo -e "${GREEN}  ✓ Devin global AGENTS.md rules configured.${RESET}"
+
+# 4. Gemini CLI / Antigravity Global Skill (~/.gemini/skills/system-design-master-brain)
+GEMINI_DIR="$HOME/.gemini/skills/$SKILL_NAME"
+echo -e "\n${YELLOW}[4/5] Installing for Gemini / Antigravity -> ${GEMINI_DIR}${RESET}"
+fetch_file "SKILL.md" "$GEMINI_DIR/SKILL.md"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+echo -e "${GREEN}  ✓ Gemini / Antigravity skill installed.${RESET}"
+
+# 5. Cursor Global Skill Directory (~/.cursor/skills/system-design-master-brain)
+CURSOR_DIR="$HOME/.cursor/skills/$SKILL_NAME"
+echo -e "\n${YELLOW}[5/5] Installing for Cursor -> ${CURSOR_DIR}${RESET}"
+fetch_file "SKILL.md" "$CURSOR_DIR/SKILL.md"
+fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$CURSOR_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
+echo -e "${GREEN}  ✓ Cursor global skill installed.${RESET}"
+
+# Optional: Install workspace rule files if --workspace or --project <dir> is passed
+TARGET_WS=""
+if [[ "${1:-}" == "--workspace" ]]; then
+    TARGET_WS="$(pwd)"
+elif [[ "${1:-}" == "--project" && -n "${2:-}" ]]; then
+    TARGET_WS="$2"
 fi
 
-AGENTS_STD_DIR="$HOME/.agents/skills/system-design-master-brain"
-mkdir -p "$AGENTS_STD_DIR/agents"
-fetch_file "SKILL.md" "$AGENTS_STD_DIR/SKILL.md"
-fetch_file "AGENTS.md" "$AGENTS_STD_DIR/AGENTS.md"
-fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$AGENTS_STD_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
-fetch_file "agents/openai.yaml" "$AGENTS_STD_DIR/agents/openai.yaml"
-echo -e "${GREEN}✔ Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI:${NC} $CODEX_DIR & $AGENTS_STD_DIR"
-
-# 3. Install for Antigravity / Gemini (~/.gemini/antigravity/skills/system-design-master-brain)
-GEMINI_SKILL_DIR="$HOME/.gemini/antigravity/skills/system-design-master-brain"
-mkdir -p "$GEMINI_SKILL_DIR"
-fetch_file "SKILL.md" "$GEMINI_SKILL_DIR/SKILL.md"
-fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
-echo -e "${GREEN}✔ Installed for Antigravity / Gemini:${NC} $GEMINI_SKILL_DIR"
-
-# 4. Install for Current Workspace (Non-destructively merges into existing AGENTS.md / CLAUDE.md if custom)
-if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ] || [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
-    safe_install_rule "AGENTS.md" "./AGENTS.md"
-    safe_install_rule "CLAUDE.md" "./CLAUDE.md"
-    fetch_file "SKILL.md" "./SKILL.md"
-    fetch_file "agents/openai.yaml" "./agents/openai.yaml"
-    mkdir -p "./.cursor/rules"
-    fetch_file ".cursor/rules/system-design-master-brain.mdc" "./.cursor/rules/system-design-master-brain.mdc"
-    safe_install_rule ".cursorrules" "./.cursorrules"
-    safe_install_rule ".windsurfrules" "./.windsurfrules"
-    safe_install_rule ".codeiumrules" "./.codeiumrules"
-    safe_install_rule ".clinerules" "./.clinerules"
-    fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "./SYSTEM_DESIGN_MASTER_BRAIN.md"
-    mkdir -p "./.github"
-    safe_install_rule ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
-    echo -e "${GREEN}✔ Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
+if [[ -n "$TARGET_WS" ]]; then
+    mkdir -p "$TARGET_WS"
+    echo -e "\n${YELLOW}[+] Installing workspace rules into ${TARGET_WS}...${RESET}"
+    fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$TARGET_WS/SYSTEM_DESIGN_MASTER_BRAIN.md"
+    fetch_file "SKILL.md" "$TARGET_WS/SKILL.md"
+    fetch_file "SKILL.md" "$TARGET_WS/.agents/skills/$SKILL_NAME/SKILL.md"
+    fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$TARGET_WS/.agents/skills/$SKILL_NAME/SYSTEM_DESIGN_MASTER_BRAIN.md"
+    fetch_file ".cursor/rules/system-design-master-brain.mdc" "$TARGET_WS/.cursor/rules/system-design-master-brain.mdc"
+    for rule_target in "$TARGET_WS/AGENTS.md" "$TARGET_WS/CLAUDE.md" "$TARGET_WS/.cursorrules" "$TARGET_WS/.codeiumrules" "$TARGET_WS/.clinerules" "$TARGET_WS/.github/copilot-instructions.md"; do
+        merge_rule_file "$TARGET_WS/SKILL.md" "$rule_target"
+    done
+    echo -e "${GREEN}  ✓ Workspace rules non-destructively merged (preserving any existing project rules).${RESET}"
 fi
 
-echo ""
-echo -e "${GREEN}${BOLD}Installation Complete! (28 Modules + 60-Point Red-Team Audit Active)${NC}"
-echo -e "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
-echo -e "  ${YELLOW}\"Design a distributed rate limiter or LLM inference engine with P99 < 50ms.\"${NC}"
-echo -e "  ${YELLOW}\"Audit this codebase / PR using the 60-Point Red-Team Checklist.\"${NC}"
-echo ""
+echo -e "\n${BOLD}${GREEN}=================================================================${RESET}"
+echo -e "${BOLD}${GREEN}  Installation Complete!                                         ${RESET}"
+echo -e "${BOLD}${GREEN}=================================================================${RESET}"
+echo -e "Tip: Run with ${BOLD}--workspace${RESET} (or ${BOLD}--project /path/to/repo${RESET}) to non-destructively merge"
+echo -e "     ${BOLD}AGENTS.md, CLAUDE.md, .agents/skills/, and .cursor/rules/${RESET} into your repo."

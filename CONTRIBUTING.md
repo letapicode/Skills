@@ -34,7 +34,7 @@ To propose a new module (or use **Part VI Prompt 2 / Prompt 3** to have a fronti
 - **X.3 Production Architecture & Schemas**: Provide explicit table definitions (`CREATE TABLE`), index choices, Redis Lua scripts, compiler flags, or wire protocols.
 - **X.4 Hidden Edge Cases & Failure Modes**: Document at least 4–6 non-obvious crash, race-condition, OOM, or partial failure scenarios and their exact production fixes.
 
-### 2. Expanding the 60-Point Red-Team Audit Checklist
+### 2. Expanding the 65-Point Red-Team Audit Checklist
 If you encountered a critical production outage or subtle concurrency/AI-serving bug in your systems (e.g., clock skew, connection pool starvation, tombstone explosion, XLA dynamic-shape recompilation, MoE expert routing collapse):
 - Frame it as an actionable verification question.
 - Specify the exact failure mechanism.
@@ -50,7 +50,7 @@ If you encountered a critical production outage or subtle concurrency/AI-serving
 1. **Fork the Repository**: Create a feature branch (e.g., `git checkout -b feature/module-29-time-series-storage`).
 2. **Update & Synchronize All Files**:
    - Add module content into `SYSTEM_DESIGN_MASTER_BRAIN.md` and update `SKILL.md`.
-   - Run `python sync.py` to automatically synchronize all IDE rule files (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/system-design-master-brain.mdc`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`), re-render `index.html`, and verify 100% anonymity.
+   - Run `python sync.py` to automatically synchronize all IDE/agent rule files (`AGENTS.md`, `CLAUDE.md`, `.agents/skills/system-design-master-brain/SKILL.md`, `.cursor/rules/system-design-master-brain.mdc`, `.cursorrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`), re-render `index.html`, and verify 100% anonymity.
 3. **Verify Anonymity & Sync**:
    ```bash
    python sync.py --check

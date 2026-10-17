@@ -1,120 +1,176 @@
 # ==============================================================================
-# System Design Master Brain - Universal 1-Line Installer (Windows PowerShell)
+# System Design Master Brain - Universal Cross-Platform Installer (Windows PowerShell)
+# Installs the skill globally for Claude Code, Devin, OpenAI Codex, Cursor,
+# Gemini CLI / Antigravity, and optionally into the current project workspace.
 # ==============================================================================
-# Usage:
-#   irm https://raw.githubusercontent.com/<username>/SystemDesignSkill/main/install.ps1 | iex
-#
-# Or run locally from cloned repo:
-#   .\install.ps1
-# ==============================================================================
+
+param(
+    [switch]$Workspace,
+    [string]$ProjectDir = ""
+)
 
 $ErrorActionPreference = "Stop"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host "   System Design Master Brain - Universal Installer   " -ForegroundColor Cyan
-Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host ""
+$RepoOwner = "OWNER"
+$RepoName = "SystemDesignSkill"
+$RepoUrl = if ($env:SYSTEM_DESIGN_SKILL_REPO) { $env:SYSTEM_DESIGN_SKILL_REPO } else { "https://raw.githubusercontent.com/$RepoOwner/$RepoName/main" }
+$SkillName = "system-design-master-brain"
+$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
-$RepoRawUrl = if ($env:REPO_RAW_URL) { $env:REPO_RAW_URL } else { "https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main" }
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path -ErrorAction SilentlyContinue
+Write-Host "=================================================================" -ForegroundColor Cyan
+Write-Host "  System Design Master Brain - Universal Skill Installer         " -ForegroundColor Cyan
+Write-Host "=================================================================" -ForegroundColor Cyan
 
-function Copy-Or-DownloadFile {
-    param (
-        [string]$Filename,
-        [string]$DestinationPath
+# Safely detect local clone directory; $MyInvocation.MyCommand.Path is $null during irm | iex
+$ScriptDir = ""
+if ($MyInvocation.MyCommand.Path) {
+    $CandidateDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    if ($CandidateDir -and (Test-Path (Join-Path $CandidateDir "SYSTEM_DESIGN_MASTER_BRAIN.md"))) {
+        $ScriptDir = $CandidateDir
+    }
+} elseif (Test-Path (Join-Path (Get-Location).Path "SYSTEM_DESIGN_MASTER_BRAIN.md")) {
+    $ScriptDir = (Get-Location).Path
+}
+
+function Fetch-SkillFile {
+    param(
+        [string]$FileName,
+        [string]$Destination
     )
-
-    $parentDir = Split-Path -Parent $DestinationPath
-    if (-not (Test-Path $parentDir)) {
-        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+    $DestDir = Split-Path -Parent $Destination
+    if ($DestDir -and -not (Test-Path $DestDir)) {
+        New-Item -ItemType Directory -Force -Path $DestDir | Out-Null
     }
 
-    if ($ScriptDir -and (Test-Path (Join-Path $ScriptDir $Filename))) {
-        $srcFull = (Resolve-Path (Join-Path $ScriptDir $Filename)).Path
-        $destFull = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($DestinationPath)
-        if ($srcFull -ne $destFull) {
-            Copy-Item $srcFull -Destination $DestinationPath -Force
-        }
+    if ($ScriptDir -and (Test-Path (Join-Path $ScriptDir $FileName))) {
+        Copy-Item -Path (Join-Path $ScriptDir $FileName) -Destination $Destination -Force
     } else {
-        $url = "$RepoRawUrl/$Filename"
-        Invoke-RestMethod -Uri $url -OutFile $DestinationPath
+        Invoke-WebRequest -Uri "$RepoUrl/$FileName" -OutFile $Destination -UseBasicParsing
     }
 }
 
-function Install-SafeWorkspaceRule {
-    param (
-        [string]$Filename,
-        [string]$DestinationPath
-    )
+$BeginMarker = "<!-- BEGIN SYSTEM_DESIGN_MASTER_BRAIN -->"
+$EndMarker = "<!-- END SYSTEM_DESIGN_MASTER_BRAIN -->"
 
-    if (Test-Path $DestinationPath) {
-        $existingContent = Get-Content -Path $DestinationPath -Raw -ErrorAction SilentlyContinue
-        if ($existingContent -and ($existingContent -notmatch "# System Design Master Brain")) {
-            $backupPath = "$DestinationPath.bak"
-            Copy-Item -Path $DestinationPath -Destination $backupPath -Force
-            $tempFile = [System.IO.Path]::GetTempFileName()
-            Copy-Or-DownloadFile $Filename $tempFile
-            $newContent = Get-Content -Path $tempFile -Raw
-            Add-Content -Path $DestinationPath -Value "`r`n`r`n---`r`n`r`n$newContent" -Encoding UTF8
-            Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
-            Write-Host "  -> Preserved existing $DestinationPath (backed up to $backupPath) and appended System Design Master Brain." -ForegroundColor Yellow
-            return
+function Merge-RuleFile {
+    param(
+        [string]$SourceFile,
+        [string]$Destination
+    )
+    $DestDir = Split-Path -Parent $Destination
+    if ($DestDir -and -not (Test-Path $DestDir)) {
+        New-Item -ItemType Directory -Force -Path $DestDir | Out-Null
+    }
+
+    $RawSource = [System.IO.File]::ReadAllText((Resolve-Path $SourceFile).Path, $Utf8NoBom)
+    if ($RawSource.StartsWith("---")) {
+        $Parts = $RawSource -split "(?m)^---\s*$", 3
+        if ($Parts.Count -ge 3) {
+            $RawSource = $Parts[2].Trim()
         }
     }
-    Copy-Or-DownloadFile $Filename $DestinationPath
+    $WrappedBlock = "$BeginMarker`n$($RawSource.Trim())`n$EndMarker"
+
+    if (-not (Test-Path $Destination)) {
+        [System.IO.File]::WriteAllText($Destination, "$WrappedBlock`n", $Utf8NoBom)
+        return
+    }
+
+    $DestPath = (Resolve-Path $Destination).Path
+    $Existing = [System.IO.File]::ReadAllText($DestPath, $Utf8NoBom)
+    $StartIdx = $Existing.IndexOf($BeginMarker)
+    $EndIdx = $Existing.IndexOf($EndMarker)
+    if ($StartIdx -ge 0 -and $EndIdx -gt $StartIdx) {
+        $EndIdx += $EndMarker.Length
+        $Updated = $Existing.Substring(0, $StartIdx) + $WrappedBlock + $Existing.Substring($EndIdx)
+        [System.IO.File]::WriteAllText($DestPath, $Updated, $Utf8NoBom)
+    } else {
+        $Updated = $Existing.TrimEnd() + "`n`n" + $WrappedBlock + "`n"
+        [System.IO.File]::WriteAllText($DestPath, $Updated, $Utf8NoBom)
+    }
 }
 
-# 1. Claude Code Skill (~/.claude/skills/system-design-master-brain)
-$ClaudeDir = Join-Path $HOME ".claude\skills\system-design-master-brain"
-Copy-Or-DownloadFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
-Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $ClaudeDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Write-Host "[OK] Installed for Claude Code: $ClaudeDir" -ForegroundColor Green
+# 1. Claude Code Global Skill
+$ClaudeDir = Join-Path $HOME ".claude\skills\$SkillName"
+Write-Host "`n[1/5] Installing for Claude Code -> $ClaudeDir" -ForegroundColor Yellow
+Fetch-SkillFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $ClaudeDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Fetch-SkillFile "agents/openai.yaml" (Join-Path $ClaudeDir "agents\openai.yaml")
+Write-Host "  [OK] Claude Code skill installed." -ForegroundColor Green
 
-# 2. OpenAI ChatGPT Desktop App (Codex) & Codex CLI (~/.codex/skills & ~/.agents/skills)
-$CodexDir = Join-Path $HOME ".codex\skills\system-design-master-brain"
-Copy-Or-DownloadFile "SKILL.md" (Join-Path $CodexDir "SKILL.md")
-Copy-Or-DownloadFile "AGENTS.md" (Join-Path $CodexDir "AGENTS.md")
-Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $CodexDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $CodexDir "agents\openai.yaml")
-$CodexGlobalAgents = Join-Path $HOME ".codex\AGENTS.md"
-if (-not (Test-Path $CodexGlobalAgents)) {
-    Copy-Or-DownloadFile "AGENTS.md" $CodexGlobalAgents
+# 2. Devin & OpenAI Codex Global Skills (~/.agents/skills & ~/.codex/skills)
+$AgentsDir = Join-Path $HOME ".agents\skills\$SkillName"
+$CodexDir = Join-Path $HOME ".codex\skills\$SkillName"
+Write-Host "`n[2/5] Installing for Devin & OpenAI Codex -> $AgentsDir" -ForegroundColor Yellow
+Fetch-SkillFile "SKILL.md" (Join-Path $AgentsDir "SKILL.md")
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $AgentsDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Fetch-SkillFile "agents/openai.yaml" (Join-Path $AgentsDir "agents\openai.yaml")
+Fetch-SkillFile "SKILL.md" (Join-Path $CodexDir "SKILL.md")
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $CodexDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Write-Host "  [OK] Devin & OpenAI Codex skills installed." -ForegroundColor Green
+
+# 3. Devin Global Rules (~/.config/devin/AGENTS.md & %APPDATA%\devin\AGENTS.md)
+$DevinConfigDir = Join-Path $HOME ".config\devin"
+Write-Host "`n[3/5] Installing for Devin Global Rules -> $DevinConfigDir" -ForegroundColor Yellow
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $DevinConfigDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Merge-RuleFile (Join-Path $ClaudeDir "SKILL.md") (Join-Path $DevinConfigDir "AGENTS.md")
+if ($env:APPDATA) {
+    $DevinAppDataDir = Join-Path $env:APPDATA "devin"
+    Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $DevinAppDataDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+    Merge-RuleFile (Join-Path $ClaudeDir "SKILL.md") (Join-Path $DevinAppDataDir "AGENTS.md")
+}
+Write-Host "  [OK] Devin global AGENTS.md rules configured." -ForegroundColor Green
+
+# 4. Gemini CLI / Antigravity Global Skill
+$GeminiDir = Join-Path $HOME ".gemini\skills\$SkillName"
+Write-Host "`n[4/5] Installing for Gemini / Antigravity -> $GeminiDir" -ForegroundColor Yellow
+Fetch-SkillFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Write-Host "  [OK] Gemini / Antigravity skill installed." -ForegroundColor Green
+
+# 5. Cursor Global Skill
+$CursorDir = Join-Path $HOME ".cursor\skills\$SkillName"
+Write-Host "`n[5/5] Installing for Cursor -> $CursorDir" -ForegroundColor Yellow
+Fetch-SkillFile "SKILL.md" (Join-Path $CursorDir "SKILL.md")
+Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $CursorDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+Write-Host "  [OK] Cursor global skill installed." -ForegroundColor Green
+
+# Optional: Workspace installation
+$TargetWs = ""
+if ($ProjectDir) {
+    $TargetWs = $ProjectDir
+} elseif ($Workspace) {
+    $TargetWs = (Get-Location).Path
 }
 
-$AgentsStdDir = Join-Path $HOME ".agents\skills\system-design-master-brain"
-Copy-Or-DownloadFile "SKILL.md" (Join-Path $AgentsStdDir "SKILL.md")
-Copy-Or-DownloadFile "AGENTS.md" (Join-Path $AgentsStdDir "AGENTS.md")
-Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $AgentsStdDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $AgentsStdDir "agents\openai.yaml")
-Write-Host "[OK] Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI: $CodexDir & $AgentsStdDir" -ForegroundColor Green
-
-# 3. Antigravity / Gemini Skill (~/.gemini/antigravity/skills/system-design-master-brain)
-$GeminiDir = Join-Path $HOME ".gemini\antigravity\skills\system-design-master-brain"
-Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
-Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Write-Host "[OK] Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
-
-# 4. Current Workspace (Non-destructively merges into existing AGENTS.md / CLAUDE.md if custom)
-$currentDir = Get-Location
-$isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml") -or (Test-Path "pom.xml") -or (Test-Path "build.gradle")
-if ($isProjectDir) {
-    Install-SafeWorkspaceRule "AGENTS.md" (Join-Path $currentDir "AGENTS.md")
-    Install-SafeWorkspaceRule "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
-    Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
-    Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $currentDir "agents\openai.yaml")
-    Copy-Or-DownloadFile ".cursor/rules/system-design-master-brain.mdc" (Join-Path $currentDir ".cursor\rules\system-design-master-brain.mdc")
-    Install-SafeWorkspaceRule ".cursorrules" (Join-Path $currentDir ".cursorrules")
-    Install-SafeWorkspaceRule ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
-    Install-SafeWorkspaceRule ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
-    Install-SafeWorkspaceRule ".clinerules" (Join-Path $currentDir ".clinerules")
-    Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-    Install-SafeWorkspaceRule ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "[OK] Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
+if ($TargetWs) {
+    if (-not (Test-Path $TargetWs)) {
+        New-Item -ItemType Directory -Force -Path $TargetWs | Out-Null
+    }
+    $TargetWs = (Resolve-Path $TargetWs).Path
+    Write-Host "`n[+] Installing workspace rules into $TargetWs..." -ForegroundColor Yellow
+    Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $TargetWs "SYSTEM_DESIGN_MASTER_BRAIN.md")
+    Fetch-SkillFile "SKILL.md" (Join-Path $TargetWs "SKILL.md")
+    Fetch-SkillFile "SKILL.md" (Join-Path $TargetWs ".agents\skills\$SkillName\SKILL.md")
+    Fetch-SkillFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $TargetWs ".agents\skills\$SkillName\SYSTEM_DESIGN_MASTER_BRAIN.md")
+    Fetch-SkillFile ".cursor/rules/system-design-master-brain.mdc" (Join-Path $TargetWs ".cursor\rules\system-design-master-brain.mdc")
+    $RuleTargets = @(
+        "AGENTS.md",
+        "CLAUDE.md",
+        ".cursorrules",
+        ".codeiumrules",
+        ".clinerules",
+        ".github\copilot-instructions.md"
+    )
+    foreach ($Target in $RuleTargets) {
+        Merge-RuleFile (Join-Path $TargetWs "SKILL.md") (Join-Path $TargetWs $Target)
+    }
+    Write-Host "  [OK] Workspace rules non-destructively merged (preserving any existing project rules)." -ForegroundColor Green
 }
 
-Write-Host ""
-Write-Host "Installation Complete! (28 Modules + 60-Point Red-Team Audit Active)" -ForegroundColor Green
-Write-Host "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
-Write-Host '  "Design a distributed rate limiter or LLM inference engine with P99 < 50ms."' -ForegroundColor Yellow
-Write-Host '  "Audit this codebase / PR using the 60-Point Red-Team Checklist."' -ForegroundColor Yellow
-Write-Host ""
+Write-Host "`n=================================================================" -ForegroundColor Green
+Write-Host "  Installation Complete!                                         " -ForegroundColor Green
+Write-Host "=================================================================" -ForegroundColor Green
+Write-Host "Tip: Run with -Workspace (or -ProjectDir C:\path\to\repo) to non-destructively merge"
+Write-Host "     AGENTS.md, CLAUDE.md, .agents/skills/, and .cursor/rules/ into your repo."
