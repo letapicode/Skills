@@ -51,11 +51,13 @@ fetch_file "SKILL.md" "$GEMINI_SKILL_DIR/SKILL.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
 echo -e "${GREEN}✔ Installed for Antigravity / Gemini:${NC} $GEMINI_SKILL_DIR"
 
-# 3. Install for Current Workspace (Cursor & Windsurf rules)
+# 3. Install for Current Workspace (Cursor, Windsurf, Claude Code, Codeium rules)
 if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ] || [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
     fetch_file ".cursorrules" "./.cursorrules"
     fetch_file ".windsurfrules" "./.windsurfrules"
-    echo -e "${GREEN}✔ Installed .cursorrules & .windsurfrules in current project:${NC} $(pwd)"
+    fetch_file ".codeiumrules" "./.codeiumrules"
+    fetch_file "CLAUDE.md" "./CLAUDE.md"
+    echo -e "${GREEN}✔ Installed .cursorrules, .windsurfrules, .codeiumrules & CLAUDE.md in current project:${NC} $(pwd)"
 fi
 
 echo ""

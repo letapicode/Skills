@@ -2,9 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Compatible with Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-6366f1.svg)]()
+[![Compatible with Claude](https://img.shields.io/badge/Claude%20Code%20%2F%20Claude.ai-Compatible-d97706.svg)]()
+[![Compatible with Codeium](https://img.shields.io/badge/Codeium%20%2F%20Windsurf-Compatible-09b6a2.svg)]()
 [![Compatible with Cursor](https://img.shields.io/badge/Cursor-Compatible-000000.svg)]()
-[![Compatible with Windsurf](https://img.shields.io/badge/Windsurf-Compatible-06b6d4.svg)]()
 [![Compatible with Antigravity / Gemini](https://img.shields.io/badge/Antigravity%20%2F%20Gemini-Compatible-ea4335.svg)]()
 
 > **Transform any AI coding assistant into a Staff/Principal Systems Architect.**  
@@ -54,7 +54,7 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 *What the installer does automatically:*
 1. Installs the skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
 2. Installs the skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
-3. Installs `.cursorrules` and `.windsurfrules` into your current project if executed inside a repository.
+3. Installs **Claude Code** (`CLAUDE.md`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), and **Cursor** (`.cursorrules`) into your project root.
 
 ---
 
@@ -62,11 +62,13 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 | Platform | Setup Instructions |
 |---|---|
-| **Claude Code** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/` |
+| **Claude Code (CLI)** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/`, or place `CLAUDE.md` in your project root |
+| **Claude.ai (Web / Projects)** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your Project Knowledge and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
+| **Codeium (VS Code / JetBrains)** | Copy `.codeiumrules` into the root directory of your project |
+| **Codeium Windsurf IDE** | Copy `.windsurfrules` into the root directory of your project |
 | **Cursor** | Copy `.cursorrules` into the root directory of your project |
-| **Windsurf** | Copy `.windsurfrules` into the root directory of your project |
 | **Antigravity / Gemini** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.gemini/antigravity/skills/system-design-master-brain/` |
-| **ChatGPT / Claude Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
+| **ChatGPT / OpenAI Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
 
 ---
 

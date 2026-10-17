@@ -49,13 +49,15 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
-# 3. Current Workspace (.cursorrules & .windsurfrules)
+# 3. Current Workspace (.cursorrules, .windsurfrules, .codeiumrules, CLAUDE.md)
 $currentDir = Get-Location
 $isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml")
 if ($isProjectDir) {
     Copy-Or-DownloadFile ".cursorrules" (Join-Path $currentDir ".cursorrules")
     Copy-Or-DownloadFile ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
-    Write-Host "✔ Installed .cursorrules & .windsurfrules in project: $currentDir" -ForegroundColor Green
+    Copy-Or-DownloadFile ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
+    Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
+    Write-Host "✔ Installed .cursorrules, .windsurfrules, .codeiumrules & CLAUDE.md in project: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
