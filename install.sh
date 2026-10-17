@@ -41,6 +41,25 @@ fetch_file() {
     fi
 }
 
+# Non-destructive workspace rule installer: preserves custom project AGENTS.md / CLAUDE.md
+safe_install_rule() {
+    local filename="$1"
+    local dest="$2"
+
+    if [ -f "$dest" ] && ! grep -q "# System Design Master Brain" "$dest" 2>/dev/null; then
+        cp "$dest" "${dest}.bak"
+        local tmp_file
+        tmp_file="$(mktemp)"
+        fetch_file "$filename" "$tmp_file"
+        printf "\n\n---\n\n" >> "$dest"
+        cat "$tmp_file" >> "$dest"
+        rm -f "$tmp_file"
+        echo -e "${YELLOW}  -> Preserved existing $dest (backed up to ${dest}.bak) and appended System Design Master Brain.${NC}"
+    else
+        fetch_file "$filename" "$dest"
+    fi
+}
+
 # 1. Install for Claude Code (~/.claude/skills/system-design-master-brain)
 CLAUDE_SKILL_DIR="$HOME/.claude/skills/system-design-master-brain"
 mkdir -p "$CLAUDE_SKILL_DIR"
@@ -74,25 +93,27 @@ fetch_file "SKILL.md" "$GEMINI_SKILL_DIR/SKILL.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
 echo -e "${GREEN}✔ Installed for Antigravity / Gemini:${NC} $GEMINI_SKILL_DIR"
 
-# 4. Install for Current Workspace (Codex AGENTS.md + openai.yaml, Claude, Cursor, Windsurf, Codeium, Cline/DeepSeek, Copilot + Full Playbook)
+# 4. Install for Current Workspace (Non-destructively merges into existing AGENTS.md / CLAUDE.md if custom)
 if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ] || [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
-    fetch_file "AGENTS.md" "./AGENTS.md"
-    fetch_file "CLAUDE.md" "./CLAUDE.md"
+    safe_install_rule "AGENTS.md" "./AGENTS.md"
+    safe_install_rule "CLAUDE.md" "./CLAUDE.md"
     fetch_file "SKILL.md" "./SKILL.md"
     fetch_file "agents/openai.yaml" "./agents/openai.yaml"
-    fetch_file ".cursorrules" "./.cursorrules"
-    fetch_file ".windsurfrules" "./.windsurfrules"
-    fetch_file ".codeiumrules" "./.codeiumrules"
-    fetch_file ".clinerules" "./.clinerules"
+    mkdir -p "./.cursor/rules"
+    fetch_file ".cursor/rules/system-design-master-brain.mdc" "./.cursor/rules/system-design-master-brain.mdc"
+    safe_install_rule ".cursorrules" "./.cursorrules"
+    safe_install_rule ".windsurfrules" "./.windsurfrules"
+    safe_install_rule ".codeiumrules" "./.codeiumrules"
+    safe_install_rule ".clinerules" "./.clinerules"
     fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "./SYSTEM_DESIGN_MASTER_BRAIN.md"
     mkdir -p "./.github"
-    fetch_file ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
+    safe_install_rule ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
     echo -e "${GREEN}✔ Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in:${NC} $(pwd)"
 fi
 
 echo ""
-echo -e "${GREEN}${BOLD}Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)${NC}"
+echo -e "${GREEN}${BOLD}Installation Complete! (28 Modules + 60-Point Red-Team Audit Active)${NC}"
 echo -e "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 echo -e "  ${YELLOW}\"Design a distributed rate limiter or LLM inference engine with P99 < 50ms.\"${NC}"
-echo -e "  ${YELLOW}\"Audit this codebase / PR using the 55-Point Red-Team Checklist.\"${NC}"
+echo -e "  ${YELLOW}\"Audit this codebase / PR using the 60-Point Red-Team Checklist.\"${NC}"
 echo ""

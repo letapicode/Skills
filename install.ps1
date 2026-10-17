@@ -41,6 +41,29 @@ function Copy-Or-DownloadFile {
     }
 }
 
+function Install-SafeWorkspaceRule {
+    param (
+        [string]$Filename,
+        [string]$DestinationPath
+    )
+
+    if (Test-Path $DestinationPath) {
+        $existingContent = Get-Content -Path $DestinationPath -Raw -ErrorAction SilentlyContinue
+        if ($existingContent -and ($existingContent -notmatch "# System Design Master Brain")) {
+            $backupPath = "$DestinationPath.bak"
+            Copy-Item -Path $DestinationPath -Destination $backupPath -Force
+            $tempFile = [System.IO.Path]::GetTempFileName()
+            Copy-Or-DownloadFile $Filename $tempFile
+            $newContent = Get-Content -Path $tempFile -Raw
+            Add-Content -Path $DestinationPath -Value "`r`n`r`n---`r`n`r`n$newContent" -Encoding UTF8
+            Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
+            Write-Host "  -> Preserved existing $DestinationPath (backed up to $backupPath) and appended System Design Master Brain." -ForegroundColor Yellow
+            return
+        }
+    }
+    Copy-Or-DownloadFile $Filename $DestinationPath
+}
+
 # 1. Claude Code Skill (~/.claude/skills/system-design-master-brain)
 $ClaudeDir = Join-Path $HOME ".claude\skills\system-design-master-brain"
 Copy-Or-DownloadFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
@@ -71,26 +94,27 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "[OK] Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
-# 4. Current Workspace (AGENTS.md, CLAUDE.md, SKILL.md, agents/openai.yaml, .cursorrules, .windsurfrules, .codeiumrules, .clinerules, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
+# 4. Current Workspace (Non-destructively merges into existing AGENTS.md / CLAUDE.md if custom)
 $currentDir = Get-Location
 $isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml") -or (Test-Path "pom.xml") -or (Test-Path "build.gradle")
 if ($isProjectDir) {
-    Copy-Or-DownloadFile "AGENTS.md" (Join-Path $currentDir "AGENTS.md")
-    Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
+    Install-SafeWorkspaceRule "AGENTS.md" (Join-Path $currentDir "AGENTS.md")
+    Install-SafeWorkspaceRule "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
     Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
     Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $currentDir "agents\openai.yaml")
-    Copy-Or-DownloadFile ".cursorrules" (Join-Path $currentDir ".cursorrules")
-    Copy-Or-DownloadFile ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
-    Copy-Or-DownloadFile ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
-    Copy-Or-DownloadFile ".clinerules" (Join-Path $currentDir ".clinerules")
+    Copy-Or-DownloadFile ".cursor/rules/system-design-master-brain.mdc" (Join-Path $currentDir ".cursor\rules\system-design-master-brain.mdc")
+    Install-SafeWorkspaceRule ".cursorrules" (Join-Path $currentDir ".cursorrules")
+    Install-SafeWorkspaceRule ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
+    Install-SafeWorkspaceRule ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
+    Install-SafeWorkspaceRule ".clinerules" (Join-Path $currentDir ".clinerules")
     Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-    Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
+    Install-SafeWorkspaceRule ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
     Write-Host "[OK] Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Installation Complete! (28 Modules + 55-Point Red-Team Audit Active)" -ForegroundColor Green
+Write-Host "Installation Complete! (28 Modules + 60-Point Red-Team Audit Active)" -ForegroundColor Green
 Write-Host "You can now ask your AI coding assistant (ChatGPT Desktop Codex, Codex CLI, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
 Write-Host '  "Design a distributed rate limiter or LLM inference engine with P99 < 50ms."' -ForegroundColor Yellow
-Write-Host '  "Audit this codebase / PR using the 55-Point Red-Team Checklist."' -ForegroundColor Yellow
+Write-Host '  "Audit this codebase / PR using the 60-Point Red-Team Checklist."' -ForegroundColor Yellow
 Write-Host ""

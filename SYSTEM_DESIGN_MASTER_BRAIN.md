@@ -1,7 +1,7 @@
 # System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 28-Module Pattern Playbook
 
 > **How to Use This Document**:  
-> Load this playbook as an AI agent skill (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`) or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` directly in context. Whether designing a distributed or AI/ML system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the **Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 28-Module Lego-Block Playbook, Uncharted-Domain Deep-Research Fallback, and 55-Point Red-Team Audit** defined below.
+> Load this playbook as an AI agent skill (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/system-design-master-brain.mdc`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`) or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` directly in context. Whether designing a distributed or AI/ML system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the **Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 28-Module Lego-Block Playbook, Uncharted-Domain Deep-Research Fallback, and 60-Point Red-Team Audit** defined below.
 
 ---
 
@@ -68,7 +68,7 @@ To be maximally effective both on architectural whiteboards and inside live prod
   2. Compute **First-Principles Capacity & Storage Math** (RAM, Disk, IOPS, Bandwidth, Ephemeral Ports).
   3. Start with the **Day-0 3-Tier Monolith Baseline** and prove numerically where it breaks before adding distributed components.
   4. Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (Part II).
-  5. Conclude with the **55-Point Master Red-Team Audit** (Part V).
+  5. Conclude with the **60-Point Master Red-Team Audit** (Part V).
 
 - **Mode B — Real-Codebase Implementation, PR Review & Production Debugging Mode** *(Triggered when writing backend code, SQL migrations, API handlers, reviewing PRs, or debugging live latency/outages in a repo)*:
   - **Do NOT stall with abstract whiteboard questions** when the code is right in front of you. Inspect the actual handlers, queries, schemas, and configs directly and enforce these **Non-Negotiable Codebase Laws**:
@@ -1332,6 +1332,14 @@ flowchart TD
 - **4. Metastable Failures (The "Work Amplification After Recovery" Trap)**:
   - *Failure Mode*: Even after a traffic spike subsides back to normal (e.g., $5,000\text{ RPS}$), the system remains at $100\%$ CPU and $0\text{ RPS}$ goodput indefinitely because of a self-sustaining feedback loop: empty caches causing $100\%$ DB misses, GC thrashing from queued request buffers, or lock contention reducing throughput below baseline.
   - *Production Fix*: Implement **Emergency Load Shedding & Cache Warmup Gates**—to break a metastable loop, you must shed incoming traffic *below* the degraded capacity (e.g., reject $80\%$ of traffic at the L7 edge for 60 seconds) until caches warm up and in-flight queues drain to zero.
+- **5. `CLOCK_MONOTONIC` vs. `CLOCK_REALTIME` Negative Elapsed-Time Crashes (The Leap-Second / NTP Slew Outage)**:
+  - *Failure Mode*: Developers frequently compute request timeouts, token-bucket rate-limiter refills, or circuit-breaker windows using wall-clock time (`System.currentTimeMillis()`, `Date.now()`, `time.time()`). When NTP steps the system clock backward by even $15\text{ms}$ (or during a leap-second smear), `elapsed = now - start_time` evaluates to a **negative number**—causing rate limiters to divide by zero, panic, or grant negative tokens that lock out 100% of global traffic!
+  - *Production Fix*: Strictly separate **Wall-Clock Time (`CLOCK_REALTIME`)** (used *only* for external log/DB timestamps) from **Monotonic Time (`CLOCK_MONOTONIC` / `time.monotonic()` / `System.nanoTime()` / `performance.now()` / Go `time.Since()`)** for all duration, timeout, rate-limit, and lease-expiry calculations.
+- **6. Cloud Cross-AZ Data Transfer Billing Cliffs ($\$0.02/\text{GB}$) & Synchronized `Retry-After` Herds**:
+  - *Failure Mode*:
+    1. **Cross-AZ Egress Tax**: Cloud providers charge **$\$0.01/\text{GB}$ in each direction ($\$0.02/\text{GB}$ round-trip)** for traffic crossing Availability Zones within the same region. A chatty Kafka consumer group, Redis replica read pool, or service mesh moving $10\text{ GB/s}$ across 3 AZs silently burns **$\$518,000/\text{month}$ in Cross-AZ network fees**—often $5\times$ the compute bill!
+    2. **Synchronized `Retry-After` Herd**: Returning `HTTP 429`/`503` with a fixed header `Retry-After: 30` synchronizes 50,000 throttled clients into sleeping for *exactly* $30.0\text{s}$ and hammering the server at the exact same millisecond.
+  - *Production Fix*: Enable **Topology/Zone-Aware Routing** (`client.rack` in Kafka to read from same-AZ brokers/followers, `service.kubernetes.io/topology-mode: Auto` in K8s/Envoy) so $95\%+$ of high-bandwidth reads stay intra-AZ ($0/\text{GB}$), and always inject server-side random jitter into `Retry-After` headers (`Retry-After: 30 + rand(0, 15)`).
 
 ---
 
@@ -1372,7 +1380,12 @@ flowchart TD
   - *Failure Mode*: Your system lets users register a webhook URL or paste a link to fetch an OpenGraph preview. An attacker registers `http://169.254.169.254/latest/meta-data/iam/security-credentials/` (AWS IMDSv1) or `http://10.0.1.50:6379/` (internal Redis) or uses **DNS Rebinding** (domain resolves to `8.8.8.8` during validation, then `127.0.0.1` 100ms later during `fetch()`).
   - *Production Fix*:
     1. Enforce **AWS IMDSv2** (hop-limit = 1, requires `PUT` token).
-    2. Resolve DNS **once** Inside a custom dialer (`net.DialContext`), verify the resolved IP is not in private/reserved CIDRs (`127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, `::1`, `fc00::/7`), and connect **directly to that verified IP socket** (preventing DNS rebinding), with HTTP redirects disabled (`maxRedirects = 0`).
+    2. Resolve DNS **once** inside a custom dialer (`net.DialContext`), verify the resolved IP is not in private/reserved CIDRs (`127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, `::1`, `fc00::/7`), and connect **directly to that verified IP socket** (preventing DNS rebinding), with HTTP redirects disabled (`maxRedirects = 0`).
+- **5. Catastrophic Regex Backtracking (`ReDoS`) & Unbounded Parser CPU Pinning (The Global WAF Outage Pattern)**:
+  - *Failure Mode*: Validating user input, URLs, emails, or WAF rules using a backtracking regular expression engine (`PCRE`, Python `re`, JS `RegExp`, Java `java.util.regex`) containing nested/overlapping quantifiers like `(a+)+$` or `.*.*=`. A single 4KB crafted payload triggers **$O(2^N)$ exponential backtracking**, pinning $100\%$ of CPU cores across all API pods simultaneously while DB and cache utilization sit at $0\%$!
+  - *Production Fix*:
+    1. Forbid backtracking regex engines on untrusted user/LLM inputs; use **linear-time $O(N)$ Thompson NFA / DFA automata engines (`RE2`, Rust `regex`, Go `regexp`)** which guarantee single-pass execution without backtracking.
+    2. Enforce strict byte-length caps *before* invoking regexes or JSON/XML/YAML parsers, limit JSON/AST nesting depth ($\le 32$), and disable YAML/XML entity expansion (`Billion Laughs` bomb).
 
 ---
 
@@ -1633,6 +1646,12 @@ flowchart TD
     1. On `SIGTERM` (or Kubernetes `preStop: exec: ["sh", "-c", "sleep 5"]`), immediately flip `/readyz` health check to return `503 Service Unavailable`.
     2. **Continue accepting and serving normal HTTP/gRPC requests for $5\text{–}10\text{ seconds}$** while load balancers drain the Pod IP from their active target pools.
     3. After the $5\text{s}$ sleep, invoke `httpServer.Shutdown(ctx)` (with a $25\text{s}$ drain deadline) to finish in-flight requests, flush telemetry/batch buffers, close DB pools, and exit `0`.
+- **4. Outbound HTTP Connection Pool Defaults (`MaxIdleConnsPerHost = 2`), `TIME_WAIT` & K8s `nf_conntrack` Exhaustion**:
+  - *Mechanism*: Standard-library HTTP clients (most famously Go's `http.DefaultTransport` with `MaxIdleConnsPerHost = 2`, or un-pooled Python `requests.get()` / Node `fetch`) close idle sockets aggressively after every concurrency burst. Closed TCP sockets enter the Linux kernel `TIME_WAIT` state for **$60\text{ seconds}$** ($2 \times \text{MSL}$), pinning the `(src_ip, src_port, dst_ip, dst_port)` 4-tuple.
+  - *The Outage*: At just $1,000\text{ RPS}$ to an internal microservice or LLM API, $60,000$ sockets accumulate in `TIME_WAIT`, exhausting all outbound ephemeral ports (`EADDRNOTAVAIL: cannot assign requested address`) and overflowing the Kubernetes node's Linux netfilter conntrack table (`nf_conntrack: table full, dropping packet`), which causes mysterious $1,000\text{ms}$ TCP `SYN` retransmit stalls across all pods on the node!
+  - *Production Fix*:
+    1. Always construct singleton outbound HTTP clients with **`MaxIdleConnsPerHost = 100+`** (matching peak concurrency per downstream host) and HTTP/2 multiplexing enabled.
+    2. Enable `net.ipv4.tcp_tw_reuse = 1` in sysctl, and deploy **NodeLocal DNSCache** (switching DNS queries to local TCP / `NOTRACK` iptables rules) so high-velocity DNS lookups do not consume `nf_conntrack` slots.
 
 ---
 
@@ -1785,12 +1804,20 @@ flowchart TD
   - *The Hardware Reality*: In a 16,384-GPU training cluster, a GPU, HBM bank, or optical transceiver fails or suffers Silent Data Corruption (SDC) every **3 to 5 hours**.
   - *The Synchronous Checkpoint Stall*: Dumping a $15\text{ TB}$ distributed checkpoint directly from GPU HBM to shared storage (Lustre/S3) takes $3\text{–}10\text{ minutes}$, wasting thousands of GPU-hours daily.
   - *Production Fix (Two-Phase Async Checkpointing)*: Pause training for **$< 0.8\text{ seconds}$** to copy each GPU's local shard from HBM to **Pinned Host CPU RAM** over PCIe Gen5 (`cudaMemcpyAsync`), immediately resume GPU training on the next batch, and have background CPU threads flush the snapshot from Host RAM to distributed storage asynchronously!
+- **3. IEEE-754 Floating-Point Non-Associativity in GPU Kernels (Speculative Decoding Drift & RLHF/GRPO Rollout Collapse)**:
+  - *Mechanism*: Floating-point addition is **non-associative**: $(a + b) + c \neq a + (b + c)$ due to intermediate rounding. In GPU kernels (`FlashAttention`, `cuBLAS` split-$K$ GEMM reductions, and `AllReduce` trees), changing the dynamic batch size from `batch_size = 1` to `batch_size = 19` alters the parallel thread-block reduction tree—producing different `BF16`/`FP16`/`FP8` output logits for the exact same prompt even at `temperature = 0`!
+  - *The Production Failure Modes*:
+    1. **RLHF / GRPO Post-Training (`DeepSeek-R1` Style) Importance-Sampling Explosion**: If the rollout worker (`vLLM` in `FP8`/`BF16`) generates reasoning trajectories and the trainer (`FSDP`/`Megatron`) recomputes $\log \pi_{\text{old}}(a_t|s_t)$ with a different kernel batch/tile layout, subtle logit divergence causes the PPO/GRPO ratio $r_t(\theta) = \exp(\log \pi_\theta - \log \pi_{\text{old}})$ to spike wildly on long 16K sequences, destabilizing policy gradients!
+    2. **Speculative Decoding & Deterministic Audit Replay Drift**: Bit-level logit drift between the draft/prefill pass and target verification pass causes false rejection of valid draft tokens.
+  - *Production Fix*:
+    1. During RLHF/GRPO rollouts, **persist the exact token log-probabilities (`behavior_logprobs`) emitted by the inference engine** inside the rollout trajectory payload—never recompute $\pi_{\text{old}}$ inside the training engine!
+    2. For deterministic `temperature = 0` verification or audit replay, enforce fixed split-$K$ reduction tile sizes (`torch.use_deterministic_algorithms(True)` / `CUBLAS_WORKSPACE_CONFIG=:4096:8`) and accumulate attention softmax reductions in `FP32` registers (`Safe Online Softmax` subtracting $\max_i x_i$).
 
 ---
 
-## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (55-POINT AUDIT)
+## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (60-POINT AUDIT)
 
-Whenever you (the AI Architect) finish proposing a system design **or** reviewing a real production codebase/PR, you **MUST** run this **55-Point Red-Team Audit** against the architecture or code before declaring it complete:
+Whenever you (the AI Architect) finish proposing a system design **or** reviewing a real production codebase/PR, you **MUST** run this **60-Point Red-Team Audit** against the architecture or code before declaring it complete:
 
 ### Core Architecture, SQL & Storage Checks (Points 1–30)
 1. **The Day-0 Over-Engineering Check**: Did the design introduce microservices, Kafka, Redis, or sharding before proving via back-of-the-envelope math that a single vertically scaled machine + RDBMS cannot handle the concurrent load?
@@ -1862,7 +1889,7 @@ Whenever you (the AI Architect) finish proposing a system design **or** reviewin
 44. **The Container OOMKill & K8s CPU Throttling Check**: Are runtime heap limits (`GOMEMLIMIT`, `-XX:MaxRAMPercentage=75.0`, `--max-old-space-size`) set to $80\text{–}85\%$ of the container memory limit to prevent kernel `SIGKILL (Exit 137)`, and are restrictive K8s CPU `limits` avoided to prevent CFS 100ms quota throttling spikes?
 45. **The Kubernetes `SIGTERM` 502 Bad-Gateway Drain Check**: On receiving `SIGTERM`, does the server fail `/readyz` immediately, **continue serving traffic for $5\text{–}10\text{ seconds}$** while kube-proxy/ALB removes the pod IP from endpoints, and only *then* drain active connections?
 
-### Frontier AI, DeepSeek MoE/MLA, Generative Media, Multi-Agent & JAX/XLA Checks (Points 46–55)
+### Frontier AI, DeepSeek MoE/MLA, Generative Media, Multi-Agent, JAX/XLA & Kernel Physics Checks (Points 46–60)
 46. **The Disaggregated Prefill-vs-Decode & KV-Cache Memory Check**: For high-throughput LLM serving, did you compute exact KV-cache memory bytes per token (using **MLA / GQA + PagedAttention / RadixAttention**), and did you disaggregate compute-bound **Prefill nodes** from memory-bandwidth-bound **Decode nodes** (with RDMA KV transfer) so long $64\text{K}$ prompts never stall active streaming users?
 47. **The MoE Expert Load-Balancing & Long-CoT Offloading Check**: In Mixture-of-Experts (DeepSeekMoE) serving/training, is **Auxiliary-Loss-Free dynamic bias routing** used to prevent single-GPU expert hotspots? And for Reasoning models (`R1` / `o1` long Chain-of-Thought), is **Hierarchical KV-Cache Offloading (HBM $\to$ Host DRAM)** enabled so 32K thinking traces never suffer mid-thought OOM preemption?
 48. **The Generative Media (Meta Muse / Diffusion) Queue & Dynamic S-LoRA Check**: Are multi-second image/video generation tasks decoupled via priority token-bucket GPU queues (never blocking synchronous HTTP threads)? Are custom styles served via **S-LoRA paged adapters** over a single frozen base model in HBM rather than swapping full $12\text{GB}$ checkpoints? And is **parallel masked token decoding (Meta Muse)** evaluated when sub-second generation or zero-shot inpainting is required?
@@ -1873,6 +1900,11 @@ Whenever you (the AI Architect) finish proposing a system design **or** reviewin
 53. **The Multi-Agent Context Isolation & Git Worktree Sandbox Check**: Did you avoid $O(N^2)$ free-form agent group chats by running subagents in **isolated context windows** that return only $\le 500$-token structured summaries + artifact URIs? And do parallel coding subagents operate in isolated **Git Worktrees (`git worktree add`)** to prevent concurrent file overwrites?
 54. **The JAX / XLA Dynamic-Shape Recompilation & Host-Sync Barrier Check**: Are all inputs to `@jax.jit` / `torch.compile` padded to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` (preventing 30s per-request XLA recompilation stalls), and are host-device sync calls (`float(loss)`, `print()`) removed from the inner step loop?
 55. **The 4D Parallelism NVLink Boundary & Two-Phase Async Checkpoint Check**: Is Tensor Parallelism ($TP=8$) restricted strictly within single-node NVLink domains ($900\text{ GB/s}$) while $PP/EP/FSDP$ run across InfiniBand, and do checkpoints copy from GPU HBM $\to$ Pinned Host RAM in $< 1\text{s}$ before flushing asynchronously to storage?
+56. **The Catastrophic Regex Backtracking (`ReDoS`) & Parser Depth Check**: Are untrusted inputs validated strictly via linear-time **$O(N)$ Thompson NFA regex engines (`RE2`, Rust `regex`, Go `regexp`)** rather than backtracking engines (`PCRE`, Python `re`, JS `RegExp`), with pre-parse byte-length and JSON/AST recursion depth caps?
+57. **The `CLOCK_MONOTONIC` vs. `CLOCK_REALTIME` Elapsed-Time Check**: Are all timeouts, rate-limiter token refills, and circuit-breaker durations computed using **`CLOCK_MONOTONIC` (`time.monotonic()`, `System.nanoTime()`, Go `time.Since()`)** so backward NTP clock steps never produce negative elapsed durations?
+58. **The Outbound HTTP Pool (`MaxIdleConnsPerHost`), `TIME_WAIT` & `nf_conntrack` Check**: Are outbound HTTP clients configured with `MaxIdleConnsPerHost >= 100` (avoiding Go's default of `2`), `tcp_tw_reuse = 1`, and **NodeLocal DNSCache** so burst traffic never exhausts ephemeral ports or drops packets in `nf_conntrack`?
+59. **The GPU Floating-Point Non-Associativity & RLHF Rollout Logprob Check**: In RLHF/GRPO post-training (`DeepSeek-R1` style) and speculative decoding, are exact inference-time `behavior_logprobs` persisted during rollout (rather than recomputed under different batch/tile shapes in the trainer) to prevent importance-sampling ratio explosions?
+60. **The Cloud Cross-AZ Egress Tax ($\$0.02/\text{GB}$) & Jittered `Retry-After` Check**: Are Kafka consumers (`client.rack`), Redis replicas, and Kubernetes services (`topology-mode: Auto`) pinned to **Topology/Zone-Aware Routing** to eliminate $\$0.02/\text{GB}$ cross-AZ bandwidth bills, and do `429`/`503` responses inject random jitter into `Retry-After` headers?
 
 ---
 
@@ -1909,7 +1941,7 @@ Whenever a user asks to design or debug a specialized system that is **not expli
 > *Copy and paste this into any chat session (ChatGPT, Claude.ai, DeepSeek, Gemini) along with `SYSTEM_DESIGN_MASTER_BRAIN.md`:*
 
 ```markdown
-You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (28 Modules & 55-Point Red-Team Audit).
+You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (28 Modules & 60-Point Red-Team Audit).
 Operate in Dual Mode depending on my request:
 
 MODE A — SYSTEM DESIGN, AI INFRASTRUCTURE & ARCHITECTURE RFCs:
@@ -1924,9 +1956,9 @@ MODE A — SYSTEM DESIGN, AI INFRASTRUCTURE & ARCHITECTURE RFCs:
 
 MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
 - Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
-- Enforce: zero network/LLM calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), JAX/XLA static shape padding, and graceful K8s SIGTERM drain.
+- Enforce: zero network/LLM calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), linear-time RE2 regexes, CLOCK_MONOTONIC elapsed timers, JAX/XLA static shape padding, and graceful K8s SIGTERM drain.
 
-6. 55-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 55-Point Red-Team Critic Checklist (Part V).
+6. 60-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 60-Point Red-Team Critic Checklist (Part V).
 ```
 
 ---
@@ -1958,7 +1990,7 @@ Follow these strict rules:
 1. READ & AUDIT THE ENTIRE REPOSITORY:
    - Read `SYSTEM_DESIGN_MASTER_BRAIN.md` and `SKILL.md` completely.
 2. IDENTIFY HIGH-VALUE UPGRADES (ZERO FLUFF / ZERO BULLSHIT RULE):
-   - Compare the 28 modules and 55 red-team checks against your latest engineering knowledge, new hardware generations (GPUs/TPUs/NICs/NVMe), new database/storage internals, new compiler/runtime mechanics, and new AI/agent architectures.
+   - Compare the 28 modules and 60 red-team checks against your latest engineering knowledge, new hardware generations (GPUs/TPUs/NICs/NVMe), new database/storage internals, new compiler/runtime mechanics, and new AI/agent architectures.
    - NEVER add vague buzzwords, marketing summaries, or high-level filler. Every addition MUST include:
      a) Concrete capacity/latency math and hardware numbers.
      b) Sketch-to-Scale evolution (`Attempt 1 -> Exact Bottleneck -> Attempt 2 -> Production Fix`).
@@ -1967,8 +1999,8 @@ Follow these strict rules:
    - Strictly preserve 100% anonymity: never include personal names, company-internal proprietary secrets, or local filesystem paths.
 3. SYNCHRONIZE ALL AGENT FILES & STATIC WEB READER:
    - Update `SYSTEM_DESIGN_MASTER_BRAIN.md` with the new modules/edge cases and increment the Red-Team Audit checklist.
-   - Propagate the updated rules and audit checklist to `SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`, `README.md`, `install.sh`, and `install.ps1`.
-   - Re-render the static `index.html` from `SYSTEM_DESIGN_MASTER_BRAIN.md` so GitHub Pages loads in 0ms with all new modules and TOC links intact.
+   - Update `SKILL.md` and run `python sync.py` to propagate the updated rules and audit checklist across `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/system-design-master-brain.mdc`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`, and re-render `index.html`.
 ```
+
 
 

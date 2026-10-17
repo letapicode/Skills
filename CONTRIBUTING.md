@@ -34,7 +34,7 @@ To propose a new module (or use **Part VI Prompt 2 / Prompt 3** to have a fronti
 - **X.3 Production Architecture & Schemas**: Provide explicit table definitions (`CREATE TABLE`), index choices, Redis Lua scripts, compiler flags, or wire protocols.
 - **X.4 Hidden Edge Cases & Failure Modes**: Document at least 4–6 non-obvious crash, race-condition, OOM, or partial failure scenarios and their exact production fixes.
 
-### 2. Expanding the 55-Point Red-Team Audit Checklist
+### 2. Expanding the 60-Point Red-Team Audit Checklist
 If you encountered a critical production outage or subtle concurrency/AI-serving bug in your systems (e.g., clock skew, connection pool starvation, tombstone explosion, XLA dynamic-shape recompilation, MoE expert routing collapse):
 - Frame it as an actionable verification question.
 - Specify the exact failure mechanism.
@@ -49,12 +49,11 @@ If you encountered a critical production outage or subtle concurrency/AI-serving
 
 1. **Fork the Repository**: Create a feature branch (e.g., `git checkout -b feature/module-29-time-series-storage`).
 2. **Update & Synchronize All Files**:
-   - Add module content into `SYSTEM_DESIGN_MASTER_BRAIN.md`.
-   - Synchronize the module table of contents and Red-Team Audit across `SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`, `README.md`, `install.sh`, and `install.ps1` (you can use **Prompt 3 in Part VI** of the playbook to automate this synchronization).
-   - Re-render `index.html` so the static GitHub Pages reader stays in sync with zero-latency loading.
-3. **Verify Anonymity**: Run a scan across your diff to guarantee zero personal, private, or proprietary identifiers:
+   - Add module content into `SYSTEM_DESIGN_MASTER_BRAIN.md` and update `SKILL.md`.
+   - Run `python sync.py` to automatically synchronize all IDE rule files (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/system-design-master-brain.mdc`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`), re-render `index.html`, and verify 100% anonymity.
+3. **Verify Anonymity & Sync**:
    ```bash
-   git diff main -- ':!*.lock' | grep -iE "author|proprietary|confidential|cohort|instructor|lecturer|transcript"
+   python sync.py --check
    ```
 4. **Submit a Clean PR**: Write a descriptive PR title and summarize:
    - What real-world problem or architectural pattern this addresses.

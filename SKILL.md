@@ -1,6 +1,6 @@
 ---
 name: system-design-master-brain
-description: "Principal Systems & AI Architect brain for designing distributed systems, frontier AI/ML/JAX/Multi-Agent infrastructure, AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode (Architecture RFC Mode + Direct Production Codebase Mode) with an Uncharted-Domain Deep-Research Fallback and Future-Model Self-Evolution Engine across 28 core modules and a 55-point audit."
+description: "Principal Systems & AI Architect brain for designing distributed systems, frontier AI/ML/JAX/Multi-Agent infrastructure, AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode (Architecture RFC Mode + Direct Production Codebase Mode) with an Uncharted-Domain Deep-Research Fallback and Future-Model Self-Evolution Engine across 28 core modules and a 60-point audit."
 ---
 
 # System Design Master Brain
@@ -13,7 +13,7 @@ Unlike conventional high-level architecture advice that relies on hand-wavy box-
 3. **Sketch-to-Scale Evolution** (`Attempt 1 (Day-0 Monolith / Blunt Code) -> Exact Bottleneck -> Attempt 2 -> Production Scaling`).
 4. **Implementation-Grade Depth** (exact SQL schemas, composite covering indexes, locking modes, Lua scripts, zero-downtime migrations, DeepSeek MLA/MoE & Disaggregated Serving, Meta Muse parallel masked decoding, Multi-Agent Worktree DAGs, JAX/XLA static shape bucketing, and wire protocols).
 5. **The Uncharted-Domain Deep-Research Bridge & Future-Model Self-Evolution** (automatically formulating surgical primary-literature research queries when a problem falls outside Modules 01–28, and upgrading the playbook when new frontier models release).
-6. **The 55-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, Prefill/Decode interference, JAX/XLA recompilation stalls, and silent data loss).
+6. **The 60-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, Prefill/Decode interference, JAX/XLA recompilation stalls, `ReDoS`, `CLOCK_MONOTONIC` bugs, and silent data loss).
 
 ---
 
@@ -35,7 +35,7 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
 3. **Stage 3 — The Day-0 Monolith Baseline**: Formulate the simplest working implementation on a single vertically scaled instance ($64\text{ vCPU}, 256\text{ GB RAM}, \text{NVMe SSD}$ + PostgreSQL/MySQL) with blunt pseudocode and SQL. Prove numerically where the single node saturates before adding distributed components.
 4. **Stage 4 — Sketch-to-Scale Iterative Evolution**: Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (*Push vs. Pull, Dense vs. Sparse, Overwrite vs. Append-Only, Hard vs. Soft Delete, Global vs. Local Lock, Pessimistic vs. Optimistic, Inline vs. Async, B+ Tree vs. LSM/Bitcask, Offset vs. Cursor Pagination*).
 5. **Stage 5 — Implementation-Grade Specifications**: Write copy-pasteable `CREATE TABLE` schemas with composite covering indexes, explicit SQL locking clauses, Redis Lua scripts, AI serving pipelines, and binary record layouts.
-6. **Stage 6 — The 55-Point Master Red-Team Audit**: Run the 55-Point Audit against the design to surface and fix subtle failure modes.
+6. **Stage 6 — The 60-Point Master Red-Team Audit**: Run the 60-Point Audit against the design to surface and fix subtle failure modes.
 
 ---
 
@@ -54,10 +54,11 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
    - Every mutating endpoint (`POST`/`PATCH`) must enforce idempotency via an `idempotency_keys(user_id, idempotency_key, request_hash, status, locked_until, response_body)` table or natural unique constraint.
    - Always include a **`locked_until` lease timestamp** (`NOW() + 60s`) when inserting `status = 'PROCESSING'` so a pod `OOMKill` mid-request does not lock out client retries with `409 Conflict` forever.
    - Verify `stored.request_hash == SHA256(incoming_body)` on replay; if mismatched, reject with `422 Unprocessable Entity`.
-4. **Single-Layer Retries, Retry Budgets & Deadline Propagation**:
+4. **Single-Layer Retries, `CLOCK_MONOTONIC` Timers & Cross-AZ Topology**:
    - Never stack retries across multiple layers ($3^4 = 81\times$ retry amplification storm). Retry at a single layer using **AWS Full Jitter**:
      $$t_{\text{sleep}} = \text{random}\left(0, \min(T_{\max}, T_{\text{base}} \times 2^{\text{attempt}})\right)$$
-   - Enforce a **Process-Wide Retry Budget ($\le 10\%$)** and propagate remaining timeout budgets (`context.WithTimeout` / `grpc-timeout`) on every outbound call.
+   - Enforce a **Process-Wide Retry Budget ($\le 10\%$)**, propagate remaining timeout budgets (`context.WithTimeout` / `grpc-timeout`), inject random jitter into `Retry-After` headers, and compute all elapsed durations/rate-limit refills using **`CLOCK_MONOTONIC`** (never wall-clock `CLOCK_REALTIME`).
+   - Enable **Topology/Zone-Aware Routing** (`client.rack`, `topology-mode: Auto`) to avoid $\$0.02/\text{GB}$ cross-AZ bandwidth cliffs.
 5. **Zero-Downtime Database Migrations (Expand-and-Contract)**:
    - Every migration file **must** begin with `SET lock_timeout = '2s'; SET statement_timeout = '10s';` so a blocked DDL `ALTER` aborts immediately instead of queueing every subsequent production `SELECT`/`UPDATE` behind an `ACCESS EXCLUSIVE` metadata lock!
    - Build indexes non-blockingly (`CREATE INDEX CONCURRENTLY` in Postgres; `ALGORITHM=INPLACE, LOCK=NONE` in MySQL).
@@ -75,15 +76,17 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
      ORDER BY created_at DESC, id DESC LIMIT 50
      ```
    - Design composite indexes with **Equality columns first, Range/Sort columns second, and Covered `SELECT` columns included** so queries execute as **Index-Only Scans** (`0` heap fetches).
-8. **AI Prefix-Cache Layout, Multi-Agent Isolation, JAX Static Shapes & Firecracker Sandboxes**:
+8. **AI Prefix-Cache Layout, Multi-Agent Isolation, JAX Static Shapes & Rollout Determinism**:
    - Structure LLM prompts strictly from **Frozen Static Prefix $\to$ Canonically Sorted Tool Schemas (`sort_keys=True`) $\to$ Dynamic Suffix** (never place `now()` at the top of the system prompt, which destroys KV prefix caching).
    - Isolate multi-agent sub-tasks in separate context windows returning $\le 500$-token structured summaries + artifact paths, and isolate concurrent coding subagents in separate **Git Worktrees (`git worktree add`)**.
    - In JAX/XLA (`@jax.jit`) and `torch.compile`, pad variable-length inputs to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` to prevent 30s per-request recompilation stalls, and never call `float(loss)` synchronously inside the step loop.
-   - Execute untrusted LLM-generated code strictly inside **Firecracker MicroVMs** blocking egress to RFC1918 and `169.254.169.254`.
-9. **Observability Cardinality Cap & Non-Blocking Logging**:
+   - In RLHF/GRPO post-training, persist exact inference-time `behavior_logprobs` during rollout rather than recomputing under different batch/tile shapes. Execute untrusted code inside **Firecracker MicroVMs** blocking RFC1918 and `169.254.169.254`.
+9. **Observability Cardinality Cap, Non-Blocking Logging & `ReDoS`-Safe Parsing**:
    - Never place unbounded high-cardinality IDs (`user_id`, `order_id`, `email`, raw un-templated URL paths) in Prometheus/Datadog metric labels (cap metric label combinations at $< 1,000$; put high-cardinality attributes in structured logs, trace spans, or exemplars).
-10. **Container Runtime Memory Bounds, gRPC L7 Routing & K8s `SIGTERM` Drain**:
+   - Forbid backtracking regex engines (`PCRE`, Python `re`, JS `RegExp`) on untrusted input; use linear-time **$O(N)$ Thompson NFA engines (`RE2`, Rust `regex`, Go `regexp`)** with pre-parse byte and JSON depth caps.
+10. **Container Runtime Memory Bounds, Outbound HTTP Pools, gRPC L7 Routing & K8s `SIGTERM` Drain**:
     - Set runtime heap limits (`GOMEMLIMIT`, `-XX:MaxRAMPercentage=75.0`, `--max-old-space-size`) to $80\text{–}85\%$ of the container memory limit to prevent kernel `OOMKill (Exit 137)`, and avoid restrictive K8s CPU `limits` (`cfs_quota_us` throttling).
+    - Tune outbound HTTP connection pools (`MaxIdleConnsPerHost >= 100`, avoiding Go's default of `2`) and deploy **NodeLocal DNSCache** to prevent `TIME_WAIT` ephemeral port and `nf_conntrack` table exhaustion.
     - Route gRPC via L7 proxies (Envoy/Linkerd) or headless DNS round-robin (`dns:///...` + server `MaxConnectionAge`) to prevent L4 TCP single-pod pinning.
     - On `SIGTERM`, immediately fail `/readyz` (`503`), **sleep $5\text{–}10\text{s}$ while continuing to serve in-flight and newly routed traffic** (allowing kube-proxy/ALB endpoint removal to propagate), and then call `server.Shutdown(ctx)`.
 
@@ -99,9 +102,9 @@ If the user asks to design or debug a specialized domain not explicitly covered 
 
 ---
 
-## The 55-Point Master Red-Team Audit
+## The 60-Point Master Red-Team Audit
 
-Every proposed architecture or production code review MUST be audited against these 55 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
+Every proposed architecture or production code review MUST be audited against these 60 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
 
 1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle the load?
 2. **Unquantified Words**: Did any *"fast"*, *"huge"*, or *"scalable"* slip through without concrete `ms`/`RPS`/`GB` numbers?
@@ -158,6 +161,11 @@ Every proposed architecture or production code review MUST be audited against th
 53. **Multi-Agent Context Isolation & Git Worktree Sandboxes**: Do subagents run in isolated context windows returning $\le 500$-token structured summaries + artifact paths (never dumping raw scratchpads), and do parallel coding agents use separate Git Worktrees?
 54. **JAX / XLA Dynamic-Shape Recompilation & Host-Sync Barriers**: Are inputs to `@jax.jit` / `torch.compile` padded to **Static Power-of-2 Shape Buckets** with AOT warmup before `/readyz` (preventing 30s per-request recompilations), with zero `float(loss)` host syncs in the step loop?
 55. **4D Parallelism NVLink Boundary & Two-Phase Async Checkpointing**: Is Tensor Parallelism ($TP=8$) kept strictly inside single-node NVLink ($900\text{ GB/s}$) while $PP/EP/FSDP$ run over InfiniBand, with $<1\text{s}$ HBM-to-Pinned-Host-RAM async checkpointing?
+56. **Catastrophic Regex Backtracking (`ReDoS`) & Parser Depth**: Are untrusted inputs validated strictly with linear-time **$O(N)$ Thompson NFA regexes (`RE2`, Rust `regex`, Go `regexp`)** rather than backtracking engines, with pre-parse byte-length and JSON depth caps?
+57. **`CLOCK_MONOTONIC` vs. `CLOCK_REALTIME` Elapsed Timers**: Are all timeouts, rate-limiter token refills, and circuit-breaker durations computed using **`CLOCK_MONOTONIC`** so backward NTP clock jumps never yield negative elapsed time?
+58. **Outbound HTTP Pool (`MaxIdleConnsPerHost`), `TIME_WAIT` & `nf_conntrack`**: Are outbound HTTP clients tuned with `MaxIdleConnsPerHost >= 100` (avoiding Go's default of `2`), `tcp_tw_reuse = 1`, and **NodeLocal DNSCache** to prevent ephemeral port and `nf_conntrack` table exhaustion?
+59. **GPU Floating-Point Non-Associativity & RLHF Rollout Logprobs**: Are exact inference-time `behavior_logprobs` persisted during RLHF/GRPO rollouts (rather than recomputed under different batch/tile shapes in the trainer) to prevent importance-sampling ratio explosions?
+60. **Cloud Cross-AZ Egress Tax ($\$0.02/\text{GB}$) & Jittered `Retry-After`**: Are Kafka consumers (`client.rack`), Redis replicas, and K8s services (`topology-mode: Auto`) using **Topology/Zone-Aware Routing** to avoid $\$0.02/\text{GB}$ cross-AZ bandwidth cliffs, and do `429`/`503` responses inject random jitter into `Retry-After` headers?
 
 ---
 
@@ -186,12 +194,13 @@ Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for 
 | **17** | **Distributed Consensus** | Raft state machine, `ReadIndex` zombie-leader protection, `PreVote` protocol, Dedicated WAL NVMe |
 | **18** | **Distributed Transactions** | Sagas (Orchestration vs. Choreography), Out-of-order cancel tombstones, Transactional Outbox & Inbox |
 | **19** | **Financial Ledgers & Payments** | Immutable double-entry bookkeeping, Canonical lock ordering (`ORDER BY id ASC`), Sharded hot accounts |
-| **20** | **SRE Resiliency Patterns** | Circuit breakers, Bulkheading, Full Jitter, $10\%$ Retry Budgets, LIFO + CoDel load shedding, DNS TTL |
-| **21** | **Security & Auth at Scale** | Refresh token family theft revocation, Google Zanzibar ReBAC & Zookies, Leopard bitsets, SSRF dialer |
+| **20** | **SRE Resiliency Patterns** | Circuit breakers, Full Jitter, $10\%$ Retry Budgets, LIFO + CoDel, `CLOCK_MONOTONIC`, Cross-AZ routing |
+| **21** | **Security & Auth at Scale** | Refresh token family theft revocation, Google Zanzibar ReBAC & Zookies, SSRF dialer, `ReDoS`-safe `RE2` |
 | **22** | **Stream Processing & State** | Apache Flink event time, `withIdleness()` watermarks, RocksDB `StateTtlConfig`, Cooperative rebalancing |
 | **23** | **Observability & Tracing** | OpenTelemetry W3C TraceContext, Tail-based sampling, $<1,000$ metric label cardinality law, Histogram merge |
 | **24** | **Vector DBs, Hybrid RAG & LLM Engines** | HNSW & Binary Quantization, Hybrid RRF + Cross-Encoder, KV-Cache math, PagedAttention & RadixAttention |
 | **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
-| **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
+| **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres HOT updates, HTTP pools & K8s `SIGTERM` drain |
 | **27** | **Frontier AI Part 1: Decision APIs, DeepSeek, Meta Muse & RecSys** | Prefix-cache prompt layout, FSM JSON decoding, DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse parallel tokens, 4-stage RecSys |
-| **28** | **Frontier AI Part 2: Multi-Agent DAGs, JAX/XLA & GPU Clusters** | Context-isolated subagents, Git worktree sandboxes, JAX/XLA HLO fusion & static shape buckets, 4D Parallelism & two-phase async checkpoints |
+| **28** | **Frontier AI Part 2: Multi-Agent DAGs, JAX/XLA & GPU Clusters** | Context-isolated subagents, Git worktree sandboxes, JAX/XLA static shape buckets, 4D Parallelism & RLHF rollout determinism |
+

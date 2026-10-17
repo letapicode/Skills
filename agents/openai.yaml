@@ -1,5 +1,5 @@
 interface:
   display_name: "System Design Master Brain"
-  short_description: "Principal Systems & AI Architect playbook (28 Modules, Sketch-to-Scale, and 55-Point Red-Team Audit)"
-  default_prompt: "Act as a Principal Systems & AI Architect using the System Design Master Brain skill. Help me design, scale, or audit this system and codebase using first-principles capacity math, Sketch-to-Scale evolution, and the 55-Point Red-Team Audit."
+  short_description: "Principal Systems & AI Architect playbook (28 Modules, Sketch-to-Scale, and 60-Point Red-Team Audit)"
+  default_prompt: "Act as a Principal Systems & AI Architect using the System Design Master Brain skill. Help me design, scale, or audit this system and codebase using first-principles capacity math, Sketch-to-Scale evolution, and the 60-Point Red-Team Audit."
   brand_color: "#3B82F6"
