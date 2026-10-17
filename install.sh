@@ -51,18 +51,20 @@ fetch_file "SKILL.md" "$GEMINI_SKILL_DIR/SKILL.md"
 fetch_file "SYSTEM_DESIGN_MASTER_BRAIN.md" "$GEMINI_SKILL_DIR/SYSTEM_DESIGN_MASTER_BRAIN.md"
 echo -e "${GREEN}✔ Installed for Antigravity / Gemini:${NC} $GEMINI_SKILL_DIR"
 
-# 3. Install for Current Workspace (Cursor, Windsurf, Claude Code, Codeium rules)
+# 3. Install for Current Workspace (Cursor, Windsurf, Claude Code, Codeium, Codex/Copilot rules)
 if [ -d ".git" ] || [ -f "package.json" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ] || [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
     fetch_file ".cursorrules" "./.cursorrules"
     fetch_file ".windsurfrules" "./.windsurfrules"
     fetch_file ".codeiumrules" "./.codeiumrules"
     fetch_file "CLAUDE.md" "./CLAUDE.md"
-    echo -e "${GREEN}✔ Installed .cursorrules, .windsurfrules, .codeiumrules & CLAUDE.md in current project:${NC} $(pwd)"
+    mkdir -p "./.github"
+    fetch_file ".github/copilot-instructions.md" "./.github/copilot-instructions.md"
+    echo -e "${GREEN}✔ Installed rules for Cursor, Windsurf, Codeium, Claude Code, and Codex/Copilot in current project:${NC} $(pwd)"
 fi
 
 echo ""
 echo -e "${GREEN}${BOLD}Installation Complete!${NC}"
-echo -e "You can now ask your AI coding assistant (Claude, Cursor, Windsurf, Antigravity, Gemini):"
+echo -e "You can now ask your AI coding assistant (Claude, Codex/Copilot, Codeium, Cursor, Windsurf, Antigravity, Gemini):"
 echo -e "  ${YELLOW}\"Design a distributed rate limiter with 100k RPS and P99 < 5ms.\"${NC}"
 echo -e "  ${YELLOW}\"Review this architecture using the 30-Point Red-Team Audit.\"${NC}"
 echo ""
