@@ -119,15 +119,17 @@ def sync_rules(check_only: bool = False) -> bool:
 
 
 def set_repository_slug(slug: str) -> bool:
-    """Replace OWNER/SystemDesignSkill (or current github owner/repo) across installer & docs."""
-    if "/" not in slug or len(slug.split("/")) != 2:
-        print("[FAIL] --set-repo must be in format <github_username>/<repo_name>", file=sys.stderr)
+    """Replace OWNER/Repo[/SubDir] across installer & docs."""
+    parts = [p for p in slug.strip().split("/") if p]
+    if len(parts) < 2 or len(parts) > 3:
+        print("[FAIL] --set-repo must be in format <github_username>/<repo_name>[/<subdir>]", file=sys.stderr)
         return False
 
-    owner, repo = slug.strip().split("/")
-    if not owner or not repo:
-        print("[FAIL] Both owner and repo name must be non-empty.", file=sys.stderr)
-        return False
+    owner, repo = parts[0], parts[1]
+    subdir = parts[2] if len(parts) == 3 else ""
+    raw_suffix = f"/{subdir}" if subdir else ""
+    tree_suffix = f"/tree/main/{subdir}" if subdir else ""
+    pages_suffix = f"/{subdir}/" if subdir else "/"
 
     for rel_path in REPO_URL_FILES:
         path = ROOT / rel_path
@@ -136,22 +138,22 @@ def set_repository_slug(slug: str) -> bool:
         content = path.read_text(encoding="utf-8")
         updated = content
 
-        # Update github.com/<owner>/<repo> (preserving .git or path suffixes, skipping JS ${owner}/${repo})
+        # Update github.com/<owner>/<repo>[/tree/main/<subdir>]
         updated = re.sub(
-            r"github\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?(?=\.git\b|/|\)|\"|'|\s|$)",
-            f"github.com/{owner}/{repo}",
+            r"github\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/tree/main/[A-Za-z0-9_.-]+)?(?=\.git\b|/|\)|\"|'|\s|$)",
+            f"github.com/{owner}/{repo}{tree_suffix}",
             updated,
         )
-        # Update raw.githubusercontent.com/<owner>/<repo>/main
+        # Update raw.githubusercontent.com/<owner>/<repo>/main[/<subdir>]
         updated = re.sub(
-            r"raw\.githubusercontent\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/main",
-            f"raw.githubusercontent.com/{owner}/{repo}/main",
+            r"raw\.githubusercontent\.com/(?!\$\{)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/main(?:/[A-Za-z0-9_.-]+)?(?=/install\.|\"|'|\s|$)",
+            f"raw.githubusercontent.com/{owner}/{repo}/main{raw_suffix}",
             updated,
         )
-        # Update GitHub Pages URL https://<owner>.github.io/<repo>
+        # Update GitHub Pages URL https://<owner>.github.io/<repo>[/<subdir>/]
         updated = re.sub(
-            r"https://[A-Za-z0-9_.-]+\.github\.io/[A-Za-z0-9_.-]+",
-            f"https://{owner}.github.io/{repo}",
+            r"https://[A-Za-z0-9_.-]+\.github\.io/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)?/?",
+            f"https://{owner}.github.io/{repo}{pages_suffix}",
             updated,
         )
         # Update PowerShell variables in install.ps1
@@ -165,21 +167,16 @@ def set_repository_slug(slug: str) -> bool:
             f'$RepoName = "{repo}"',
             updated,
         )
-        # Update Bash variables in install.sh
-        updated = re.sub(
-            r'REPO_URL="https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git"',
-            f'REPO_URL="https://github.com/{owner}/{repo}.git"',
-            updated,
-        )
-        updated = re.sub(
-            r'RAW_BASE="https://raw\.githubusercontent\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/main"',
-            f'RAW_BASE="https://raw.githubusercontent.com/{owner}/{repo}/main"',
-            updated,
-        )
+        if subdir:
+            updated = re.sub(
+                r'\$RepoSubDir\s*=\s*"[A-Za-z0-9_.-]*"',
+                f'$RepoSubDir = "{subdir}"',
+                updated,
+            )
         if updated != content:
             newline = "\r\n" if rel_path.endswith(".ps1") else "\n"
             path.write_text(updated, encoding="utf-8", newline=newline)
-            print(f"[UPDATED REPO SLUG -> {owner}/{repo}] {rel_path}")
+            print(f"[UPDATED REPO SLUG -> {slug}] {rel_path}")
         else:
             print(f"[NO CHANGE] {rel_path}")
     return True

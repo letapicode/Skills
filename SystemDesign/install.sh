@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-REPO_URL="${SYSTEM_DESIGN_SKILL_REPO:-https://raw.githubusercontent.com/letapicode/SystemDesignSkill/main}"
+REPO_URL="${SYSTEM_DESIGN_SKILL_REPO:-https://raw.githubusercontent.com/letapicode/Skills/main/SystemDesign}"
 SKILL_NAME="system-design-master-brain"
 
 BOLD="\033[1m"

@@ -13,8 +13,9 @@ $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $RepoOwner = "letapicode"
-$RepoName = "SystemDesignSkill"
-$RepoUrl = if ($env:SYSTEM_DESIGN_SKILL_REPO) { $env:SYSTEM_DESIGN_SKILL_REPO } else { "https://raw.githubusercontent.com/$RepoOwner/$RepoName/main" }
+$RepoName = "Skills"
+$RepoSubDir = "SystemDesign"
+$RepoUrl = if ($env:SYSTEM_DESIGN_SKILL_REPO) { $env:SYSTEM_DESIGN_SKILL_REPO } else { "https://raw.githubusercontent.com/$RepoOwner/$RepoName/main/$RepoSubDir" }
 $SkillName = "system-design-master-brain"
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
