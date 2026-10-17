@@ -1,6 +1,6 @@
 # Contributing to System Design Master Brain
 
-Thank you for your interest in contributing to the **System Design Master Brain**! This repository is designed to be an open-source, living knowledge engine that equips AI agents and human architects with implementation-grade distributed systems design patterns.
+Thank you for your interest in contributing to the **System Design Master Brain**! This repository is designed to be an open-source, self-evolving knowledge engine that equips AI agents and human architects with implementation-grade distributed systems and AI infrastructure design patterns.
 
 We welcome contributions from engineers, architects, and researchers worldwide.
 
@@ -10,55 +10,55 @@ We welcome contributions from engineers, architects, and researchers worldwide.
 
 Every contribution must adhere to three foundational standards:
 
-1. **No Hand-Wavy Architecture**:
-   - Submissions must NOT rely solely on generic boxes and arrows.
-   - You must provide concrete mathematical sizing, byte layouts, SQL schemas, isolation levels, caching strategies, or network protocols.
+1. **No Hand-Wavy Architecture (Zero-Fluff Rule)**:
+   - Submissions must NOT rely solely on generic boxes and arrows or marketing buzzwords.
+   - You must provide concrete mathematical sizing, byte/memory layouts, SQL schemas, isolation levels, caching strategies, compiler/GPU physics, or network protocols.
 
 2. **Strict Anonymity & Neutrality**:
    - Do NOT include any personal names, author attributions, private course references, proprietary company secrets, or identifying anecdotes.
-   - All knowledge must be framed objectively as neutral, first-principles distributed systems engineering.
+   - All knowledge must be framed objectively as neutral, first-principles distributed systems and AI engineering.
 
 3. **Sketch-to-Scale Discipline**:
    - Always demonstrate the evolutionary path:
      `Attempt 1 (Baseline / Day-0 Monolith) -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Scaled Architecture`.
-   - Explicitly justify why simpler designs fail before introducing distributed complexity.
+   - Explicitly justify why simpler designs fail before introducing distributed or multi-node complexity.
 
 ---
 
 ## What You Can Contribute
 
-### 1. Adding a New Architecture Module (e.g., Module 26+)
-To propose a new module, ensure it contains the following subsections:
-- **X.1 Theoretical Foundations & Math**: Define the core problem with first-principles formulas (e.g., write amplification, network throughput, memory overhead).
-- **X.2 The Baseline & Bottleneck Evolution**: Show why the naive single-node or standard relational approach fails under load.
-- **X.3 Production Architecture & Schemas**: Provide explicit table definitions (`CREATE TABLE`), index choices, Redis data structures, or wire protocols.
-- **X.4 Hidden Edge Cases & Failure Modes**: Document at least 3 non-obvious crash, race-condition, or partial failure scenarios.
+### 1. Adding a New Architecture Module (e.g., Module 29+)
+To propose a new module (or use **Part VI Prompt 2 / Prompt 3** to have a frontier AI model synthesize one), ensure it contains the following subsections:
+- **X.1 Theoretical Foundations & Math**: Define the core problem with first-principles formulas (e.g., write amplification, KV-cache memory bytes, network throughput, memory overhead).
+- **X.2 The Baseline & Bottleneck Evolution**: Show why the naive single-node or standard relational/inference approach fails under load.
+- **X.3 Production Architecture & Schemas**: Provide explicit table definitions (`CREATE TABLE`), index choices, Redis Lua scripts, compiler flags, or wire protocols.
+- **X.4 Hidden Edge Cases & Failure Modes**: Document at least 4–6 non-obvious crash, race-condition, OOM, or partial failure scenarios and their exact production fixes.
 
-### 2. Expanding the 30-Point Red-Team Audit Checklist
-If you encountered a critical production outage or subtle concurrency bug in your systems (e.g., clock skew, connection pool starvation, tombstone explosion):
+### 2. Expanding the 55-Point Red-Team Audit Checklist
+If you encountered a critical production outage or subtle concurrency/AI-serving bug in your systems (e.g., clock skew, connection pool starvation, tombstone explosion, XLA dynamic-shape recompilation, MoE expert routing collapse):
 - Frame it as an actionable verification question.
 - Specify the exact failure mechanism.
 - Provide the concrete production mitigation or architectural rule.
 
 ### 3. Adding Production Benchmarks & First-Principles Sizing
-- Update storage sizing, network latency numbers, or memory layout tables with verified benchmarks from modern NVMe, DDR5, 100GbE, or modern database releases.
+- Update storage sizing, network latency numbers, GPU HBM bandwidth, or memory layout tables with verified benchmarks from modern NVMe, DDR5, H100/B200 GPUs, 400GbE/InfiniBand, or modern database releases.
 
 ---
 
 ## Pull Request Guidelines
 
-1. **Fork the Repository**: Create a feature branch (e.g., `git checkout -b feature/module-26-time-series-storage`).
-2. **Update the Files**:
+1. **Fork the Repository**: Create a feature branch (e.g., `git checkout -b feature/module-29-time-series-storage`).
+2. **Update & Synchronize All Files**:
    - Add module content into `SYSTEM_DESIGN_MASTER_BRAIN.md`.
-   - Update the table of contents in `SKILL.md` and `README.md`.
-   - If introducing a new universal rule, update `.cursorrules` and `.windsurfrules`.
+   - Synchronize the module table of contents and Red-Team Audit across `SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`, `README.md`, `install.sh`, and `install.ps1` (you can use **Prompt 3 in Part VI** of the playbook to automate this synchronization).
+   - Re-render `index.html` so the static GitHub Pages reader stays in sync with zero-latency loading.
 3. **Verify Anonymity**: Run a scan across your diff to guarantee zero personal, private, or proprietary identifiers:
    ```bash
-   git diff main -- ':!*.lock' | grep -iE "author|proprietary|confidential"
+   git diff main -- ':!*.lock' | grep -iE "author|proprietary|confidential|cohort|instructor|lecturer|transcript"
    ```
 4. **Submit a Clean PR**: Write a descriptive PR title and summarize:
    - What real-world problem or architectural pattern this addresses.
-   - The concrete formulas or schemas introduced.
+   - The concrete formulas, schemas, or pseudocode introduced.
    - The edge cases and failure modes covered.
 
 ---

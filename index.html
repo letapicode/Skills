@@ -575,19 +575,19 @@
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
                             <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            1-Line Universal Install (Claude Code, Copilot/Codex, Codeium, Windsurf, Cursor, Antigravity)
+                            1-Line Universal Install (Claude Code, OpenAI Codex, DeepSeek/Cline, Codeium, Windsurf, Cursor, Copilot, Antigravity)
                         </span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
                         <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 flex items-center justify-between group">
-                            <span class="text-slate-300 truncate">curl -fsSL https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.sh | bash</span>
-                            <button onclick="copyText('curl -fsSL https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.sh | bash')" class="ml-2 text-slate-400 hover:text-white p-1" title="Copy macOS/Linux Command">
+                            <span id="install-sh-cmd" class="text-slate-300 truncate">curl -fsSL https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.sh | bash</span>
+                            <button id="install-sh-btn" onclick="copyText(document.getElementById('install-sh-cmd').innerText)" class="ml-2 text-slate-400 hover:text-white p-1" title="Copy macOS/Linux Command">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                             </button>
                         </div>
                         <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 flex items-center justify-between group">
-                            <span class="text-slate-300 truncate">irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 | iex</span>
-                            <button onclick="copyText('irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 | iex')" class="ml-2 text-slate-400 hover:text-white p-1" title="Copy Windows PowerShell Command">
+                            <span id="install-ps1-cmd" class="text-slate-300 truncate">irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 | iex</span>
+                            <button id="install-ps1-btn" onclick="copyText(document.getElementById('install-ps1-cmd').innerText)" class="ml-2 text-slate-400 hover:text-white p-1" title="Copy Windows PowerShell Command">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                             </button>
                         </div>
@@ -3667,7 +3667,7 @@ Follow these strict rules:
             <!-- Footer -->
             <footer class="mt-20 pt-8 border-t border-darkborder text-center text-xs text-slate-500 space-y-2">
                 <p>System Design Master Brain — Authored from first principles. Released under the MIT License.</p>
-                <p>Equipped with 26 Distributed Modules, Dual-Mode Codebase Enforcement, Socratic Interrogation, and a 55-point Red-Team Audit.</p>
+                <p>Equipped with 28 Distributed &amp; AI Modules, Dual-Mode Codebase Enforcement, Socratic Interrogation, Self-Evolving Backbone Protocol, and a 55-point Red-Team Audit.</p>
             </footer>
         </main>
     </div>
@@ -3868,16 +3868,35 @@ Follow these strict rules:
 
             const copyPromptBtn = document.getElementById('copy-prompt-btn');
             copyPromptBtn.addEventListener('click', () => {
-                const promptSection = document.getElementById('part-vi-copy-paste-system-prompt-for-any-ai-session');
-                if (promptSection) {
-                    const code = promptSection.parentElement.querySelector('pre code');
-                    if (code) {
-                        copyText(code.innerText);
-                        return;
+                const promptHeading = document.getElementById('prompt-1-standard-daily-principal-systems-ai-architect-session-prompt');
+                if (promptHeading) {
+                    let el = promptHeading.nextElementSibling;
+                    while (el && el.tagName !== 'PRE') {
+                        el = el.nextElementSibling;
+                    }
+                    if (el) {
+                        const code = el.querySelector('code');
+                        if (code) {
+                            copyText(code.innerText);
+                            return;
+                        }
                     }
                 }
-                copyText(`You are a Principal Systems Architect operating with the System Design Master Brain playbook (28 Modules & 55-point Red-Team Audit). Follow Dual-Mode Operation: Mode A (Socratic Interrogation -> Capacity Math -> Day-0 Monolith -> Sketch-to-Scale -> Implementation Depth) for System Design, and Mode B (Direct Codebase & Migration Red-Team Enforcement) for live repositories, concluding with the 55-point Red-Team Audit.`);
+                copyText(`You are a Principal Systems & AI Architect operating with the System Design Master Brain playbook (28 Modules & 55-point Red-Team Audit). Follow Dual-Mode Operation: Mode A (Socratic Interrogation -> Capacity Math -> Day-0 Monolith -> Sketch-to-Scale -> Implementation Depth) for System & AI Design, and Mode B (Direct Codebase & Migration Red-Team Enforcement) for live repositories, concluding with the 55-point Red-Team Audit.`);
             });
+
+            // Auto-populate OWNER/Repo when hosted on GitHub Pages (*.github.io)
+            if (window.location.hostname.endsWith('.github.io')) {
+                const owner = window.location.hostname.replace('.github.io', '');
+                const pathParts = window.location.pathname.split('/').filter(Boolean);
+                const repo = pathParts.length > 0 ? pathParts[0] : 'SystemDesignSkill';
+                const ghLink = document.getElementById('github-link');
+                const shCmd = document.getElementById('install-sh-cmd');
+                const ps1Cmd = document.getElementById('install-ps1-cmd');
+                if (ghLink) ghLink.href = `https://github.com/${owner}/${repo}`;
+                if (shCmd) shCmd.innerText = `curl -fsSL https://raw.githubusercontent.com/${owner}/${repo}/main/install.sh | bash`;
+                if (ps1Cmd) ps1Cmd.innerText = `irm https://raw.githubusercontent.com/${owner}/${repo}/main/install.ps1 | iex`;
+            }
         });
     </script>
 </body>
