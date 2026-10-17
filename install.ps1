@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$RepoOwner = "OWNER"
+$RepoOwner = "letapicode"
 $RepoName = "SystemDesignSkill"
 $RepoUrl = if ($env:SYSTEM_DESIGN_SKILL_REPO) { $env:SYSTEM_DESIGN_SKILL_REPO } else { "https://raw.githubusercontent.com/$RepoOwner/$RepoName/main" }
 $SkillName = "system-design-master-brain"

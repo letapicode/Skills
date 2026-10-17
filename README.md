@@ -9,12 +9,12 @@
 [![Compatible with Codeium](https://img.shields.io/badge/Codeium-Compatible-09b6a2.svg)]()
 [![Compatible with Cursor](https://img.shields.io/badge/Cursor-Compatible-000000.svg)]()
 [![Compatible with Antigravity / Gemini](https://img.shields.io/badge/Antigravity%20%2F%20Gemini-Compatible-ea4335.svg)]()
-[![Live Documentation](https://img.shields.io/badge/Live%20Docs-GitHub%20Pages-success.svg)](https://OWNER.github.io/SystemDesignSkill/)
+[![Live Documentation](https://img.shields.io/badge/Live%20Docs-GitHub%20Pages-success.svg)](https://letapicode.github.io/SystemDesignSkill/)
 
 > **Transform any AI coding assistant into a self-evolving Staff/Principal Systems & AI Architect—for Distributed Systems, Frontier AI/Multi-Agent/JAX Infrastructure, and Real Production Codebases at Million-User Scale.**  
 > Grounded in **28 production-grade distributed & AI systems modules**, first-principles capacity math, Day-0 monolith baselines, an **Uncharted-Domain Deep-Research Fallback**, a **Future-Model Self-Upgrade Engine**, and an exhaustive **65-point red-team audit**.
 >
-> 📖 **Read the live web documentation**: [System Design Master Brain on GitHub Pages](https://OWNER.github.io/SystemDesignSkill/)
+> 📖 **Read the live web documentation**: [System Design Master Brain on GitHub Pages](https://letapicode.github.io/SystemDesignSkill/)
 
 ---
 
@@ -68,12 +68,12 @@ Install the skill across your AI tools (or directly into your current project wo
 
 ### macOS & Linux
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/letapicode/SystemDesignSkill/main/install.sh | bash
 ```
 
 ### Windows (PowerShell)
 ```powershell
-irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/letapicode/SystemDesignSkill/main/install.ps1 | iex
 ```
 
 *What the installer does automatically (and safely):*
