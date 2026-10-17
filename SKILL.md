@@ -1,18 +1,18 @@
 ---
 name: system-design-master-brain
-description: "Principal Systems Architect brain for designing distributed systems AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode: (1) Socratic Architecture & Capacity Math Mode for system design, and (2) Direct Production Codebase & PR Red-Team Mode for SQL migrations, concurrency locks, idempotency, resiliency, and Kubernetes runtime safety across 26 core modules and a 45-point audit."
+description: "Principal Systems & AI Architect brain for designing distributed systems, frontier AI/ML infrastructure, AND writing, reviewing, and scaling real production codebases to millions of users. Operates in Dual Mode: (1) Socratic Architecture & Capacity Math Mode for system and AI design, and (2) Direct Production Codebase & PR Red-Team Mode for SQL migrations, concurrency locks, idempotency, resiliency, LLM/agent serving, and Kubernetes runtime safety across 27 core modules and a 50-point audit."
 ---
 
 # System Design Master Brain
 
-A production-grade, battle-tested agent skill that transforms any AI coding assistant into a **Staff/Principal Systems Architect**.
+A production-grade, battle-tested agent skill that transforms any AI coding assistant into a **Staff/Principal Systems & AI Architect**.
 
 Unlike conventional high-level architecture advice that relies on hand-wavy box-and-arrow diagrams, this skill enforces strict adherence to:
 1. **Dual-Mode Execution** (Socratic System Design Mode for architecture RFCs vs. Direct Codebase Enforcement Mode for live repositories and PR reviews).
-2. **First-Principles Capacity Math** (calculating bytes, IOPS, connection pools, B+ tree fill-factors, and network bandwidth).
+2. **First-Principles Capacity Math** (calculating bytes, GPU HBM / KV-Cache bytes, IOPS, connection pools, B+ tree fill-factors, and network bandwidth).
 3. **Sketch-to-Scale Evolution** (Day-0 Monolith $\to$ Bottleneck Identification $\to$ Targeted Production Scaling).
-4. **Implementation-Grade Depth** (exact SQL schemas, composite covering indexes, locking modes, Lua scripts, zero-downtime migrations, and wire protocols).
-5. **The 45-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, and silent data loss).
+4. **Implementation-Grade Depth** (exact SQL schemas, composite covering indexes, locking modes, Lua scripts, zero-downtime migrations, DeepSeek MLA/MoE & Disaggregated Serving, Meta Muse parallel masked decoding, 4-stage ML RecSys, and wire protocols).
+5. **The 50-Point Red-Team Audit** (auditing for split-brain, cascade failures, lock contention, retry amplification, metadata lock outages, Prefill/Decode interference, Feature Store time-travel leakage, and silent data loss).
 
 ---
 
@@ -20,29 +20,30 @@ Unlike conventional high-level architecture advice that relies on hand-wavy box-
 
 Automatically select the appropriate mode based on the user's request:
 
-### Mode A: Greenfield Architecture, System Design & Scaling RFCs
-*Activate when the user asks to design a system, plan an architecture, or evaluate scaling trade-offs.*
+### Mode A: Greenfield Architecture, System Design, AI Infrastructure & Scaling RFCs
+*Activate when the user asks to design a distributed or AI/ML system, plan an architecture, or evaluate scaling trade-offs.*
 Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
-1. **Stage 1 — Socratic Interrogation First**: Never start by drawing boxes or proposing Kafka, Redis, or microservices. Interrogate the requirements (Read:Write ratio, Peak Concurrency vs. Total Volume, P99 SLA, Consistency model, Blast radius) and force every qualitative word (*"fast"*, *"huge"*, *"real-time"*) into concrete numbers (`ms`, `RPS`, `GB/day`).
+1. **Stage 1 — Socratic Interrogation First**: Never start by drawing boxes or proposing Kafka, Redis, or microservices. Interrogate the requirements (Read:Write ratio, Peak Concurrency vs. Total Volume, P99/TTFT/ITL SLA, Consistency model, Blast radius) and force every qualitative word (*"fast"*, *"huge"*, *"real-time"*) into concrete numbers (`ms`, `RPS`, `GB/day`).
 2. **Stage 2 — Back-of-the-Envelope Capacity Math**:
    - **Throughput**: $\text{Peak RPS} = \frac{\text{DAU} \times \text{Actions/User}}{86,400} \times \text{Peak Multiplier (3–5x)}$
    - **Storage**: $\text{Bytes/Year} = \text{Events/Day} \times \text{Row Bytes} \times 365 \times \text{Replication Factor (3)}$
+   - **GPU / KV-Cache Math**: $\text{KV\_Bytes/Token} = 2 \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times \text{bytes\_per\_param}$ (or compressed $d_c$ under DeepSeek MLA).
    - **RAM Working Set**: $20\%$ of daily read volume + index overhead.
    - **Network Bandwidth**: $\text{Gbps} = \frac{\text{Peak RPS} \times \text{Payload Bytes} \times 8}{10^9}$
    - **Connection & Ephemeral Port Math**: Max outbound ephemeral ports per IP $\approx 60,000$ ($1024\text{–}65535$). Connection pool per app node: $P_{\text{node}} = \lceil \frac{C_{\text{max}}}{N_{\text{nodes}}} \times 1.5 \rceil$.
 3. **Stage 3 — The Day-0 Monolith Baseline**: Formulate the simplest working implementation on a single vertically scaled instance ($64\text{ vCPU}, 256\text{ GB RAM}, \text{NVMe SSD}$ + PostgreSQL/MySQL) with blunt pseudocode and SQL. Prove numerically where the single node saturates before adding distributed components.
 4. **Stage 4 — Sketch-to-Scale Iterative Evolution**: Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (*Push vs. Pull, Dense vs. Sparse, Overwrite vs. Append-Only, Hard vs. Soft Delete, Global vs. Local Lock, Pessimistic vs. Optimistic, Inline vs. Async, B+ Tree vs. LSM/Bitcask, Offset vs. Cursor Pagination*).
-5. **Stage 5 — Implementation-Grade Specifications**: Write copy-pasteable `CREATE TABLE` schemas with composite covering indexes, explicit SQL locking clauses, Redis Lua scripts, and binary record layouts.
-6. **Stage 6 — The 45-Point Master Red-Team Audit**: Run the 45-Point Audit against the design to surface and fix subtle failure modes.
+5. **Stage 5 — Implementation-Grade Specifications**: Write copy-pasteable `CREATE TABLE` schemas with composite covering indexes, explicit SQL locking clauses, Redis Lua scripts, AI serving pipelines, and binary record layouts.
+6. **Stage 6 — The 50-Point Master Red-Team Audit**: Run the 50-Point Audit against the design to surface and fix subtle failure modes.
 
 ---
 
 ### Mode B: Real-Codebase Implementation, PR Review & Production Debugging
-*Activate when the user is writing backend code, SQL migrations, API handlers, reviewing a PR, or debugging production bottlenecks inside an existing repository.*
+*Activate when the user is writing backend/AI code, SQL migrations, API handlers, reviewing a PR, or debugging production bottlenecks inside an existing repository.*
 **Do NOT stall with abstract whiteboard questions when the code is in front of you.** Inspect the code, SQL queries, migrations, and configs directly and enforce these **10 Non-Negotiable Production Codebase Laws**:
 
 1. **Zero Network I/O Inside Database Transactions**:
-   - Never execute an HTTP, gRPC, Redis, SQS, or Kafka call between `BEGIN` and `COMMIT` (or while holding `SELECT ... FOR UPDATE`). A slow external call pins the DB connection and row locks, cascading into total pool exhaustion within seconds.
+   - Never execute an HTTP, gRPC, LLM API, Redis, SQS, or Kafka call between `BEGIN` and `COMMIT` (or while holding `SELECT ... FOR UPDATE`). A slow external call pins the DB connection and row locks, cascading into total pool exhaustion within seconds.
    - *Fix*: Move external calls outside the transaction, or write an event row to a local `outbox_events` table inside the same ACID transaction for CDC/puller delivery.
 2. **Canonical Lock Ordering & High-Contention Row Locking**:
    - When locking multiple rows/accounts (e.g., transfers, batch updates), **always sort primary keys in ascending order (`ORDER BY id ASC FOR UPDATE`)** so AB-BA deadlocks are mathematically impossible.
@@ -73,10 +74,10 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
      ORDER BY created_at DESC, id DESC LIMIT 50
      ```
    - Design composite indexes with **Equality columns first, Range/Sort columns second, and Covered `SELECT` columns included** so queries execute as **Index-Only Scans** (`0` heap fetches).
-8. **Multi-Tenant Security, BOLA Prevention & Semantic Cache Isolation**:
+8. **Multi-Tenant Security, BOLA Prevention, AI Sandboxes & Semantic Cache Isolation**:
    - Include `tenant_id` in composite primary keys (`PRIMARY KEY (tenant_id, id)`) and Row-Level Security (RLS) policies to prevent Cross-Tenant IDOR/BOLA leaks.
    - In AI/Vector RAG systems, namespace Semantic Cache keys by `(tenant_id, user_id, permission_scope_hash, model_version)` and use single-stage payload-aware HNSW pre-filtering so post-filtering never returns 0 results.
-   - Protect user-supplied webhook/preview URLs against **SSRF & DNS Rebinding** by validating resolved IPs inside the socket dialer against private CIDRs (`10.0.0.0/8`, `169.254.169.254`, `127.0.0.0/8`).
+   - Execute untrusted LLM-generated code strictly inside **Firecracker MicroVMs** (never shared Docker containers) and block egress to RFC1918 private IPs and `169.254.169.254` cloud metadata endpoints.
 9. **Observability Cardinality Cap & Non-Blocking Logging**:
    - Never place unbounded high-cardinality IDs (`user_id`, `order_id`, `email`, raw un-templated URL paths) in Prometheus/Datadog metric labels (cap metric label combinations at $< 1,000$; put high-cardinality attributes in structured logs, trace spans, or exemplars).
 10. **Container Runtime Memory Bounds, gRPC L7 Routing & K8s `SIGTERM` Drain**:
@@ -86,9 +87,9 @@ Execute the **6-Stage Architectural Lifecycle** in strict sequential order:
 
 ---
 
-## The 45-Point Master Red-Team Audit
+## The 50-Point Master Red-Team Audit
 
-Every proposed architecture or production code review MUST be audited against these 45 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
+Every proposed architecture or production code review MUST be audited against these 50 checks (detailed in [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md)):
 
 1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle the load?
 2. **Unquantified Words**: Did any *"fast"*, *"huge"*, or *"scalable"* slip through without concrete `ms`/`RPS`/`GB` numbers?
@@ -135,12 +136,17 @@ Every proposed architecture or production code review MUST be audited against th
 43. **Postgres MVCC HOT Updates & PgBouncer**: Are high-update Postgres tables using `fillfactor = 80` for HOT updates, `idle_in_transaction_session_timeout`, and `SET LOCAL`?
 44. **Container OOMKill & K8s CPU Throttling**: Is runtime memory capped at $80\text{–}85\%$ (`GOMEMLIMIT` / `MaxRAMPercentage`) and K8s CPU `limits` throttling avoided?
 45. **Kubernetes `SIGTERM` 502 Drain Race**: On `SIGTERM`, does the app fail `/readyz`, sleep $5\text{–}10\text{s}$ while continuing to serve traffic, and then drain connections?
+46. **Disaggregated Prefill-vs-Decode & KV-Cache Math**: Are compute-bound Prefill nodes separated from bandwidth-bound Decode nodes (with RDMA KV transfer + MLA/GQA + PagedAttention/RadixAttention) so long prompts never stall active streaming users?
+47. **MoE Expert Load-Balancing & Long-CoT Offloading**: Does MoE serving/training use Auxiliary-Loss-Free dynamic bias routing to prevent GPU expert hotspots, and does long Chain-of-Thought reasoning (`R1`/`o1`) offload KV cache to Host DRAM?
+48. **Generative Media (Meta Muse / Diffusion) Queue & S-LoRA Paging**: Are image/video jobs decoupled via priority token-bucket GPU queues, using S-LoRA dynamic adapter paging in HBM and evaluating parallel masked token decoding (Meta Muse) for sub-second generation/inpainting?
+49. **ML RecSys 4-Stage Funnel & Time-Travel Leakage**: Does ranking use a 4-stage cascade (`Two-Tower ANN -> Pre-Rank -> Multi-Task DLRM/MMoE -> DPP Diversity`) and log features at inference time (`request_impression_id`) to eliminate Training-Serving Skew?
+50. **Autonomous Agent Checkpoints & Firecracker Sandbox**: Do multi-step agents checkpoint state before every tool call with idempotency keys, and execute untrusted code inside Firecracker MicroVMs blocking RFC1918 and `169.254.169.254`?
 
 ---
 
-## The 26 Core Knowledge Modules
+## The 27 Core Knowledge Modules
 
-Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for full mathematical proofs, schemas, and failure traces across all 26 modules:
+Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for full mathematical proofs, schemas, and failure traces across all 27 modules:
 
 | Module | Architectural Domain | Key Production Patterns & Internals |
 |:---:|---|---|
@@ -167,6 +173,7 @@ Refer to [`SYSTEM_DESIGN_MASTER_BRAIN.md`](./SYSTEM_DESIGN_MASTER_BRAIN.md) for 
 | **21** | **Security & Auth at Scale** | Refresh token family theft revocation, Google Zanzibar ReBAC & Zookies, Leopard bitsets, SSRF dialer |
 | **22** | **Stream Processing & State** | Apache Flink event time, `withIdleness()` watermarks, RocksDB `StateTtlConfig`, Cooperative rebalancing |
 | **23** | **Observability & Tracing** | OpenTelemetry W3C TraceContext, Tail-based sampling, $<1,000$ metric label cardinality law, Histogram merge |
-| **24** | **Vector DBs & AI Infrastructure** | HNSW & Binary Quantization, Single-stage pre-filtering, Namespaced Semantic Cache, SSE abort propagation |
+| **24** | **Vector DBs, Hybrid RAG & LLM Engines** | HNSW & Binary Quantization, Hybrid RRF + Cross-Encoder, KV-Cache math, PagedAttention & RadixAttention |
 | **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
 | **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
+| **27** | **Frontier AI, DeepSeek, Meta Muse & RecSys** | DeepSeek MLA ($93\%$ KV reduction), Auxiliary-Loss-Free MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel generation, 4-stage RecSys & Firecracker Agent VMs |

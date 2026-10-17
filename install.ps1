@@ -47,29 +47,42 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $ClaudeDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Claude Code: $ClaudeDir" -ForegroundColor Green
 
-# 2. Antigravity / Gemini Skill (~/.gemini/antigravity/skills/system-design-master-brain)
+# 2. OpenAI Codex CLI Skill (~/.codex/skills/system-design-master-brain & ~/.codex/AGENTS.md)
+$CodexDir = Join-Path $HOME ".codex\skills\system-design-master-brain"
+Copy-Or-DownloadFile "SKILL.md" (Join-Path $CodexDir "SKILL.md")
+Copy-Or-DownloadFile "AGENTS.md" (Join-Path $CodexDir "AGENTS.md")
+Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $CodexDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
+$CodexGlobalAgents = Join-Path $HOME ".codex\AGENTS.md"
+if (-not (Test-Path $CodexGlobalAgents)) {
+    Copy-Or-DownloadFile "AGENTS.md" $CodexGlobalAgents
+}
+Write-Host "✔ Installed for OpenAI Codex CLI: $CodexDir" -ForegroundColor Green
+
+# 3. Antigravity / Gemini Skill (~/.gemini/antigravity/skills/system-design-master-brain)
 $GeminiDir = Join-Path $HOME ".gemini\antigravity\skills\system-design-master-brain"
 Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Write-Host "✔ Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
-# 3. Current Workspace (.cursorrules, .windsurfrules, .codeiumrules, CLAUDE.md, SKILL.md, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
+# 4. Current Workspace (AGENTS.md, CLAUDE.md, SKILL.md, .cursorrules, .windsurfrules, .codeiumrules, .clinerules, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
 $currentDir = Get-Location
 $isProjectDir = (Test-Path ".git") -or (Test-Path "package.json") -or (Test-Path "go.mod") -or (Test-Path "Cargo.toml") -or (Test-Path "requirements.txt") -or (Test-Path "pyproject.toml") -or (Test-Path "pom.xml") -or (Test-Path "build.gradle")
 if ($isProjectDir) {
+    Copy-Or-DownloadFile "AGENTS.md" (Join-Path $currentDir "AGENTS.md")
+    Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
+    Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
     Copy-Or-DownloadFile ".cursorrules" (Join-Path $currentDir ".cursorrules")
     Copy-Or-DownloadFile ".windsurfrules" (Join-Path $currentDir ".windsurfrules")
     Copy-Or-DownloadFile ".codeiumrules" (Join-Path $currentDir ".codeiumrules")
-    Copy-Or-DownloadFile "CLAUDE.md" (Join-Path $currentDir "CLAUDE.md")
-    Copy-Or-DownloadFile "SKILL.md" (Join-Path $currentDir "SKILL.md")
+    Copy-Or-DownloadFile ".clinerules" (Join-Path $currentDir ".clinerules")
     Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
     Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "✔ Installed workspace rules & 26-module playbook for Cursor, Windsurf, Codeium, Claude Code, and Codex/Copilot in: $currentDir" -ForegroundColor Green
+    Write-Host "✔ Installed workspace rules & 27-module playbook for Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Installation Complete! (26 Modules + 45-Point Red-Team Audit Active)" -ForegroundColor Green
-Write-Host "You can now ask your AI coding assistant (Claude, Codex/Copilot, Codeium, Cursor, Windsurf, Antigravity, Gemini):"
-Write-Host '  "Design a distributed rate limiter with 100k RPS and P99 < 5ms."' -ForegroundColor Yellow
-Write-Host '  "Audit this codebase / PR using the 45-Point Red-Team Checklist."' -ForegroundColor Yellow
+Write-Host "Installation Complete! (27 Modules + 50-Point Red-Team Audit Active)" -ForegroundColor Green
+Write-Host "You can now ask your AI coding assistant (Codex, Claude, DeepSeek, Cursor, Windsurf, Codeium, Antigravity, Gemini):"
+Write-Host '  "Design a distributed rate limiter or LLM inference engine with P99 < 50ms."' -ForegroundColor Yellow
+Write-Host '  "Audit this codebase / PR using the 50-Point Red-Team Checklist."' -ForegroundColor Yellow
 Write-Host ""

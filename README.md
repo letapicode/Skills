@@ -3,14 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Compatible with Claude](https://img.shields.io/badge/Claude%20Code%20%2F%20Claude.ai-Compatible-d97706.svg)]()
-[![Compatible with GitHub Copilot / Codex](https://img.shields.io/badge/GitHub%20Copilot%20%2F%20Codex-Compatible-000000.svg)]()
+[![Compatible with OpenAI Codex / Copilot](https://img.shields.io/badge/OpenAI%20Codex%20%2F%20Copilot-Compatible-000000.svg)]()
+[![Compatible with DeepSeek / Cline](https://img.shields.io/badge/DeepSeek%20%2F%20Cline%20%2F%20Llama-Compatible-4d6bfe.svg)]()
 [![Compatible with Codeium](https://img.shields.io/badge/Codeium%20%2F%20Windsurf-Compatible-09b6a2.svg)]()
 [![Compatible with Cursor](https://img.shields.io/badge/Cursor-Compatible-000000.svg)]()
 [![Compatible with Antigravity / Gemini](https://img.shields.io/badge/Antigravity%20%2F%20Gemini-Compatible-ea4335.svg)]()
 [![Live Documentation](https://img.shields.io/badge/Live%20Docs-GitHub%20Pages-success.svg)](https://OWNER.github.io/SystemDesignSkill/)
 
-> **Transform any AI coding assistant into a Staff/Principal Systems Architect—for both System Design RFCs and Real Production Codebases at Million-User Scale.**  
-> Grounded in **26 production-grade distributed systems modules**, first-principles capacity math, Day-0 monolith baselines, and an exhaustive **45-point red-team audit**.
+> **Transform any AI coding assistant into a Staff/Principal Systems & AI Architect—for Distributed Systems, Frontier AI Infrastructure, and Real Production Codebases at Million-User Scale.**  
+> Grounded in **27 production-grade distributed & AI systems modules**, first-principles capacity math, Day-0 monolith baselines, and an exhaustive **50-point red-team audit**.
 >
 > 📖 **Read the live web documentation**: [System Design Master Brain on GitHub Pages](https://OWNER.github.io/SystemDesignSkill/)
 
@@ -18,28 +19,28 @@
 
 ## Why System Design Master Brain?
 
-Standard AI models fail at real-world systems engineering in two predictable ways:
-1. **In Architecture Mode**: They draw hand-wavy microservice and Kafka box diagrams on Day 0 without calculating bytes, IOPS, connection pool limits, or proving why a single vertical RDBMS node saturates.
-2. **In Real Codebases**: They write naive SQL migrations that trigger metadata-lock outages, place external HTTP calls inside DB transactions, stack $3^4 = 81\times$ retry storms, leak high-cardinality labels into Prometheus, and drop in-flight requests during Kubernetes rolling restarts.
+Standard AI models fail at real-world systems and AI engineering in two predictable ways:
+1. **In Architecture & AI Design Mode**: They draw hand-wavy microservice and Kafka box diagrams on Day 0 without calculating bytes, GPU HBM / KV-Cache footprints, IOPS, connection pool limits, or proving why a single vertical RDBMS node saturates.
+2. **In Real Codebases**: They write naive SQL migrations that trigger metadata-lock outages, place external HTTP/LLM calls inside DB transactions, stack $3^4 = 81\times$ retry storms, leak high-cardinality labels into Prometheus, and drop in-flight requests during Kubernetes rolling restarts.
 
-**System Design Master Brain** fixes both by embedding a **Dual-Mode Principal Architect Engine** into your AI tools:
+**System Design Master Brain** fixes both by embedding a **Dual-Mode Principal Systems & AI Architect Engine** into your AI tools:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
-│ MODE A: Architecture & System Design RFCs (Greenfield / Scaling)           │
+│ MODE A: Architecture, Distributed Systems & Frontier AI RFCs               │
 ├────────────────────────────────────────────────────────────────────────────┤
 │ [1. Socratic Interrogation] ──▶ Force qualitative words into P99 ms & RPS  │
-│ [2. Capacity Math]          ──▶ Compute RAM, Disk, IOPS & Ephemeral Ports  │
+│ [2. Capacity & GPU Math]    ──▶ Compute RAM, KV-Cache, IOPS & Ports        │
 │ [3. Day-0 Monolith]         ──▶ Prove single-node limits before sharding   │
 │ [4. Sketch-to-Scale]        ──▶ Attempt 1 ──▶ Bottleneck ──▶ Production    │
-│ [5. Implementation Depth]   ──▶ Exact SQL schemas, indexes, Lua scripts    │
-│ [6. 45-Point Red-Team Audit]──▶ Audit for split-brain, stampedes & races   │
+│ [5. Implementation Depth]   ──▶ SQL, Lua, DeepSeek MLA/MoE, Meta Muse, RAG │
+│ [6. 50-Point Red-Team Audit]──▶ Audit for split-brain, stampedes & races   │
 └────────────────────────────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────────────────────────────┐
 │ MODE B: Real-Codebase Implementation, PR Review & Production Debugging     │
 ├────────────────────────────────────────────────────────────────────────────┤
-│ • Zero network calls inside DB transactions (Transactional Outbox / Inbox) │
+│ • Zero network/LLM calls inside DB transactions (Transactional Outbox)     │
 │ • Canonical lock ordering (ORDER BY id ASC FOR UPDATE) & SKIP LOCKED       │
 │ • Lease-backed idempotency keys (locked_until + SHA-256 parameter check)   │
 │ • Zero-downtime DDL migrations (SET lock_timeout='2s', Expand-Contract)    │
@@ -66,8 +67,9 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 *What the installer does automatically:*
 1. Installs the global skill for **Claude Code** (`~/.claude/skills/system-design-master-brain/`).
-2. Installs the global skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
-3. If run inside a project repository, installs **GitHub Copilot / OpenAI Codex** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 26-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
+2. Installs the global skill & `AGENTS.md` for **OpenAI Codex CLI** (`~/.codex/skills/system-design-master-brain/` and `~/.codex/AGENTS.md`).
+3. Installs the global skill for **Google Antigravity & Gemini** (`~/.gemini/antigravity/skills/system-design-master-brain/`).
+4. If run inside a project repository, installs **OpenAI Codex / OpenCode / Aider / Devin** (`AGENTS.md`), **GitHub Copilot** (`.github/copilot-instructions.md`), **Claude Code** (`CLAUDE.md`), **DeepSeek / Llama / Cline / Roo Code** (`.clinerules`), **Codeium** (`.codeiumrules`), **Windsurf** (`.windsurfrules`), **Cursor** (`.cursorrules`), and the complete 27-module [`SYSTEM_DESIGN_MASTER_BRAIN.md`](SYSTEM_DESIGN_MASTER_BRAIN.md) directly into your workspace.
 
 ---
 
@@ -75,20 +77,21 @@ irm https://raw.githubusercontent.com/OWNER/SystemDesignSkill/main/install.ps1 |
 
 | Platform | Setup Instructions |
 |---|---|
-| **GitHub Copilot & OpenAI Codex** | Copy `.github/copilot-instructions.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into your repository root |
+| **OpenAI Codex (CLI & Cloud Agent)** | Copy `AGENTS.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to your project root (or `~/.codex/AGENTS.md` globally) |
+| **GitHub Copilot (VS Code / JetBrains)** | Copy `.github/copilot-instructions.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into your repository root |
 | **Claude Code (CLI)** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.claude/skills/system-design-master-brain/`, or place `CLAUDE.md` in your project root |
-| **Claude.ai (Web / Projects)** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your Project Knowledge and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
+| **DeepSeek / Llama / Qwen (via Cline / Roo / OpenCode)** | Copy `.clinerules` and `AGENTS.md` into your project root, or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` in chat |
 | **Codeium (VS Code / JetBrains)** | Copy `.codeiumrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Codeium Windsurf IDE** | Copy `.windsurfrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Cursor** | Copy `.cursorrules` and `SYSTEM_DESIGN_MASTER_BRAIN.md` into the root directory of your project |
 | **Antigravity / Gemini** | Copy `SKILL.md` and `SYSTEM_DESIGN_MASTER_BRAIN.md` to `~/.gemini/antigravity/skills/system-design-master-brain/` |
-| **ChatGPT / OpenAI Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
+| **ChatGPT / Claude.ai / DeepSeek Web** | Attach `SYSTEM_DESIGN_MASTER_BRAIN.md` and paste the [System Prompt](#-copy-paste-system-prompt-for-raw-chat-interfaces) |
 
 ---
 
-## 📚 The 26 Core Architecture & Production Modules
+## 📚 The 27 Core Architecture, AI & Production Modules
 
-The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and hidden failure modes across **26 architectural pillars**:
+The master brain contains complete end-to-end specifications, schemas, mathematical proofs, and hidden failure modes across **27 architectural pillars**:
 
 | Module | Architectural Domain | Core Topics, Schemas & Hidden Edge Cases |
 |:---:|---|---|
@@ -115,18 +118,19 @@ The master brain contains complete end-to-end specifications, schemas, mathemati
 | **21** | **Security & Auth at Scale** | Refresh token family theft revocation, Google Zanzibar ReBAC & Zookies, Leopard bitsets, SSRF dialer |
 | **22** | **Stream Processing & State** | Apache Flink event time, `withIdleness()` watermarks, RocksDB `StateTtlConfig`, Cooperative rebalancing |
 | **23** | **Observability & Tracing** | OpenTelemetry W3C TraceContext, Tail-based sampling, $<1,000$ metric label cardinality law, Histogram merge |
-| **24** | **Vector DBs & AI Infrastructure** | HNSW & Binary Quantization, Single-stage pre-filtering, Namespaced Semantic Cache, SSE abort propagation |
+| **24** | **Vector DBs, Hybrid RAG & LLM Engines** | HNSW & Binary Quantization, Hybrid RRF + Cross-Encoder, KV-Cache math, vLLM PagedAttention & RadixAttention |
 | **25** | **Service Mesh & Modern RPC** | gRPC L7/Headless load balancing, HTTP/2 channel pools, Protobuf `reserved` tags, GraphQL DataLoader |
 | **26** | **Production Codebase Engineering** | Zero-downtime DDL (`lock_timeout`, Expand-Contract), Postgres MVCC HOT updates & XID wraparound, K8s `SIGTERM` drain |
+| **27** | **Frontier AI, DeepSeek, Meta Muse & RecSys** | DeepSeek MLA ($93\%$ KV compression), Auxiliary-Loss-Free MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel generation, 4-stage RecSys & Firecracker Agent VMs |
 
 ---
 
-## 🛡 The 45-Point Master Red-Team Audit
+## 🛡 The 50-Point Master Red-Team Audit
 
-Before any system design or production pull request is approved, the AI audits it against 45 real-world failure modes:
+Before any system design or production pull request is approved, the AI audits it against 50 real-world failure modes:
 
 <details>
-<summary><b>Click to expand all 45 Red-Team Audit Checks</b></summary>
+<summary><b>Click to expand all 50 Red-Team Audit Checks</b></summary>
 
 ### Core Architecture, SQL & Storage Checks (1–30)
 1. **Day-0 Over-Engineering**: Did we introduce Kafka/sharding before proving a single vertical node cannot handle it?
@@ -177,37 +181,44 @@ Before any system design or production pull request is approved, the AI audits i
 44. **Container OOMKill & K8s CPU Throttling**: Is runtime memory capped at $80\text{–}85\%$ (`GOMEMLIMIT` / `MaxRAMPercentage`) and K8s CPU `limits` throttling avoided?
 45. **Kubernetes `SIGTERM` 502 Drain Race**: On `SIGTERM`, does the app fail `/readyz`, sleep $5\text{–}10\text{s}$ while continuing to serve traffic, and then drain connections?
 
+### Frontier AI, DeepSeek MoE/MLA, Generative Media & ML RecSys Checks (46–50)
+46. **Disaggregated Prefill-vs-Decode & KV-Cache Math**: Are compute-bound Prefill nodes separated from bandwidth-bound Decode nodes (with RDMA KV transfer + MLA/GQA + PagedAttention/RadixAttention) so long prompts never stall active streaming users?
+47. **MoE Expert Load-Balancing & Long-CoT Offloading**: Does MoE serving/training use Auxiliary-Loss-Free dynamic bias routing to prevent GPU expert hotspots, and does long Chain-of-Thought reasoning (`R1`/`o1`) offload KV cache to Host DRAM?
+48. **Generative Media (Meta Muse / Diffusion) Queue & S-LoRA Paging**: Are image/video jobs decoupled via priority token-bucket GPU queues, using S-LoRA dynamic adapter paging in HBM and evaluating parallel masked token decoding (Meta Muse) for sub-second generation/inpainting?
+49. **ML RecSys 4-Stage Funnel & Time-Travel Leakage**: Does ranking use a 4-stage cascade (`Two-Tower ANN -> Pre-Rank -> Multi-Task DLRM/MMoE -> DPP Diversity`) and log features at inference time (`request_impression_id`) to eliminate Training-Serving Skew?
+50. **Autonomous Agent Checkpoints & Firecracker Sandbox**: Do multi-step agents checkpoint state before every tool call with idempotency keys, and execute untrusted code inside Firecracker MicroVMs blocking RFC1918 and `169.254.169.254`?
+
 </details>
 
 ---
 
 ## 📋 Copy-Paste System Prompt (For Raw Chat Interfaces)
 
-If you are using ChatGPT, Claude.ai, or another web LLM interface, attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:
+If you are using ChatGPT, Claude.ai, DeepSeek, or another web LLM interface, attach `SYSTEM_DESIGN_MASTER_BRAIN.md` to your chat and paste this prompt:
 
 ```markdown
-You are a Staff/Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (26 Modules & 45-Point Red-Team Audit).
+You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (27 Modules & 50-Point Red-Team Audit).
 Operate in Dual Mode depending on my request:
 
-MODE A — SYSTEM DESIGN & ARCHITECTURE RFCs:
-1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions (Workload Ratio, Peak Concurrency vs. Total Volume, P99 SLA, Consistency model, Blast radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
-2. CAPACITY MATH: Compute exact RAM, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database or sharding strategy.
+MODE A — SYSTEM DESIGN, AI INFRASTRUCTURE & ARCHITECTURE RFCs:
+1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions (Workload Ratio, Peak Concurrency vs. Total Volume, P99/TTFT/ITL SLA, Consistency model, Blast radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
+2. CAPACITY & GPU MATH: Compute exact RAM, GPU HBM / KV-Cache Bytes, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database, serving cluster, or sharding strategy.
 3. DAY-0 MONOLITH BASELINE: Formulate the simplest working implementation on a single vertical RDBMS instance with blunt SQL and pseudocode. Calculate the exact numerical threshold where it breaks.
 4. SKETCH-TO-SCALE EVOLUTION: Walk through Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Architecture using the Framework of Opposites.
-5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite covering indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis Lua scripts, and idempotency guarantees.
+5. IMPLEMENTATION DEPTH: Provide concrete SQL schemas with composite covering indexes, locking modes (FOR UPDATE SKIP LOCKED), Redis Lua scripts, AI serving architectures (DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel decoding, 4-stage RecSys funnel, Firecracker agent sandboxes), and idempotency guarantees.
 
 MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
 - Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
 - Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
 
-6. 45-POINT RED-TEAM AUDIT: Conclude every design or code review by auditing it against the 45-Point Red-Team Checklist from the playbook.
+6. 50-POINT RED-TEAM AUDIT: Conclude every design or code review by auditing it against the 50-Point Red-Team Checklist from the playbook.
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from systems engineers worldwide! Please see our [Contributing Guide](CONTRIBUTING.md) for details on proposing new modules (Module 27+), production benchmarks, and failure modes.
+We welcome contributions from systems and AI engineers worldwide! Please see our [Contributing Guide](CONTRIBUTING.md) for details on proposing new modules (Module 28+), production benchmarks, and failure modes.
 
 ---
 

@@ -1,7 +1,7 @@
-# System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 26-Module Pattern Playbook
+# System Design Master Brain — Principal Architect Reasoning Engine, Socratic Interrogator & 27-Module Pattern Playbook
 
 > **How to Use This Document**:  
-> Load this playbook as an AI agent skill (`SKILL.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.github/copilot-instructions.md`) or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` directly in context. Whether designing a distributed system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the **Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 26-Module Lego-Block Playbook, and 45-Point Red-Team Audit** defined below.
+> Load this playbook as an AI agent skill (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.codeiumrules`, `.clinerules`, `.github/copilot-instructions.md`) or attach `SYSTEM_DESIGN_MASTER_BRAIN.md` directly in context. Whether designing a distributed or AI/ML system from scratch or writing, reviewing, and scaling a real production codebase to millions of users, the AI must enforce the **Dual-Mode Operating Protocol, Socratic Questioning Engine, Framework of Opposites, Decision-Flow Graphs, 27-Module Lego-Block Playbook, and 50-Point Red-Team Audit** defined below.
 
 ---
 
@@ -68,7 +68,7 @@ To be maximally effective both on architectural whiteboards and inside live prod
   2. Compute **First-Principles Capacity & Storage Math** (RAM, Disk, IOPS, Bandwidth, Ephemeral Ports).
   3. Start with the **Day-0 3-Tier Monolith Baseline** and prove numerically where it breaks before adding distributed components.
   4. Evolve step-by-step (`Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Production Design`) using the **Framework of Opposites** (Part II).
-  5. Conclude with the **45-Point Master Red-Team Audit** (Part V).
+  5. Conclude with the **50-Point Master Red-Team Audit** (Part V).
 
 - **Mode B — Real-Codebase Implementation, PR Review & Production Debugging Mode** *(Triggered when writing backend code, SQL migrations, API handlers, reviewing PRs, or debugging live latency/outages in a repo)*:
   - **Do NOT stall with abstract whiteboard questions** when the code is right in front of you. Inspect the actual handlers, queries, schemas, and configs directly and enforce these **Non-Negotiable Codebase Laws**:
@@ -136,7 +136,7 @@ flowchart TD
 
 ---
 
-## PART IV: THE DISTRIBUTED SYSTEMS PATTERN PLAYBOOK (MODULES 01–26)
+## PART IV: THE DISTRIBUTED SYSTEMS & AI PATTERN PLAYBOOK (MODULES 01–27)
 
 ## Module 01: Real-Time Presence, Connection Pooling, B+ Tree Storage Internals & Cache Stampede Coalescing
 
@@ -1452,7 +1452,7 @@ flowchart TD
 
 ---
 
-## Module 24: Vector Databases & AI Infrastructure (HNSW, RAG & Semantic Caches)
+## Module 24: Vector Databases, Hybrid RAG & LLM Inference Engine Internals (HNSW, PagedAttention & Semantic Caches)
 
 ### 24.1 High-Dimensional Vector Search Primitives
 - Dense embeddings ($D = 768\text{ to }3072$ `float32` dimensions) map semantic meaning into geometric space.
@@ -1470,7 +1470,30 @@ flowchart TD
   - Compress vectors in RAM by $32\times$ using **Binary Quantization (1 bit per dim = 192 bytes/vector $\implies 19.2\text{ GB RAM}$)** or **Scalar Quantization (`int8` = $4\times$ compression)**.
   - Fetch Top-$4K$ candidates in RAM using ultra-fast bitwise `XOR + POPCNT` Hamming distance, then fetch the exact `float32` vectors for only those $4K$ candidates from NVMe SSD (`DiskANN` / `mmap`) to re-rank the final Top-$K$ with $99\%$ recall!
 
-### 24.4 Module 24 Critical Hidden Edge Cases & Vector/AI Infrastructure Traps
+### 24.4 Production Hybrid RAG Pipeline (Dense + BM25 + RRF + Cross-Encoder)
+- **Why Pure Vector Search Fails in Production**: Dense embeddings excel at conceptual synonyms (*"cardiac arrest"* $\leftrightarrow$ *"heart attack"*), but fail catastrophically on exact SKU codes, error codes (`ERR_SSL_VERSION_OR_CIPHER_MISMATCH`), legal clause numbers, or rare proper nouns.
+- **3-Stage Hybrid Retrieval Architecture**:
+  1. **Parallel Dual Retrieval ($< 15\text{ms}$)**: Query both a **Dense Vector Index (HNSW Top-100)** and a **Sparse Lexical Inverted Index (BM25 / SPLADE Top-100)** concurrently.
+  2. **Reciprocal Rank Fusion (RRF)**: Because cosine similarity ($[0, 1]$) and unbounded BM25 scores ($[0, \infty)$) cannot be added directly without fragile calibration, merge rankings using **Reciprocal Rank Fusion** with smoothing constant $k = 60$:
+     $$\text{RRF\_Score}(d) = \frac{1}{60 + \text{rank}_{\text{dense}}(d)} + \frac{1}{60 + \text{rank}_{\text{BM25}}(d)}$$
+  3. **Cross-Encoder Reranking ($< 35\text{ms}$)**: Pass the top $50$ RRF-fused chunks through a joint **Cross-Encoder (`BGE-Reranker` / `Cohere Rerank`)** that computes full self-attention across $(\text{Query} \oplus \text{Document})$ to select the final Top-$5$ chunks injected into the LLM context window.
+
+### 24.5 LLM Inference Physics: KV-Cache Math, PagedAttention, RadixAttention & Speculative Decoding
+- **The Two Phases of Autoregressive Inference**:
+  1. **Prefill Phase (Processing Input Prompt)**: Computes Key ($K$) and Value ($V$) tensors for all $L_{\text{in}}$ prompt tokens in parallel. **Compute-Bound** (saturates GPU Tensor Core FLOP/s; dictates **TTFT — Time To First Token**).
+  2. **Decode Phase (Generating Output Token-by-Token)**: Generates 1 token per forward pass by reading all model weights + all historical KV-Cache tensors from GPU HBM. **Memory-Bandwidth-Bound** (dictates **ITL / TPOT — Time Per Output Token**).
+- **Exact KV-Cache Memory Formula**:
+  $$\text{KV\_Bytes\_Per\_Token} = 2\text{ (K and V)} \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times \text{bytes\_per\_param}$$
+  - *Example (Llama-3 70B in FP16, GQA with $n_{\text{layers}}=80, n_{\text{kv\_heads}}=8, d_{\text{head}}=128$)*:
+    $$\text{KV\_Bytes\_Per\_Token} = 2 \times 80 \times 8 \times 128 \times 2\text{ B} = \mathbf{327.68\text{ KB / token}}$$
+    For a batch of $32$ concurrent requests at $32,768$ context length: $32 \times 32,768 \times 327.68\text{ KB} = \mathbf{343.6\text{ GB of KV-Cache alone}}$ (exceeding a single $80\text{GB}$ H100 by $4\times$ before even loading the $140\text{GB}$ model weights!).
+- **Core Serving Engine Optimizations**:
+  - **vLLM PagedAttention**: Eliminates $60\text{–}80\%$ contiguous KV-cache memory fragmentation by partitioning GPU HBM into fixed **16-token physical KV blocks** mapped via an OS-style virtual block table (enabling zero-copy Copy-on-Write parallel sampling).
+  - **SGLang RadixAttention (Automatic Prefix Caching)**: Retains KV blocks of completed requests inside a **Radix Tree (LRU-evicted)** in GPU/Host memory. Multi-turn chat histories, shared system prompts, and few-shot RAG templates hit the Radix Tree and skip Prefill compute entirely!
+  - **Continuous Iteration-Level Batching (Orca)**: Evicts finished sequences from the batch immediately after the iteration they emit `<EOS>` and inserts waiting requests at the very next token step, increasing GPU throughput by $5\text{–}10\times$ over static batching.
+  - **Speculative Decoding**: Uses a tiny draft model (e.g., 1B parameter or EAGLE/Medusa head) to propose $\gamma = 5$ candidate tokens cheaply, which the 70B target model verifies in **1 single parallel forward pass** (achieving $2\text{–}3\times$ faster decoding with mathematically identical output distribution).
+
+### 24.6 Module 24 Critical Hidden Edge Cases & Vector/AI Infrastructure Traps
 - **1. The Multi-Tenant HNSW Post-Filtering vs. Pre-Filtering Disaster ("Zero Results Returned")**:
   - *Failure Mode*: You store 50M document chunks across 100,000 SaaS tenants in one shared HNSW index. Tenant A (who owns $500$ chunks, or $0.001\%$ of the index) runs a search: `SELECT ... WHERE tenant_id = 'A' ORDER BY embedding <=> :q LIMIT 10`.
     - **If Post-Filtering runs**: HNSW finds the global Top-100 nearest vectors across all tenants, and *then* filters by `tenant_id == 'A'`. Because Tenant A is only $0.001\%$ of the dataset, **0 of the global Top-100 belong to Tenant A** $\implies$ the query returns **0 results** even though Tenant A has 500 relevant docs!
@@ -1613,9 +1636,100 @@ flowchart TD
 
 ---
 
-## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (45-POINT AUDIT)
+## Module 27: Frontier AI System Design — DeepSeek Architecture (MLA, MoE & Disaggregated Serving), Generative Media (Meta Muse & DiT), Real-Time ML RecSys & Autonomous Agent Systems
 
-Whenever you (the AI Architect) finish proposing a system design **or** reviewing a real production codebase/PR, you **MUST** run this **45-Point Red-Team Audit** against the architecture or code before declaring it complete:
+### 27.1 The DeepSeek-V3 / R1 Systems Architecture (Cutting LLM Inference & Training Cost by $10\times$)
+- **1. Multi-Head Latent Attention (MLA) vs. Standard MHA / GQA**:
+  - *The Bottleneck*: In standard Multi-Head Attention (MHA) or Grouped-Query Attention (GQA), the KV-Cache grows linearly with `n_kv_heads * d_head`, bottlenecking HBM capacity and memory bandwidth during decoding.
+  - *DeepSeek MLA Mechanism*: Projects Keys and Values jointly into a compressed low-rank latent vector $\mathbf{c}_t^{KV} \in \mathbb{R}^{d_c}$ ($d_c = 512 \ll n_h d_h$):
+    $$\mathbf{c}_t^{KV} = W^{DKV} \mathbf{h}_t, \quad \mathbf{k}_t^C = W^{UK} \mathbf{c}_t^{KV}, \quad \mathbf{v}_t^C = W^{UV} \mathbf{c}_t^{KV}$$
+    During inference, **only the compressed latent vector $\mathbf{c}_t^{KV}$ (plus a tiny decoupled RoPE positional key $\mathbf{k}_t^R$)** is cached in GPU HBM! Furthermore, the up-projection matrices $W^{UK}$ and $W^{UV}$ are absorbed directly into $W^Q$ and $W^O$ via matrix associativity so compressed latents never even need to be expanded in HBM—**shrinking KV-Cache footprint by $93.3\%$** (down to the equivalent of $2.25$ GQA heads) while outperforming standard MHA in modeling quality!
+- **2. Fine-Grained Mixture-of-Experts (DeepSeekMoE) & Auxiliary-Loss-Free Load Balancing**:
+  - *Architecture*: $671\text{B}$ total parameters, but only **$37\text{B}$ parameters are activated per token** ($1$ always-active Shared Expert to capture common knowledge + $8$ Routed Experts selected via Top-$K$ sigmoid gating out of $256$ fine-grained routed experts per layer).
+  - *The MoE Expert Hotspot / Routing Collapse Trap*: If the router sends $40\%$ of tokens to Expert #7, the GPU hosting Expert #7 becomes a $100\%$ bottleneck while the other 63 GPUs stall waiting at the All-to-All barrier. Traditional MoE models penalized imbalance with an **Auxiliary Load-Balancing Loss**, which forced tokens into suboptimal experts and degraded perplexity.
+  - *DeepSeek's Auxiliary-Loss-Free Fix*: Adds a dynamic per-expert routing bias term $b_i$ *only* to the Top-$K$ selection score ($s_{i,t}' = s_{i,t} + b_i$), while multiplying the expert output by the **unbiased** gate $s_{i,t}$. After each step, if Expert $i$ is overloaded, $b_i \leftarrow b_i - \gamma$; if underloaded, $b_i \leftarrow b_i + \gamma$. Result: **near-perfect GPU load balance across 256 experts with zero gradient distortion!**
+  - *DualPipe & Cross-Node All-to-All Overlap*: Overlaps forward/backward computation chunks with InfiniBand/NVLink **EP (Expert Parallelism) All-to-All dispatch/combine** using **FP8 (`E4M3`) quantization**, hiding $100\%$ of cross-node communication latency.
+- **3. Disaggregated Prefill vs. Decode Clusters (Mooncake / Splitwise / DistServe Architecture)**:
+  - *The Colocation Anti-Pattern*: If a single GPU cluster handles both Prefill and Decode in the same continuous batch, a single incoming $64\text{K}$-token prompt prefill takes $1,500\text{ms}$ of compute—**freezing token generation (ITL spike) for all 60 users currently streaming responses on that GPU**!
+  - *Production Disaggregated Architecture*:
+    1. **Prefill Cluster (Compute-Optimized)**: High Tensor Parallelism ($TP=8$), processes incoming prompts at maximum FLOP utilization, writes compressed MLA KV-Cache blocks into a **Distributed RDMA KV-Cache Pool (Mooncake)**.
+    2. **Zero-Copy RDMA KV Transfer**: Transfers KV blocks directly from Prefill GPU HBM (or Host pinned DRAM) to Decode GPU HBM over **GPUDirect RDMA ($400\text{ Gbps}$ InfiniBand / RoCEv2)** bypassing the CPU.
+    3. **Decode Cluster (Bandwidth-Optimized)**: Wide Expert Parallelism ($EP=32\text{–}64$) with massive batch sizes ($256+$ concurrent sequences) so all 256 MoE experts are loaded from HBM once and amortized across hundreds of active tokens per step.
+- **4. Reasoning Model Serving (DeepSeek-R1 / Long Chain-of-Thought & Multi-Token Prediction)**:
+  - *Long CoT KV-Cache Spike*: Reasoning models emit $8,000\text{–}32,000$ internal `<think>...</think>` tokens before producing the user-visible answer. If HBM fills up at token $24,000$, evicting the request wastes $45\text{ seconds}$ of GPU work.
+  - *Production Fix*: Use **Hierarchical KV-Cache Swapping** (transparently paging older KV blocks to Host DDR5 RAM over PCIe Gen5 at $64\text{ GB/s}$) + **Multi-Token Prediction (MTP)** modules trained natively during pre-training to draft $2\text{–}3$ future tokens per step with $85\text{–}90\%$ acceptance rate.
+
+### 27.2 Generative Media & Multimodal Systems: Meta's Muse (Masked Generative Transformers) vs. Diffusion / DiT
+- **1. Why Meta's Muse Outperforms Autoregressive & Diffusion Image Generation by $10\times$**:
+  - *Three Paradigms of Generative Image/Video Synthesis*:
+    1. **Autoregressive Token Models (Parti / DALL-E 1)**: Flatten a $32\times 32$ discrete visual token grid into $1,024$ tokens and decode sequentially **1 token per forward pass** ($1,024$ serial transformer passes $\implies 15\text{–}30\text{ seconds}$ per image).
+    2. **Latent Diffusion / Diffusion Transformers (Stable Diffusion / Flux / Sora DiT)**: Iteratively denoise continuous gaussian latents over **$25\text{–}50$ sequential steps** (or $4\text{–}8$ steps with consistency distillation).
+    3. **Meta's Muse (Masked Generative Transformer — Parallel Iterative Decoding)**:
+       - Encodes images into discrete semantic tokens via **VQGAN** at two scales: a **Base $16\times 16$ grid ($256$ tokens)** and a **Super-Resolution $64\times 64$ grid ($4,096$ tokens)** conditioned on T5-XXL text embeddings.
+       - Trained with a **Variable Cosine Masking Schedule** $\gamma(r) = \cos(\frac{\pi r}{2})$ where a random fraction of visual tokens are replaced with `[MASK]`.
+       - **Parallel Inference in 8–16 Steps**: Starting from $100\%$ `[MASK]` tokens, at step $t$, Muse predicts logits for **all remaining masked tokens simultaneously in a single parallel forward pass**, locks in the highest-confidence fraction of tokens, and re-masks the uncertain ones for step $t+1$.
+       - **Zero-Shot Editing (Inpainting / Outpainting / Mask-Free Editing)**: Because Muse natively predicts arbitrary subsets of `[MASK]` tokens conditioned on unmasked neighbours, **inpainting, outpainting, and object replacement require zero model fine-tuning**—simply clamp the unmasked region tokens and run 8 parallel decode steps!
+- **2. Production System Design for High-Scale Image & Video Generation (10M+ Generations/Day)**:
+  - **Asynchronous Priority GPU Job Queue**: Image ($1\text{–}4\text{s}$) and Video DiT ($15\text{–}90\text{s}$) jobs must never hold synchronous HTTP threads to GPU nodes. API Gateway validates quota $\to$ pushes job to **Tiered Redis/Kafka Priority Queue (`Turbo/Paid` vs. `Relaxed/Batch`)** $\to$ GPU Puller Workers claim jobs and stream step previews via WebSockets/SSE.
+  - **Dynamic LoRA Hot-Swapping (S-LoRA / Punica Architecture)**:
+    - *The Trap*: Serving 10,000 user-trained custom styles/characters by loading separate $12\text{GB}$ checkpoints from disk per request limits a GPU to $0.2\text{ RPS}$ due to PCIe/disk I/O thrashing.
+    - *The Fix*: Keep the **single frozen base model** in GPU HBM permanently, store thousands of $32\text{MB}$ low-rank adapter matrices ($W_0 + \Delta W = W_0 + B \cdot A$) in Host RAM, and dynamically page the active requests' LoRA weights into a unified Paged HBM buffer using custom **Segmented Gather-Matrix-Multiply (`BGMV`) CUDA kernels**—serving 100 different LoRAs in the *same* batch!
+  - **Classifier-Free Guidance (CFG) Batch Doubling & Sandwich Safety**:
+    - CFG computes $\epsilon_{\text{final}} = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})$, which **doubles the effective GPU batch size** ($2\times$ FLOPs per step). Distillation (Guidance Distillation) folds CFG into the model weights to cut inference cost by $50\%$.
+    - Enforce a **Sandwich Safety Pipeline**: Fast Pre-Prompt Classifier ($<8\text{ms}$ DistilBERT/Llama-Guard) $\to$ GPU Generation $\to$ Post-Generation Vision Safety Check + **Invisible Cryptographic Watermarking (SynthID / C2PA signed provenance)** $\to$ Direct S3/CDN upload returning only an `image_id`.
+
+### 27.3 Real-Time ML Recommendation, Ads & Feed Ranking Systems (TikTok / Instagram / YouTube Scale)
+- **The Problem**: Rank $100,000,000$ candidate videos/posts/ads down to the Top $20$ personalized items for $100\text{M+}$ DAU under a strict **$< 150\text{ms}$ P99 end-to-end latency budget**.
+- **The 4-Stage Cascading Ranking Funnel**:
+  ```
+  [100M Corpus] --(Stage 1: Retrieval <20ms)--> [2,000 Candidates] --(Stage 2: Pre-Rank <15ms)--> [200 Candidates] --(Stage 3: Heavy Multi-Task Rank <50ms)--> [50 Candidates] --(Stage 4: Diversity & Rules <10ms)--> [Top 20 Feed]
+  ```
+  1. **Stage 1 — Multi-Source Candidate Retrieval ($100\text{M} \to 2,000$ in $< 20\text{ms}$)**:
+     - **Two-Tower Neural Network (ANN)**: User Tower encodes real-time user history/context into vector $\mathbf{u} \in \mathbb{R}^{128}$; Item Tower embeds items into $\mathbf{v} \in \mathbb{R}^{128}$ indexed in HNSW / ScaNN / FAISS. Top-1,000 retrieved via $\arg\max \langle \mathbf{u}, \mathbf{v} \rangle$, combined with **Collaborative Filtering / Graph Walk**, **Followed Creators**, and **Geo/Trending** candidate generators.
+  2. **Stage 2 — Lightweight Pre-Ranking ($2,000 \to 200$ in $< 15\text{ms}$)**:
+     - Distilled shallow MLP using cached coarse features to prune $90\%$ of candidates before expensive GPU feature crossing.
+  3. **Stage 3 — Heavy Multi-Task Ranking ($200 \to 50$ in $< 50\text{ms}$)**:
+     - **DLRM / DCN-v2 (Deep & Cross Network) / MMoE (Multi-gate Mixture-of-Experts)** running on GPU/TPU with quantized `INT8/FP16` sparse embedding tables.
+     - Simultaneously predicts multiple task heads: $P(\text{click})$, $E[\text{watch\_time}]$, $P(\text{like})$, $P(\text{share})$, $P(\text{comment})$, and negative signals $P(\text{skip} < 2\text{s})$, $P(\text{not\_interested})$, combined into a calibrated utility score:
+       $$\text{Score}(u, i) = w_1 P(\text{click}) + w_2 E[\text{watch\_time}] + w_3 P(\text{share}) - w_4 P(\text{not\_interested})$$
+  4. **Stage 4 — Re-Ranking, Diversity & Ad Pacing ($50 \to 20$ in $< 10\text{ms}$)**:
+     - **Sliding-Window Diversity (DPP — Determinantal Point Processes / MMR)**: Penalizes items whose embedding is too similar to items just placed in slots $1..k-1$ (preventing 5 consecutive videos from the same creator or topic).
+     - **Exploration / Cold-Start Traffic Allocation**: Reserves $5\%$ of impression slots for new content via **Contextual Thompson Sampling / Upper Confidence Bound (UCB)** so new creators can enter the viral feedback loop.
+- **Dual-Layer Feature Store & The #1 Silent ML Bug (Training-Serving Skew / Time-Travel Leakage)**:
+  - **Offline Feature Store** (Iceberg / Parquet on S3) serves batch training; **Online Feature Store** (Redis Cluster / Aerospike / RocksDB) serves $< 5\text{ms}$ real-time sliding-window counters (`user_liked_tags_last_10m` computed via Flink).
+  - *The Time-Travel Leakage Bug*: If you build training data by joining yesterday's click logs against the feature table's *end-of-day* snapshot, the model trains on future features that included the click itself—producing $0.98$ offline AUC and failing completely in production!
+  - *Production Fix (Log-and-Wait at Inference)*: At the exact millisecond Stage 3 scores the 200 candidates, **log the exact in-memory feature vector $\mathbf{x}_{u,i,t}$ with a unique `request_impression_id` to Kafka**. Join the delayed user click/watch-time events (`5 min` window) against that logged feature vector to guarantee **100% zero Training-Serving Skew** and enable **15-second streaming online parameter updates**!
+
+### 27.4 Autonomous AI Agents, Tool Sandboxes & Durable Orchestration (Codex / Claude Code / Devin Scale)
+- **1. Durable Execution State Checkpointing (Crash-Resilient Multi-Step Agents)**:
+  - *Failure Mode*: An autonomous coding or research agent executes a 25-step tool loop taking $4\text{ minutes}$. At Step 22, the worker pod suffers a rolling restart or upstream LLM `503`. If the orchestrator restarts from Step 1, it burns $21$ steps of duplicate LLM token costs and **double-executes state-mutating tools** (creating duplicate PRs, sending duplicate emails, or running `terraform apply` twice).
+  - *Production Fix*: Treat every agent run as a **Durable Event-Sourced State Machine (Temporal / LangGraph Checkpointer)**:
+    - Before and after every LLM turn or tool execution, persist an immutable checkpoint `(thread_id, step_seq, messages_hash, tool_call_id, tool_output_json)` in Postgres/Redis.
+    - Pass deterministic `Idempotency-Key: sha256(thread_id + ":" + step_seq + ":" + tool_call_id)` to every external tool. On worker crash, the new worker loads `step_seq = 21` and resumes at Step 22 with zero duplicate work.
+- **2. Untrusted Code Execution Sandboxes (Firecracker MicroVMs vs. Docker Containers)**:
+  - *The Security Catastrophe*: Running LLM-generated Python/Bash inside a standard Docker container on your production Kubernetes node allows a malicious prompt or hallucinated script to exploit a Linux kernel syscall vulnerability (container escape), scan your internal VPC (`10.0.0.0/8`), or query **`http://169.254.169.254/latest/meta-data/iam/security-credentials/`** to steal the Kubernetes node's AWS IAM role!
+  - *Production Fix*: Isolate all agent code/tool execution inside **Hardware-Virtualization MicroVMs (AWS Firecracker / Kata Containers / gVisor)**:
+    1. Each agent session boots a dedicated **Firecracker MicroVM** with its own isolated guest Linux kernel in **$< 125\text{ms}$** by restoring from a pre-warmed Copy-on-Write (`mmap` + `userfaultfd`) memory snapshot.
+    2. Attach a default-deny `nftables`/TAP egress firewall that **blocks all RFC 1918 private subnets, link-local `169.254.0.0/16` cloud metadata IPs, and internal DNS**, allowing outbound traffic only through an authenticated, domain-allowlisted HTTP proxy.
+- **3. Indirect Prompt Injection Isolation & Context Window Compaction**:
+  - When an agent reads untrusted external data (emails, GitHub issues, web pages), wrap untrusted content in delimited data blocks, strip hidden instructions, and enforce **Deterministic Policy Guards / Human-in-the-Loop (HITL) Approval Gates** before executing high-privilege mutating tools (`delete_repo`, `transfer_funds`, `send_email` to external domains).
+  - Prevent quadratic context-window cost escalation (`O(N^2)` token billing across $N$ turns) by offloading large tool outputs ($> 2\text{KB}$) to filesystem artifacts and triggering **Sliding-Window Structured Summarization** when context exceeds $70\%$ of the model's effective window.
+
+### 27.5 Distributed Frontier AI Training Infrastructure (10,000+ GPU Clusters)
+- **1. 4D Parallelism Bandwidth Placement Law**:
+  - **Tensor Parallelism ($TP = 8$)**: Splits individual weight matrices across GPUs and requires an `AllReduce` on *every single transformer layer*. Must **strictly stay inside a single 8-GPU node** connected via **$900\text{ GB/s}$ NVLink/NVSwitch** (never across Ethernet/InfiniBand).
+  - **Pipeline Parallelism ($PP$) & Expert Parallelism ($EP$)**: Splits layers ($PP$) or MoE experts ($EP$) across nodes over **$400\text{–}800\text{ Gbps}$ InfiniBand / RoCEv2** using 1F1B (One-Forward-One-Backward) or DualPipe micro-batch scheduling to minimize pipeline bubble overhead $\frac{PP - 1}{M}$.
+  - **Data Parallelism / FSDP / ZeRO-3 ($DP$)**: Shards optimizer states (`FP32` master weights + Adam $m, v = 16\text{ bytes/param}$), gradients, and parameters across replicas, overlapping `AllGather` and `ReduceScatter` with backward-pass compute.
+- **2. GPU Cluster MTBF Math & Two-Phase Asynchronous Checkpointing**:
+  - *The Hardware Reality*: In a 16,384-GPU training cluster, a GPU, HBM bank, or optical transceiver fails or suffers Silent Data Corruption (SDC) every **3 to 5 hours**.
+  - *The Synchronous Checkpoint Stall*: Dumping a $15\text{ TB}$ distributed checkpoint directly from GPU HBM to shared storage (Lustre/S3) takes $3\text{–}10\text{ minutes}$, wasting thousands of GPU-hours daily.
+  - *Production Fix (Two-Phase Async Checkpointing)*: Pause training for **$< 0.8\text{ seconds}$** to copy each GPU's local shard from HBM to **Pinned Host CPU RAM** over PCIe Gen5 (`cudaMemcpyAsync`), immediately resume GPU training on the next batch, and have background CPU threads flush the snapshot from Host RAM to distributed storage asynchronously!
+
+---
+
+## PART V: THE MASTER RED-TEAM CRITIC & EXTREME EDGE-CASE AUDIT CHECKLIST (50-POINT AUDIT)
+
+Whenever you (the AI Architect) finish proposing a system design **or** reviewing a real production codebase/PR, you **MUST** run this **50-Point Red-Team Audit** against the architecture or code before declaring it complete:
 
 ### Core Architecture, SQL & Storage Checks (Points 1–30)
 1. **The Day-0 Over-Engineering Check**: Did the design introduce microservices, Kafka, Redis, or sharding before proving via back-of-the-envelope math that a single vertically scaled machine + RDBMS cannot handle the concurrent load?
@@ -1687,6 +1801,13 @@ Whenever you (the AI Architect) finish proposing a system design **or** reviewin
 44. **The Container OOMKill & K8s CPU Throttling Check**: Are runtime heap limits (`GOMEMLIMIT`, `-XX:MaxRAMPercentage=75.0`, `--max-old-space-size`) set to $80\text{–}85\%$ of the container memory limit to prevent kernel `SIGKILL (Exit 137)`, and are restrictive K8s CPU `limits` avoided to prevent CFS 100ms quota throttling spikes?
 45. **The Kubernetes `SIGTERM` 502 Bad-Gateway Drain Check**: On receiving `SIGTERM`, does the server fail `/readyz` immediately, **continue serving traffic for $5\text{–}10\text{ seconds}$** while kube-proxy/ALB removes the pod IP from endpoints, and only *then* drain active connections?
 
+### Frontier AI, DeepSeek MoE/MLA, Generative Media & ML RecSys Checks (Points 46–50)
+46. **The Disaggregated Prefill-vs-Decode & KV-Cache Memory Check**: For high-throughput LLM serving, did you compute exact KV-cache memory bytes per token (using **MLA / GQA + PagedAttention / RadixAttention**), and did you disaggregate compute-bound **Prefill nodes** from memory-bandwidth-bound **Decode nodes** (with RDMA KV transfer) so long $64\text{K}$ prompts never stall active streaming users?
+47. **The MoE Expert Load-Balancing & Long-CoT Offloading Check**: In Mixture-of-Experts (DeepSeekMoE) serving/training, is **Auxiliary-Loss-Free dynamic bias routing** used to prevent single-GPU expert hotspots? And for Reasoning models (`R1` / `o1` long Chain-of-Thought), is **Hierarchical KV-Cache Offloading (HBM $\to$ Host DRAM)** enabled so 32K thinking traces never suffer mid-thought OOM preemption?
+48. **The Generative Media (Meta Muse / Diffusion) Queue & Dynamic S-LoRA Check**: Are multi-second image/video generation tasks decoupled via priority token-bucket GPU queues (never blocking synchronous HTTP threads)? Are custom styles served via **S-LoRA paged adapters** over a single frozen base model in HBM rather than swapping full $12\text{GB}$ checkpoints? And is **parallel masked token decoding (Meta Muse)** evaluated when sub-second generation or zero-shot inpainting is required?
+49. **The ML RecSys 4-Stage Funnel & Feature Store Time-Travel Leakage Check**: Does large-scale recommendation use a cascading funnel (`100M -> 2,000 Two-Tower ANN -> 200 Pre-Rank -> 50 Multi-Task DLRM/MMoE -> 20 DPP Diversity Re-Rank`)? And does the pipeline **log feature vectors at inference time** (`request_impression_id`) rather than joining historical labels against mutated latest-state tables (eliminating Training-Serving Skew / Time-Travel data leakage)?
+50. **The Autonomous Agent Durable Checkpoint & Firecracker Sandbox Check**: Do multi-step AI agents checkpoint state `(thread_id, step_seq, tool_call_id)` before every tool call so crashed runs resume without duplicate execution, and is untrusted LLM-generated code executed strictly inside **Firecracker MicroVMs** with egress blocked to RFC1918 and `169.254.169.254` cloud metadata endpoints?
+
 ---
 
 ## PART VI: COPY-PASTE SYSTEM PROMPT FOR ANY AI SESSION
@@ -1694,21 +1815,22 @@ Whenever you (the AI Architect) finish proposing a system design **or** reviewin
 > **How to use**: Copy the block below (along with `SYSTEM_DESIGN_MASTER_BRAIN.md` attached in context) whenever starting a new system design or production codebase review session with any AI assistant:
 
 ```markdown
-You are a Staff/Principal Systems Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (26 Modules & 45-Point Red-Team Audit).
+You are a Staff/Principal Systems & AI Architect operating with the `SYSTEM_DESIGN_MASTER_BRAIN.md` playbook (27 Modules & 50-Point Red-Team Audit).
 Operate in Dual Mode depending on my request:
 
-MODE A — SYSTEM DESIGN & ARCHITECTURE RFCs:
+MODE A — SYSTEM DESIGN, AI INFRASTRUCTURE & ARCHITECTURE RFCs:
 1. SOCRATIC INTERROGATION FIRST: Do NOT jump into drawing boxes or proposing microservices. First, ask targeted clarifying questions from Part I (Workload Ratio, Concurrency vs. Total Volume, Consistency vs. Latency, Consumer Type, Multi-Tenancy, and Failure Blast Radius) and force every qualitative word ("fast", "huge", "real-time") into concrete numbers.
-2. BACK-OF-THE-ENVELOPE CAPACITY & STORAGE MATH: Compute exact RAM, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database or sharding strategy.
+2. BACK-OF-THE-ENVELOPE CAPACITY & STORAGE MATH: Compute exact RAM, GPU HBM / KV-Cache Bytes, Disk, IOPS, Network Bandwidth, and Ephemeral Port numbers from first principles before choosing any database, serving cluster, or sharding strategy.
 3. SKETCH-TO-SCALE ITERATIVE EVOLUTION:
    - Start with Attempt 1 (Day-0 Monolith / Single Node / Blunt SQL & Pseudocode Handler).
-   - Identify the exact CPU / RAM / Disk / Network / Lock Bottleneck under concurrent load.
+   - Identify the exact CPU / GPU / RAM / Disk / Network / Lock Bottleneck under concurrent load.
    - Evolve step-by-step (Attempt 1 -> Bottleneck -> Attempt 2 -> Bottleneck -> Final Production Design) using the Framework of Opposites (Part II) and the Decision-Flow Routing Engine (Part III).
-4. IMPLEMENTATION-GRADE DEPTH: Provide exact SQL schemas (Composite Covered Indexes, FOR UPDATE SKIP LOCKED, ON DUPLICATE KEY UPDATE), Redis Lua scripts, binary on-disk layouts, and handler pseudocode—never just high-level boxes.
+4. IMPLEMENTATION-GRADE DEPTH: Provide exact SQL schemas (Composite Covered Indexes, FOR UPDATE SKIP LOCKED, ON DUPLICATE KEY UPDATE), Redis Lua scripts, binary on-disk layouts, AI serving architectures (DeepSeek MLA/MoE, Disaggregated Prefill/Decode, Meta Muse masked parallel decoding, 4-stage RecSys funnel, Firecracker agent sandboxes), and handler pseudocode—never just high-level boxes.
 
 MODE B — REAL-CODEBASE IMPLEMENTATION, PR REVIEW & DEBUGGING:
 - Inspect the code, SQL queries, migrations, and configs directly without stalling on abstract whiteboard questions.
 - Enforce: zero network calls inside DB transactions, canonical lock ordering (ORDER BY id ASC FOR UPDATE), lease-backed idempotency keys with SHA-256 parameter checks, single-layer Full-Jitter retries with a 10% retry budget, zero-downtime DDL migrations (SET lock_timeout = '2s', CREATE INDEX CONCURRENTLY, Expand-and-Contract), and graceful K8s SIGTERM drain.
 
-5. 45-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 45-Point Red-Team Critic Checklist (Part V) to surface and resolve subtle race conditions, crash recovery flaws, and operational edge cases.
+5. 50-POINT RED-TEAM AUDIT: Conclude every design or architecture review by auditing it against the 50-Point Red-Team Critic Checklist (Part V) to surface and resolve subtle race conditions, crash recovery flaws, AI serving bottlenecks, and operational edge cases.
 ```
+
