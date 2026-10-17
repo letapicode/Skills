@@ -45,7 +45,7 @@ function Copy-Or-DownloadFile {
 $ClaudeDir = Join-Path $HOME ".claude\skills\system-design-master-brain"
 Copy-Or-DownloadFile "SKILL.md" (Join-Path $ClaudeDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $ClaudeDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Write-Host "✔ Installed for Claude Code: $ClaudeDir" -ForegroundColor Green
+Write-Host "[OK] Installed for Claude Code: $ClaudeDir" -ForegroundColor Green
 
 # 2. OpenAI ChatGPT Desktop App (Codex) & Codex CLI (~/.codex/skills & ~/.agents/skills)
 $CodexDir = Join-Path $HOME ".codex\skills\system-design-master-brain"
@@ -63,13 +63,13 @@ Copy-Or-DownloadFile "SKILL.md" (Join-Path $AgentsStdDir "SKILL.md")
 Copy-Or-DownloadFile "AGENTS.md" (Join-Path $AgentsStdDir "AGENTS.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $AgentsStdDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
 Copy-Or-DownloadFile "agents/openai.yaml" (Join-Path $AgentsStdDir "agents\openai.yaml")
-Write-Host "✔ Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI: $CodexDir & $AgentsStdDir" -ForegroundColor Green
+Write-Host "[OK] Installed for OpenAI ChatGPT Desktop App (Codex) & Codex CLI: $CodexDir & $AgentsStdDir" -ForegroundColor Green
 
 # 3. Antigravity / Gemini Skill (~/.gemini/antigravity/skills/system-design-master-brain)
 $GeminiDir = Join-Path $HOME ".gemini\antigravity\skills\system-design-master-brain"
 Copy-Or-DownloadFile "SKILL.md" (Join-Path $GeminiDir "SKILL.md")
 Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $GeminiDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
-Write-Host "✔ Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
+Write-Host "[OK] Installed for Antigravity / Gemini: $GeminiDir" -ForegroundColor Green
 
 # 4. Current Workspace (AGENTS.md, CLAUDE.md, SKILL.md, agents/openai.yaml, .cursorrules, .windsurfrules, .codeiumrules, .clinerules, SYSTEM_DESIGN_MASTER_BRAIN.md, .github/copilot-instructions.md)
 $currentDir = Get-Location
@@ -85,7 +85,7 @@ if ($isProjectDir) {
     Copy-Or-DownloadFile ".clinerules" (Join-Path $currentDir ".clinerules")
     Copy-Or-DownloadFile "SYSTEM_DESIGN_MASTER_BRAIN.md" (Join-Path $currentDir "SYSTEM_DESIGN_MASTER_BRAIN.md")
     Copy-Or-DownloadFile ".github/copilot-instructions.md" (Join-Path $currentDir ".github\copilot-instructions.md")
-    Write-Host "✔ Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
+    Write-Host "[OK] Installed workspace rules & 28-module playbook for ChatGPT/Codex, Claude, DeepSeek/Cline, Cursor, Windsurf, Codeium, and Copilot in: $currentDir" -ForegroundColor Green
 }
 
 Write-Host ""
